@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 gem 'rails', '4.0.2'
 
 # Model
-gem 'sqlite3'
+gem 'pg'
 
 # View
 gem 'jbuilder'
