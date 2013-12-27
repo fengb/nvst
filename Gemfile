@@ -1,9 +1,10 @@
 source 'https://rubygems.org'
 
-gem 'rails', '4.0.2'
+gem 'rails'
 
 # Model
 gem 'pg'
+gem 'schema_plus'
 
 # View
 gem 'jbuilder'
@@ -11,7 +12,19 @@ gem 'jbuilder'
 # Assets
 gem 'sass-rails'
 gem 'uglifier'
-gem 'coffee-rails'
 gem 'therubyracer', platforms: :ruby
 gem 'jquery-rails'
 gem 'turbolinks'
+gem 'slim-rails'
+
+group :development, :test do
+  gem 'minitest-rails'
+  gem 'minitest-spec-expect'
+  gem 'factory_girl_rails'
+end
+
+group :development do
+  gem 'better_errors'
+  gem 'binding_of_caller'
+  gem 'spring'
+end
