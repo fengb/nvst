@@ -1,6 +1,7 @@
 class Trade < ActiveRecord::Base
   belongs_to :sell_investment, class_name: 'Investment'
   belongs_to :buy_investment,  class_name: 'Investment'
+  has_and_belongs_to_many :transactions
 
   def sell_value
     sell_shares * sell_price

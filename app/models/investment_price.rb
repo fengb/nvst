@@ -1,3 +1,4 @@
+# Generated
 class InvestmentPrice < ActiveRecord::Base
   belongs_to :investment
 

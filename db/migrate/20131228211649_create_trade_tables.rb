@@ -39,5 +39,36 @@ class CreateTradeTables < ActiveRecord::Migration
 
       t.timestamps
     end
+
+    create_table :lots do |t|
+      t.integer :investment_id, references: :investments
+    end
+
+    create_table :transactions do |t|
+      t.integer :lot_id, references: :lots
+      t.date    :date
+      t.decimal :shares, precision: 15, scale: 4
+      t.decimal :price,  precision: 12, scale: 4
+    end
+
+    create_table :contributions_transactions do |t|
+      t.integer :contribution_id, references: :contributions, index: true
+      t.integer :transaction_id,  references: :transactions,  index: {unique: true}
+    end
+
+    create_table :trades_transactions do |t|
+      t.integer :trade_id,       references: :trades,       index: true
+      t.integer :transaction_id, references: :transactions, index: {unique: true}
+    end
+
+    create_table :events_transactions do |t|
+      t.integer :event_id,       references: :events,       index: true
+      t.integer :transaction_id, references: :transactions, index: {unique: true}
+    end
+
+    create_table :expense_transactions do |t|
+      t.integer :expense_id,     references: :expenses,     index: true
+      t.integer :transaction_id, references: :transactions, index: {unique: true}
+    end
   end
 end

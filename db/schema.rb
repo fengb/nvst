@@ -62,6 +62,30 @@ ActiveRecord::Schema.define(version: 20131228211649) do
     t.datetime "updated_at"
   end
 
+  create_table "lots", force: true do |t|
+    t.integer "investment_id"
+    t.index ["investment_id"], :name => "fk__lots_investment_id"
+    t.foreign_key ["investment_id"], "investments", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_lots_investment_id"
+  end
+
+  create_table "transactions", force: true do |t|
+    t.integer "lot_id"
+    t.date    "date"
+    t.decimal "shares", precision: 15, scale: 4
+    t.decimal "price",  precision: 12, scale: 4
+    t.index ["lot_id"], :name => "fk__transactions_lot_id"
+    t.foreign_key ["lot_id"], "lots", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_transactions_lot_id"
+  end
+
+  create_table "contributions_transactions", force: true do |t|
+    t.integer "contribution_id"
+    t.integer "transaction_id"
+    t.index ["contribution_id"], :name => "index_contributions_transactions_on_contribution_id"
+    t.index ["transaction_id"], :name => "index_contributions_transactions_on_transaction_id", :unique => true
+    t.foreign_key ["contribution_id"], "contributions", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_contributions_transactions_contribution_id"
+    t.foreign_key ["transaction_id"], "transactions", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_contributions_transactions_transaction_id"
+  end
+
   create_table "events", force: true do |t|
     t.integer  "src_investment_id"
     t.date     "date"
@@ -73,6 +97,15 @@ ActiveRecord::Schema.define(version: 20131228211649) do
     t.foreign_key ["src_investment_id"], "investments", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_events_src_investment_id"
   end
 
+  create_table "events_transactions", force: true do |t|
+    t.integer "event_id"
+    t.integer "transaction_id"
+    t.index ["event_id"], :name => "index_events_transactions_on_event_id"
+    t.index ["transaction_id"], :name => "index_events_transactions_on_transaction_id", :unique => true
+    t.foreign_key ["event_id"], "events", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_events_transactions_event_id"
+    t.foreign_key ["transaction_id"], "transactions", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_events_transactions_transaction_id"
+  end
+
   create_table "expenses", force: true do |t|
     t.date     "date"
     t.decimal  "amount",     precision: 12, scale: 4
@@ -80,6 +113,15 @@ ActiveRecord::Schema.define(version: 20131228211649) do
     t.string   "memo"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "expense_transactions", force: true do |t|
+    t.integer "expense_id"
+    t.integer "transaction_id"
+    t.index ["expense_id"], :name => "index_expense_transactions_on_expense_id"
+    t.index ["transaction_id"], :name => "index_expense_transactions_on_transaction_id", :unique => true
+    t.foreign_key ["expense_id"], "expenses", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_expense_transactions_expense_id"
+    t.foreign_key ["transaction_id"], "transactions", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_expense_transactions_transaction_id"
   end
 
   create_table "investment_dividends", force: true do |t|
@@ -139,6 +181,15 @@ ActiveRecord::Schema.define(version: 20131228211649) do
     t.index ["sell_investment_id"], :name => "fk__trades_sell_investment_id"
     t.foreign_key ["buy_investment_id"], "investments", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_trades_buy_investment_id"
     t.foreign_key ["sell_investment_id"], "investments", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_trades_sell_investment_id"
+  end
+
+  create_table "trades_transactions", force: true do |t|
+    t.integer "trade_id"
+    t.integer "transaction_id"
+    t.index ["trade_id"], :name => "index_trades_transactions_on_trade_id"
+    t.index ["transaction_id"], :name => "index_trades_transactions_on_transaction_id", :unique => true
+    t.foreign_key ["trade_id"], "trades", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_trades_transactions_trade_id"
+    t.foreign_key ["transaction_id"], "transactions", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_trades_transactions_transaction_id"
   end
 
 end
