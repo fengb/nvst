@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131228175037) do
+ActiveRecord::Schema.define(version: 20131228211649) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -29,10 +29,55 @@ ActiveRecord::Schema.define(version: 20131228175037) do
     t.datetime "updated_at"
   end
 
+  create_table "users", force: true do |t|
+    t.string   "email",                              null: false
+    t.string   "encrypted_password",                 null: false
+    t.string   "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.integer  "sign_in_count",          default: 0, null: false
+    t.datetime "current_sign_in_at"
+    t.datetime "last_sign_in_at"
+    t.string   "current_sign_in_ip"
+    t.string   "last_sign_in_ip"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "contributions", force: true do |t|
+    t.integer  "user_id"
+    t.date     "date"
+    t.decimal  "amount",     precision: 18, scale: 4
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.index ["user_id"], :name => "fk__contributions_user_id"
+    t.foreign_key ["user_id"], "users", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_contributions_user_id"
+  end
+
   create_table "investments", force: true do |t|
     t.string   "symbol"
     t.string   "name"
     t.boolean  "auto_update"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "events", force: true do |t|
+    t.integer  "src_investment_id"
+    t.date     "date"
+    t.decimal  "amount",            precision: 12, scale: 4
+    t.string   "reason"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.index ["src_investment_id"], :name => "fk__events_src_investment_id"
+    t.foreign_key ["src_investment_id"], "investments", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_events_src_investment_id"
+  end
+
+  create_table "expenses", force: true do |t|
+    t.date     "date"
+    t.decimal  "amount",     precision: 12, scale: 4
+    t.string   "vendor"
+    t.string   "memo"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -80,19 +125,20 @@ ActiveRecord::Schema.define(version: 20131228175037) do
     t.index ["item", "table", "month", "year"], :name => "index_rails_admin_histories"
   end
 
-  create_table "users", force: true do |t|
-    t.string   "email",                              null: false
-    t.string   "encrypted_password",                 null: false
-    t.string   "reset_password_token"
-    t.datetime "reset_password_sent_at"
-    t.datetime "remember_created_at"
-    t.integer  "sign_in_count",          default: 0, null: false
-    t.datetime "current_sign_in_at"
-    t.datetime "last_sign_in_at"
-    t.string   "current_sign_in_ip"
-    t.string   "last_sign_in_ip"
+  create_table "trades", force: true do |t|
+    t.date     "date"
+    t.integer  "sell_investment_id"
+    t.decimal  "sell_shares",        precision: 15, scale: 4
+    t.decimal  "sell_price",         precision: 12, scale: 4
+    t.integer  "buy_investment_id"
+    t.decimal  "buy_shares",         precision: 15, scale: 4
+    t.decimal  "buy_price",          precision: 12, scale: 4
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.index ["buy_investment_id"], :name => "fk__trades_buy_investment_id"
+    t.index ["sell_investment_id"], :name => "fk__trades_sell_investment_id"
+    t.foreign_key ["buy_investment_id"], "investments", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_trades_buy_investment_id"
+    t.foreign_key ["sell_investment_id"], "investments", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_trades_sell_investment_id"
   end
 
 end
