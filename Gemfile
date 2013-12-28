@@ -2,6 +2,9 @@ source 'https://rubygems.org'
 
 gem 'rails'
 
+# Third Party
+gem 'rest-client'
+
 # Model
 gem 'pg'
 gem 'schema_plus'
