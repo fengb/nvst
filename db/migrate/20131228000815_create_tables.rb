@@ -10,7 +10,7 @@ class CreateTables < ActiveRecord::Migration
 
     create_table :investment_prices do |t|
       t.integer :investment_id, references: :investments
-      t.date    :date
+      t.date    :date,  index: true
       t.decimal :high,  precision: 12, scale: 4
       t.decimal :low,   precision: 12, scale: 4
       t.decimal :close, precision: 12, scale: 4
@@ -18,12 +18,14 @@ class CreateTables < ActiveRecord::Migration
     end
 
     create_table :investment_dividends do |t|
-      t.integer :price_id, references: :investment_prices
+      t.integer :investment_id, references: :investments
+      t.date    :date,   index: true
       t.decimal :amount, precision: 12, scale: 4
     end
 
     create_table :investment_splits do |t|
-      t.integer :price_id, references: :investment_prices
+      t.integer :investment_id, references: :investments
+      t.date    :date,   index: true
       t.integer :before
       t.integer :after
     end
