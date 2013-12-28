@@ -19,4 +19,14 @@ describe InvestmentPrice do
       expect(InvestmentPrice.year_range).to_not_include @prices[366]
     end
   end
+
+  describe '#adjusted' do
+    let(:price) { FactoryGirl.create(:investment_price, adjustment: 100) }
+
+    it 'adjusts number fields based on adjustment value' do
+      expect(price.adjusted(:close)).to_equal(price.close * 100)
+      expect(price.adjusted(:high)).to_equal(price.high * 100)
+      expect(price.adjusted(:low)).to_equal(price.low * 100)
+    end
+  end
 end

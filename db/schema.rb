@@ -19,7 +19,7 @@ ActiveRecord::Schema.define(version: 20131228000815) do
   create_table "investments", force: true do |t|
     t.string   "symbol"
     t.string   "name"
-    t.boolean  "update"
+    t.boolean  "auto_update"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

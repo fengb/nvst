@@ -3,7 +3,7 @@ class CreateTables < ActiveRecord::Migration
     create_table :investments do |t|
       t.string  :symbol
       t.string  :name
-      t.boolean :update
+      t.boolean :auto_update
 
       t.timestamps
     end
