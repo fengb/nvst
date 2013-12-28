@@ -12,4 +12,13 @@ describe Trade do
       expect(t.sell_value).to eq(61)
     end
   end
+
+  describe '#fee' do
+    it 'is sell_value - buy_value' do
+      t = Trade.new
+      t.stub(sell_value: 150,
+             buy_value:  145)
+      expect(t.fee).to eq(5)
+    end
+  end
 end

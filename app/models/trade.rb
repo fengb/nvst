@@ -9,4 +9,8 @@ class Trade < ActiveRecord::Base
   def buy_value
     buy_shares * buy_price
   end
+
+  def fee
+    sell_value - buy_value
+  end
 end
