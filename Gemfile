@@ -10,6 +10,7 @@ gem 'pg'
 gem 'schema_plus'
 gem 'devise'
 gem 'rails_admin'
+gem 'enumerize'
 
 # View
 gem 'jbuilder'

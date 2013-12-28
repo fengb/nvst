@@ -50,6 +50,8 @@ GEM
       thread_safe (~> 0.1)
       warden (~> 1.2.3)
     diff-lcs (1.2.5)
+    enumerize (0.7.0)
+      activesupport (>= 3.2)
     erubis (2.7.0)
     execjs (2.0.2)
     factory_girl (4.3.0)
@@ -203,6 +205,7 @@ DEPENDENCIES
   better_errors
   binding_of_caller
   devise
+  enumerize
   factory_girl_rails
   foundation-rails
   haml-rails
