@@ -9,6 +9,7 @@ gem 'rest-client'
 gem 'pg'
 gem 'schema_plus'
 gem 'devise'
+gem 'rails_admin'
 
 # View
 gem 'jbuilder'
@@ -19,7 +20,7 @@ gem 'uglifier'
 gem 'therubyracer', platforms: :ruby
 gem 'jquery-rails'
 gem 'turbolinks'
-gem 'slim-rails'
+gem 'haml'
 
 group :development, :test do
   gem 'minitest-rails'
