@@ -3,6 +3,10 @@ class Investment < ActiveRecord::Base
   has_many :dividends, class_name: 'InvestmentDividend'
   has_many :splits,    class_name: 'InvestmentSplit'
 
+  def title
+    symbol
+  end
+
   def current_price
     prices.order('date').last.close
   end

@@ -29,7 +29,7 @@ RailsAdmin.config do |config|
   config.included_models = %w[Admin Investment User]
 
   # Label methods for model instances:
-  # config.label_methods << :description # Default is [:name, :title]
+  config.label_methods = [:title, :name]
 
 
   ################  Model configuration  ################
