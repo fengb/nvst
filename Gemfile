@@ -25,8 +25,7 @@ gem 'turbolinks'
 gem 'foundation-rails'
 
 group :development, :test do
-  gem 'minitest-rails'
-  gem 'minitest-spec-expect'
+  gem 'rspec-rails'
   gem 'factory_girl_rails'
   gem 'pry'
 end
@@ -35,4 +34,5 @@ group :development do
   gem 'better_errors'
   gem 'binding_of_caller'
   gem 'spring'
+  gem 'spring-commands-rspec'
 end

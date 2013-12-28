@@ -1,4 +1,4 @@
-require 'test_helper'
+require 'spec_helper'
 
 
 describe Investment do
@@ -13,19 +13,19 @@ describe Investment do
 
     describe '#year_high' do
       it 'returns the high for the year' do
-        expect(investment.year_high).to_equal 1000
+        expect(investment.year_high).to eq(1000)
       end
     end
 
     describe '#year_low' do
       it 'returns the low for the year' do
-        expect(investment.year_low).to_equal 100
+        expect(investment.year_low).to eq(100)
       end
     end
 
     describe '#current_price' do
       it 'returns the latest close' do
-        expect(investment.current_price).to_equal(400)
+        expect(investment.current_price).to eq(400)
       end
     end
   end
