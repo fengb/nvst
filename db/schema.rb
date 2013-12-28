@@ -24,6 +24,15 @@ ActiveRecord::Schema.define(version: 20131228000815) do
     t.datetime "updated_at"
   end
 
+  create_table "investment_dividends", force: true do |t|
+    t.integer "investment_id"
+    t.date    "date"
+    t.decimal "amount",        precision: 12, scale: 4
+    t.index ["date"], :name => "index_investment_dividends_on_date"
+    t.index ["investment_id"], :name => "fk__investment_dividends_investment_id"
+    t.foreign_key ["investment_id"], "investments", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_investment_dividends_investment_id"
+  end
+
   create_table "investment_prices", force: true do |t|
     t.integer "investment_id"
     t.date    "date"
@@ -31,23 +40,19 @@ ActiveRecord::Schema.define(version: 20131228000815) do
     t.decimal "low",           precision: 12, scale: 4
     t.decimal "close",         precision: 12, scale: 4
     t.float   "adjustment"
+    t.index ["date"], :name => "index_investment_prices_on_date"
     t.index ["investment_id"], :name => "fk__investment_prices_investment_id"
     t.foreign_key ["investment_id"], "investments", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_investment_prices_investment_id"
   end
 
-  create_table "investment_dividends", force: true do |t|
-    t.integer "price_id"
-    t.decimal "amount",   precision: 12, scale: 4
-    t.index ["price_id"], :name => "fk__investment_dividends_price_id"
-    t.foreign_key ["price_id"], "investment_prices", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_investment_dividends_price_id"
-  end
-
   create_table "investment_splits", force: true do |t|
-    t.integer "price_id"
+    t.integer "investment_id"
+    t.date    "date"
     t.integer "before"
     t.integer "after"
-    t.index ["price_id"], :name => "fk__investment_splits_price_id"
-    t.foreign_key ["price_id"], "investment_prices", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_investment_splits_price_id"
+    t.index ["date"], :name => "index_investment_splits_on_date"
+    t.index ["investment_id"], :name => "fk__investment_splits_investment_id"
+    t.foreign_key ["investment_id"], "investments", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_investment_splits_investment_id"
   end
 
 end

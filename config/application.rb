@@ -22,5 +22,9 @@ module FengbNvst
     config.generators do |g|
       g.test_framework :mini_test, spec: true, fixture: false
     end
+
+    config.after_initialize do |app|
+      app.config.paths.add 'app/jobs', eager_load: true
+    end
   end
 end
