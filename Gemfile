@@ -8,6 +8,7 @@ gem 'rest-client'
 # Model
 gem 'pg'
 gem 'schema_plus'
+gem 'devise'
 
 # View
 gem 'jbuilder'
