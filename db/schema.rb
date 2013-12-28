@@ -17,7 +17,7 @@ ActiveRecord::Schema.define(version: 20131228175037) do
   enable_extension "plpgsql"
 
   create_table "admins", force: true do |t|
-    t.string   "email",                           null: false
+    t.string   "username",                        null: false
     t.string   "encrypted_password",              null: false
     t.datetime "remember_created_at"
     t.integer  "sign_in_count",       default: 0, null: false
