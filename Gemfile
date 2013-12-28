@@ -13,6 +13,8 @@ gem 'rails_admin'
 
 # View
 gem 'jbuilder'
+gem 'simple_form'
+gem 'haml-rails'
 
 # Assets
 gem 'sass-rails'
@@ -20,7 +22,7 @@ gem 'uglifier'
 gem 'therubyracer', platforms: :ruby
 gem 'jquery-rails'
 gem 'turbolinks'
-gem 'haml-rails'
+gem 'foundation-rails'
 
 group :development, :test do
   gem 'minitest-rails'

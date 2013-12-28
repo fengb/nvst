@@ -2,10 +2,6 @@
 # See github.com/sferik/rails_admin for more informations
 
 RailsAdmin.config do |config|
-
-
-  ################  Global configuration  ################
-
   # Set the admin name here (optional second array element will appear in red). For example:
   config.main_app_name = ['FENGB NVST', 'Admin']
   # or for a more dynamic name:
@@ -26,11 +22,8 @@ RailsAdmin.config do |config|
   # Number of default rows per-page:
   # config.default_items_per_page = 20
 
-  # Exclude specific models (keep the others):
   # config.excluded_models = ['Admin', 'Investment', 'InvestmentDividend', 'InvestmentPrice', 'InvestmentSplit', 'User']
-
-  # Include specific models (exclude the others):
-  # config.included_models = ['Admin', 'Investment', 'InvestmentDividend', 'InvestmentPrice', 'InvestmentSplit', 'User']
+  config.included_models = %w[Admin Investment User]
 
   # Label methods for model instances:
   # config.label_methods << :description # Default is [:name, :title]
@@ -148,142 +141,6 @@ RailsAdmin.config do |config|
   #     # you can override a cross-section field configuration in any section with the same syntax `configure :field_name do ... end`
   #     # using `field` instead of `configure` will exclude all other fields and force the ordering
   # end
-
-
-  ###  InvestmentDividend  ###
-
-  # config.model 'InvestmentDividend' do
-
-  #   # You can copy this to a 'rails_admin do ... end' block inside your investment_dividend.rb model definition
-
-  #   # Found associations:
-
-  #     configure :investment, :belongs_to_association 
-
-  #   # Found columns:
-
-  #     configure :id, :integer 
-  #     configure :investment_id, :integer         # Hidden 
-  #     configure :date, :date 
-  #     configure :amount, :decimal 
-
-  #   # Cross-section configuration:
-
-  #     # object_label_method :name     # Name of the method called for pretty printing an *instance* of ModelName
-  #     # label 'My model'              # Name of ModelName (smartly defaults to ActiveRecord's I18n API)
-  #     # label_plural 'My models'      # Same, plural
-  #     # weight 0                      # Navigation priority. Bigger is higher.
-  #     # parent OtherModel             # Set parent model for navigation. MyModel will be nested below. OtherModel will be on first position of the dropdown
-  #     # navigation_label              # Sets dropdown entry's name in navigation. Only for parents!
-
-  #   # Section specific configuration:
-
-  #     list do
-  #       # filters [:id, :name]  # Array of field names which filters should be shown by default in the table header
-  #       # items_per_page 100    # Override default_items_per_page
-  #       # sort_by :id           # Sort column (default is primary key)
-  #       # sort_reverse true     # Sort direction (default is true for primary key, last created first)
-  #     end
-  #     show do; end
-  #     edit do; end
-  #     export do; end
-  #     # also see the create, update, modal and nested sections, which override edit in specific cases (resp. when creating, updating, modifying from another model in a popup modal or modifying from another model nested form)
-  #     # you can override a cross-section field configuration in any section with the same syntax `configure :field_name do ... end`
-  #     # using `field` instead of `configure` will exclude all other fields and force the ordering
-  # end
-
-
-  ###  InvestmentPrice  ###
-
-  # config.model 'InvestmentPrice' do
-
-  #   # You can copy this to a 'rails_admin do ... end' block inside your investment_price.rb model definition
-
-  #   # Found associations:
-
-  #     configure :investment, :belongs_to_association 
-
-  #   # Found columns:
-
-  #     configure :id, :integer 
-  #     configure :investment_id, :integer         # Hidden 
-  #     configure :date, :date 
-  #     configure :high, :decimal 
-  #     configure :low, :decimal 
-  #     configure :close, :decimal 
-  #     configure :adjustment, :float 
-
-  #   # Cross-section configuration:
-
-  #     # object_label_method :name     # Name of the method called for pretty printing an *instance* of ModelName
-  #     # label 'My model'              # Name of ModelName (smartly defaults to ActiveRecord's I18n API)
-  #     # label_plural 'My models'      # Same, plural
-  #     # weight 0                      # Navigation priority. Bigger is higher.
-  #     # parent OtherModel             # Set parent model for navigation. MyModel will be nested below. OtherModel will be on first position of the dropdown
-  #     # navigation_label              # Sets dropdown entry's name in navigation. Only for parents!
-
-  #   # Section specific configuration:
-
-  #     list do
-  #       # filters [:id, :name]  # Array of field names which filters should be shown by default in the table header
-  #       # items_per_page 100    # Override default_items_per_page
-  #       # sort_by :id           # Sort column (default is primary key)
-  #       # sort_reverse true     # Sort direction (default is true for primary key, last created first)
-  #     end
-  #     show do; end
-  #     edit do; end
-  #     export do; end
-  #     # also see the create, update, modal and nested sections, which override edit in specific cases (resp. when creating, updating, modifying from another model in a popup modal or modifying from another model nested form)
-  #     # you can override a cross-section field configuration in any section with the same syntax `configure :field_name do ... end`
-  #     # using `field` instead of `configure` will exclude all other fields and force the ordering
-  # end
-
-
-  ###  InvestmentSplit  ###
-
-  # config.model 'InvestmentSplit' do
-
-  #   # You can copy this to a 'rails_admin do ... end' block inside your investment_split.rb model definition
-
-  #   # Found associations:
-
-  #     configure :investment, :belongs_to_association 
-
-  #   # Found columns:
-
-  #     configure :id, :integer 
-  #     configure :investment_id, :integer         # Hidden 
-  #     configure :date, :date 
-  #     configure :before, :integer 
-  #     configure :after, :integer 
-
-  #   # Cross-section configuration:
-
-  #     # object_label_method :name     # Name of the method called for pretty printing an *instance* of ModelName
-  #     # label 'My model'              # Name of ModelName (smartly defaults to ActiveRecord's I18n API)
-  #     # label_plural 'My models'      # Same, plural
-  #     # weight 0                      # Navigation priority. Bigger is higher.
-  #     # parent OtherModel             # Set parent model for navigation. MyModel will be nested below. OtherModel will be on first position of the dropdown
-  #     # navigation_label              # Sets dropdown entry's name in navigation. Only for parents!
-
-  #   # Section specific configuration:
-
-  #     list do
-  #       # filters [:id, :name]  # Array of field names which filters should be shown by default in the table header
-  #       # items_per_page 100    # Override default_items_per_page
-  #       # sort_by :id           # Sort column (default is primary key)
-  #       # sort_reverse true     # Sort direction (default is true for primary key, last created first)
-  #     end
-  #     show do; end
-  #     edit do; end
-  #     export do; end
-  #     # also see the create, update, modal and nested sections, which override edit in specific cases (resp. when creating, updating, modifying from another model in a popup modal or modifying from another model nested form)
-  #     # you can override a cross-section field configuration in any section with the same syntax `configure :field_name do ... end`
-  #     # using `field` instead of `configure` will exclude all other fields and force the ordering
-  # end
-
-
-  ###  User  ###
 
   # config.model 'User' do
 
