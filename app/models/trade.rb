@@ -14,4 +14,15 @@ class Trade < ActiveRecord::Base
   def fee
     sell_value - buy_value
   end
+
+  def to_raw_transactions_data
+    [{investment: sell_investment,
+      date:       date,
+      shares:     sell_shares,
+      price:      sell_price},
+     {investment: buy_investment,
+      date:       date,
+      shares:     buy_shares,
+      price:      buy_price}]
+  end
 end

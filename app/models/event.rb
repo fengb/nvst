@@ -10,4 +10,11 @@ class Event < ActiveRecord::Base
                           'dividend - tax-exempt',
                           'capital gains - short-term',
                           'capital gains - long-term']
+
+  def to_raw_transactions_data
+    [{investment: Investment.cash,
+      date:       date,
+      shares:     amount,
+      price:      1}]
+  end
 end

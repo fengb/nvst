@@ -3,7 +3,7 @@ require 'yahoo_finance'
 
 class PopulateInvestmentJob
   class << self
-    def enqueue
+    def generate
       Investment.where(auto_update: true).pluck(:id).each do |id|
         self.perform(id)
       end
