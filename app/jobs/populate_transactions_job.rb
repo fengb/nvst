@@ -44,25 +44,24 @@ class PopulateTransactionsJob
   end
 
   def transact!(transaction_data)
-    investment = transaction_data.delete(:investment)
+    shared_data = transaction_data.slice(:date, :price)
+    investment = transaction_data[:investment]
     remaining_shares = transaction_data[:shares]
     transactions = []
     outstanding_lots(investment, remaining_shares).each do |lot|
       if lot.outstanding_shares.abs >= remaining_shares.abs
-        transactions << lot.transactions.create!(transaction_data.merge(shares: remaining_shares))
+        transactions << lot.transactions.create!(shared_data.merge shares: remaining_shares)
         return transactions
       else
         remaining_shares += lot.outstanding_shares
-        transactions << lot.transactions.create!(transaction_data.merge(shares: -lot.outstanding_shares))
+        transactions << lot.transactions.create!(shared_data.merge shares: -lot.outstanding_shares)
       end
     end
 
-    # Still remaining with no lot
-    transactions << Transaction.create!(transaction_data.merge(lot: Lot.new(investment: investment), shares: remaining_shares))
+    # Shares remaining with no lot
+    lot = Lot.new(investment: investment)
+    transactions << Transaction.create!(shared_data.merge lot: lot, shares: remaining_shares)
     transactions
-  end
-
-  def sign(number)
   end
 
   def outstanding_lots(investment, new_shares)

@@ -19,10 +19,15 @@ describe PopulateTransactionsJob do
                         shares:     BigDecimal(rand(100..200)),
                         price:      BigDecimal(1)} }
 
-    def expect_all(obj, data)
-      data.each do |method, val|
+    def expect_all(obj, data, data_extra={})
+      data.merge(data_extra).each do |method, val|
         expect(obj.send(method)).to eq(val)
       end
+    end
+
+    def create_transaction!(options)
+      lot = options[:lot] || Lot.new(investment: options.delete(:investment))
+      Transaction.create!(options.merge lot: lot)
     end
 
     it 'creates new lot with single transaction when none exists' do
@@ -32,26 +37,23 @@ describe PopulateTransactionsJob do
     end
 
     context 'existing lot' do
-      let(:lot) { Lot.new(investment: investment) }
-
-      it 'ignores lots it cannot fill' do
-        Transaction.create!(lot: lot,
-                            date: Date.today - 2000,
-                            shares: 10,
-                            price: 5)
-
-        transactions = job.transact!(data)
-        expect(transactions.size).to eq(1)
-        expect_all(transactions[0], data)
-        expect(transactions[0].lot).to_not eq(lot)
-      end
-
-      it 'ignores filled lots' do
-        Transaction.create!(lot: lot,
+      let!(:existing) do
+        create_transaction!(investment: investment,
                             date: Date.today - 2000,
                             shares: -10,
                             price: 5)
-        Transaction.create!(lot: lot,
+      end
+
+      it 'ignores lots it cannot fill' do
+        existing.update(shares: 10)
+        transactions = job.transact!(data)
+        expect(transactions.size).to eq(1)
+        expect_all(transactions[0], data)
+        expect(transactions[0].lot).to_not eq(existing.lot)
+      end
+
+      it 'ignores filled lots' do
+        create_transaction!(lot: existing.lot,
                             date: Date.today - 1999,
                             shares: 10,
                             price: 4)
@@ -59,46 +61,33 @@ describe PopulateTransactionsJob do
         transactions = job.transact!(data)
         expect(transactions.size).to eq(1)
         expect_all(transactions[0], data)
-        expect(transactions[0].lot).to_not eq(lot)
+        expect(transactions[0].lot).to_not eq(existing.lot)
       end
 
       it 'fills when outstanding amount > new amount' do
-        existing = Transaction.create!(lot: lot,
-                                       date: Date.today - 2000,
-                                       shares: -300,
-                                       price: 2)
+        existing.update(shares: -300)
 
         transactions = job.transact!(data)
         expect(transactions.size).to eq(1)
-        expect_all(transactions[0], data)
-        expect(transactions[0].lot).to eq(lot)
+        expect_all(transactions[0], data, lot: existing.lot)
       end
 
       it 'fills when outstanding amount == new amount' do
-        existing = Transaction.create!(lot: lot,
-                                       date: Date.today - 2000,
-                                       shares: -data[:shares],
-                                       price: 2)
+        existing.update(shares: -data[:shares])
 
         transactions = job.transact!(data)
         expect(transactions.size).to eq(1)
-        expect_all(transactions[0], data)
-        expect(transactions[0].lot).to eq(lot)
+        expect_all(transactions[0], data, lot: existing.lot)
       end
 
       it 'fills up and creates new lot with remainder' do
-        existing = Transaction.create!(lot: lot,
-                                       date: Date.today - 2000,
-                                       shares: -10,
-                                       price: 4)
-
         transactions = job.transact!(data)
         expect(transactions.size).to eq(2)
-        expect_all(transactions[0], lot: lot,
+        expect_all(transactions[0], lot: existing.lot,
                                     date: data[:date],
                                     shares: -existing.shares,
                                     price: 1)
-        expect(transactions[1].lot).to_not eq(lot)
+        expect(transactions[1].lot).to_not eq(existing.lot)
         expect_all(transactions[1], date: data[:date],
                                     shares: data[:shares] + existing.shares,
                                     price: 1)
@@ -106,49 +95,47 @@ describe PopulateTransactionsJob do
     end
 
     context 'existing lots' do
-      let(:lot0) { Lot.new(investment: investment) }
-      let(:lot1) { Lot.new(investment: investment) }
+      let!(:existing) {[
+        create_transaction!(investment: investment,
+                            date: Date.today - 2000,
+                            shares: -10,
+                            price: 4),
+        create_transaction!(investment: investment,
+                            date: Date.today - 2000,
+                            shares: -300,
+                            price: 3),
+      ]}
 
       it 'fills up first based on highest price' do
-        existing0 = Transaction.create!(lot: lot0,
-                                        date: Date.today - 2000,
-                                        shares: -10,
-                                        price: 4)
-        existing1 = Transaction.create!(lot: lot1,
-                                        date: Date.today - 2000,
-                                        shares: -300,
-                                        price: 3)
-
         transactions = job.transact!(data)
         expect(transactions.size).to eq(2)
-        expect_all(transactions[0], date: data[:date],
-                                    shares: -existing0.shares,
+        expect_all(transactions[0], lot: existing[0].lot,
+                                    date: data[:date],
+                                    shares: -existing[0].shares,
                                     price: data[:price])
-        expect_all(transactions[1], date: data[:date],
-                                    shares: data[:shares] + existing0.shares,
+        expect_all(transactions[1], lot: existing[1].lot,
+                                    date: data[:date],
+                                    shares: data[:shares] + existing[0].shares,
                                     price: data[:price])
       end
 
       it 'fills up all lots before creating new lot' do
-        existing0 = Transaction.create!(lot: lot0,
-                                        date: Date.today - 2000,
-                                        shares: -10,
-                                        price: 8)
-        existing1 = Transaction.create!(lot: lot1,
-                                        date: Date.today - 2000,
-                                        shares: -20,
-                                        price: 7)
+        existing[1].update(shares: -20)
 
         transactions = job.transact!(data)
         expect(transactions.size).to eq(3)
-        expect_all(transactions[0], date: data[:date],
-                                    shares: -existing0.shares,
+        expect_all(transactions[0], lot: existing[0].lot,
+                                    date: data[:date],
+                                    shares: -existing[0].shares,
                                     price: data[:price])
-        expect_all(transactions[1], date: data[:date],
-                                    shares: -existing1.shares,
+        expect_all(transactions[1], lot: existing[1].lot,
+                                    date: data[:date],
+                                    shares: -existing[1].shares,
                                     price: data[:price])
+        expect(transactions[2].lot).to_not eq(existing[0].lot)
+        expect(transactions[2].lot).to_not eq(existing[1].lot)
         expect_all(transactions[2], date: data[:date],
-                                    shares: data[:shares] + existing0.shares + existing1.shares,
+                                    shares: data[:shares] + existing.map(&:shares).sum,
                                     price: data[:price])
       end
     end
