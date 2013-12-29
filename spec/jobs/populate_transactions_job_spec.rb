@@ -34,6 +34,22 @@ describe PopulateTransactionsJob do
     context 'existing lot' do
       let(:lot) { Lot.new(investment: investment) }
 
+      it 'ignores filled lots' do
+        Transaction.create!(lot: lot,
+                            date: Date.today - 2000,
+                            shares: -10,
+                            price: 5)
+        Transaction.create!(lot: lot,
+                            date: Date.today - 1999,
+                            shares: 10,
+                            price: 4)
+
+        transactions = job.transact!(data)
+        expect(transactions.size).to eq(1)
+        expect_all(transactions[0], data)
+        expect(transactions[0].lot).to_not eq(lot)
+      end
+
       it 'fills when outstanding amount > new amount' do
         existing = Transaction.create!(lot: lot,
                                        date: Date.today - 2000,
@@ -68,12 +84,34 @@ describe PopulateTransactionsJob do
         expect(transactions.size).to eq(2)
         expect_all(transactions[0], lot: lot,
                                     date: data[:date],
-                                    shares: existing.shares.abs,
+                                    shares: -existing.shares,
                                     price: 1)
         expect(transactions[1].lot).to_not eq(lot)
         expect_all(transactions[1], date: data[:date],
                                     shares: data[:shares] + existing.shares,
                                     price: 1)
+      end
+    end
+
+    context 'existing lots' do
+      let(:lot0) { Lot.new(investment: investment) }
+      let(:lot1) { Lot.new(investment: investment) }
+
+      it 'fills up first then second with remainder' do
+        existing0 = Transaction.create!(lot: lot0,
+                                        date: Date.today - 2000,
+                                        shares: -10,
+                                        price: 4)
+        existing1 = Transaction.create!(lot: lot1,
+                                        date: Date.today - 1999,
+                                        shares: -300,
+                                        price: 4)
+
+        transactions = job.transact!(data)
+        expect(transactions.size).to eq(2)
+        expect_all(transactions[0], date: data[:date],
+                                    shares: -existing0.shares,
+                                    price: data[:price])
       end
     end
   end
