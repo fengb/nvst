@@ -1,6 +1,6 @@
 class PopulateTransactionsJob
   class << self
-    def generate
+    def perform
       self.new(objects_needing_processing).run!
     end
 
@@ -37,7 +37,7 @@ class PopulateTransactionsJob
   end
 
   def initialize(objects)
-    @objects = objects.sort_by(&:date)
+    @objects = objects.sort_by{|o| [o.date, o.created_at]}
   end
 
   def run!
@@ -75,6 +75,8 @@ class PopulateTransactionsJob
   def outstanding_lots(investment, new_shares)
     # Shares +new fill -outstanding, -new fill +outstanding
     direction = new_shares > 0 ? '-' : '+'
-    Lot.outstanding(direction).where(investment: investment).order_by_purchase(:price).reverse
+    Lot.outstanding(direction).where(investment: investment).order_by_purchase do |trans|
+      [-trans.price, trans.date, trans.id]
+    end
   end
 end

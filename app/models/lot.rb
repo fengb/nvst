@@ -18,7 +18,10 @@ class Lot < ActiveRecord::Base
                   ON t.lot_id=lots.id"
     ).where("t.outstanding_shares #{op} 0")
   }
-  scope :order_by_purchase, ->(attr){includes(:transactions).sort_by{|l| l.transactions.first.send(attr)}}
+
+  def self.order_by_purchase
+    includes(:transactions).sort_by{|l| yield(l.transactions.first)}
+  end
 
   def outstanding_shares
     transactions.sum('shares')

@@ -3,14 +3,10 @@ require 'yahoo_finance'
 
 class PopulateInvestmentJob
   class << self
-    def generate
-      Investment.where(auto_update: true).pluck(:id).each do |id|
-        self.perform(id)
+    def perform
+      Investment.where(auto_update: true).each do |investment|
+        self.new(investment).run!
       end
-    end
-
-    def perform(investment_id)
-      self.new(Investment.find(investment_id)).run!
     end
   end
 
