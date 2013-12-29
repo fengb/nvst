@@ -44,7 +44,14 @@ class PopulateTransactionsJob
   end
 
   def transact!(transaction_data)
-    lot = Lot.new(investment: transaction_data.delete(:investment))
-    [Transaction.create!(transaction_data.merge(lot: lot))]
+    lot = Lot.find_or_initialize_by(investment: transaction_data.delete(:investment))
+    if lot.new_record? or lot.outstanding_shares.abs >= transaction_data[:shares].abs
+      [Transaction.create!(transaction_data.merge(lot: lot))]
+    else
+      remaining_shares = transaction_data[:shares] + lot.outstanding_shares
+      [Transaction.create!(transaction_data.merge(lot: lot, shares: -lot.outstanding_shares)),
+       Transaction.create!(transaction_data.merge(lot: Lot.new, shares: remaining_shares))
+      ]
+    end
   end
 end

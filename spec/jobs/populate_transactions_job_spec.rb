@@ -28,7 +28,53 @@ describe PopulateTransactionsJob do
     it 'creates new lot with single transaction when none exists' do
       transactions = job.transact!(data)
       expect(transactions.size).to eq(1)
-      expect_all(transactions.first, data)
+      expect_all(transactions[0], data)
+    end
+
+    context 'existing lot' do
+      let(:lot) { Lot.new(investment: investment) }
+
+      it 'fills when outstanding amount > new amount' do
+        existing = Transaction.create!(lot: lot,
+                                       date: Date.today - 2000,
+                                       shares: -300,
+                                       price: 2)
+
+        transactions = job.transact!(data)
+        expect(transactions.size).to eq(1)
+        expect_all(transactions[0], data)
+        expect(transactions[0].lot).to eq(lot)
+      end
+
+      it 'fills when outstanding amount == new amount' do
+        existing = Transaction.create!(lot: lot,
+                                       date: Date.today - 2000,
+                                       shares: -data[:shares],
+                                       price: 2)
+
+        transactions = job.transact!(data)
+        expect(transactions.size).to eq(1)
+        expect_all(transactions[0], data)
+        expect(transactions[0].lot).to eq(lot)
+      end
+
+      it 'fills up and creates new lot with remainder' do
+        existing = Transaction.create!(lot: lot,
+                                       date: Date.today - 2000,
+                                       shares: -10,
+                                       price: 4)
+
+        transactions = job.transact!(data)
+        expect(transactions.size).to eq(2)
+        expect_all(transactions[0], lot: lot,
+                                    date: data[:date],
+                                    shares: existing.shares.abs,
+                                    price: 1)
+        expect(transactions[1].lot).to_not eq(lot)
+        expect_all(transactions[1], date: data[:date],
+                                    shares: data[:shares] + existing.shares,
+                                    price: 1)
+      end
     end
   end
 end
