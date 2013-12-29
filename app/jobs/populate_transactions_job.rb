@@ -47,7 +47,7 @@ class PopulateTransactionsJob
     investment = transaction_data.delete(:investment)
     remaining_shares = transaction_data[:shares]
     transactions = []
-    outstanding_lots(investment).each do |lot|
+    outstanding_lots(investment, remaining_shares).each do |lot|
       if lot.outstanding_shares.abs >= remaining_shares.abs
         transactions << lot.transactions.create!(transaction_data.merge(shares: remaining_shares))
         return transactions
@@ -62,7 +62,12 @@ class PopulateTransactionsJob
     transactions
   end
 
-  def outstanding_lots(investment)
-    Lot.outstanding.where(investment: investment).order_by_purchase_date
+  def sign(number)
+  end
+
+  def outstanding_lots(investment, new_shares)
+    # Shares +new fill -outstanding, -new fill +outstanding
+    direction = new_shares > 0 ? '-' : '+'
+    Lot.outstanding(direction).where(investment: investment).order_by_purchase(:price).reverse
   end
 end
