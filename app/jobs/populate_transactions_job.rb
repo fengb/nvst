@@ -24,7 +24,7 @@ class PopulateTransactionsJob
       models_needing_processing.map do |model|
         table = model.table_name
         ids = model.select("#{table}.id").joins(:transactions).group("#{table}.id").having('COUNT(transactions.id) = 0')
-        model.find(ids)
+        ids.empty? ? [] : model.find(ids)
       end.flatten
     end
   end

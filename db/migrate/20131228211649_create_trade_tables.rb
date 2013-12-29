@@ -66,7 +66,7 @@ class CreateTradeTables < ActiveRecord::Migration
       t.integer :transaction_id, references: :transactions, index: {unique: true}
     end
 
-    create_table :expense_transactions do |t|
+    create_table :expenses_transactions do |t|
       t.integer :expense_id,     references: :expenses,     index: true
       t.integer :transaction_id, references: :transactions, index: {unique: true}
     end

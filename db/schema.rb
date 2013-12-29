@@ -115,13 +115,13 @@ ActiveRecord::Schema.define(version: 20131228211649) do
     t.datetime "updated_at"
   end
 
-  create_table "expense_transactions", force: true do |t|
+  create_table "expenses_transactions", force: true do |t|
     t.integer "expense_id"
     t.integer "transaction_id"
-    t.index ["expense_id"], :name => "index_expense_transactions_on_expense_id"
-    t.index ["transaction_id"], :name => "index_expense_transactions_on_transaction_id", :unique => true
-    t.foreign_key ["expense_id"], "expenses", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_expense_transactions_expense_id"
-    t.foreign_key ["transaction_id"], "transactions", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_expense_transactions_transaction_id"
+    t.index ["expense_id"], :name => "index_expenses_transactions_on_expense_id"
+    t.index ["transaction_id"], :name => "index_expenses_transactions_on_transaction_id", :unique => true
+    t.foreign_key ["expense_id"], "expenses", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_expenses_transactions_expense_id"
+    t.foreign_key ["transaction_id"], "transactions", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_expenses_transactions_transaction_id"
   end
 
   create_table "investment_dividends", force: true do |t|
