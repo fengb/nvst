@@ -1,7 +1,7 @@
 class PopulateTransactionsJob
   class << self
     def generate
-      self.new(objects_needing_transactions).run!
+      self.new(objects_needing_processing).run!
     end
 
     private
@@ -23,7 +23,14 @@ class PopulateTransactionsJob
     def objects_needing_processing
       models_needing_processing.map do |model|
         table = model.table_name
-        ids = model.select("#{table}.id").joins(:transactions).group("#{table}.id").having('COUNT(transactions.id) = 0')
+        join_table = model.reflections[:transactions].join_table
+        ids = ActiveRecord::Base.connection.select_rows(<<-END).flatten
+          SELECT t.id
+            FROM #{table} t
+            LEFT JOIN #{join_table} jt
+                   ON jt.#{table.singularize}_id = t.id
+           WHERE jt.id IS NULL
+        END
         ids.empty? ? [] : model.find(ids)
       end.flatten
     end
@@ -37,8 +44,9 @@ class PopulateTransactionsJob
     @objects.each do |object|
       next if object.transactions.count > 0
 
-      object.to_raw_transaction_data.each do |transaction_data|
+      object.to_raw_transactions_data.each do |transaction_data|
         transactions = transact!(transaction_data)
+        object.transactions.concat(transactions)
       end
     end
   end
