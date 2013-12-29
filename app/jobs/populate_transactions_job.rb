@@ -44,5 +44,7 @@ class PopulateTransactionsJob
   end
 
   def transact!(transaction_data)
+    lot = Lot.new(investment: transaction_data.delete(:investment))
+    [Transaction.create!(transaction_data.merge(lot: lot))]
   end
 end

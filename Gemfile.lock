@@ -59,6 +59,7 @@ GEM
     factory_girl_rails (4.3.0)
       factory_girl (~> 4.3.0)
       railties (>= 3.0.0)
+    ffaker (1.22.1)
     font-awesome-rails (4.0.3.0)
       railties (>= 3.2, < 5.0)
     foundation-rails (5.0.2.0)
@@ -207,6 +208,7 @@ DEPENDENCIES
   devise
   enumerize
   factory_girl_rails
+  ffaker
   foundation-rails
   haml-rails
   jbuilder
