@@ -1,9 +1,9 @@
 require 'best_match_hash'
 
 
-class PortfolioPresenter
-  def self.portfolio
-    self.new(Transaction.includes(:lot))
+class TransactionsGrowthPresenter
+  def self.all
+    self.new(Transaction.includes(lot: :investment))
   end
 
   def initialize(transactions)
