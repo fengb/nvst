@@ -23,7 +23,39 @@ class Lot < ActiveRecord::Base
     includes(:transactions).sort_by{|l| yield(l.transactions.first)}
   end
 
+  def purchase_transaction
+    transactions.first
+  end
+
+  def purchase_date
+    purchase_transaction.date
+  end
+
+  def purchase_price
+    purchase_transaction.price
+  end
+
+  def purchase_value
+    purchase_transaction.value
+  end
+
   def outstanding_shares
     transactions.sum('shares')
+  end
+
+  def current_price
+    investment.current_price
+  end
+
+  def current_value
+    current_price * outstanding_shares
+  end
+
+  def unrealized_gain
+    (current_price - purchase_price) * outstanding_shares
+  end
+
+  def unrealized_gain_percent
+    unrealized_gain / purchase_value
   end
 end

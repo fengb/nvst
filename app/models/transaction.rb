@@ -5,4 +5,8 @@ class Transaction < ActiveRecord::Base
   validates :lot, presence: true
 
   delegate :investment, to: :lot
+
+  def value
+    shares * price
+  end
 end

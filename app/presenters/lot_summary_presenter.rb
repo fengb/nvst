@@ -11,20 +11,24 @@ class LotSummaryPresenter
     unique_by(:investment)
   end
 
-  def buy_date
-    unique_by(:buy_date)
+  def purchase_date
+    unique_by(:purchase_date)
   end
 
-  def buy_price
-    unique_by(:buy_price)
+  def outstanding_shares
+    sum_by(:outstanding_shares)
+  end
+
+  def purchase_price
+    unique_by(:purchase_price)
   end
 
   def current_price
     unique_by(:current_price)
   end
 
-  def buy_value
-    sum_by(:buy_value)
+  def purchase_value
+    sum_by(:purchase_value)
   end
 
   def current_value
