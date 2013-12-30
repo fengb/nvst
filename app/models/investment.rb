@@ -11,6 +11,10 @@ class Investment < ActiveRecord::Base
     symbol
   end
 
+  def price_matcher
+    BestMatchHash.new(prices.pluck('date', 'close'))
+  end
+
   def current_price
     prices.order('date').last.close
   end

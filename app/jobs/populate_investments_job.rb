@@ -1,7 +1,7 @@
 require 'yahoo_finance'
 
 
-class PopulateInvestmentJob
+class PopulateInvestmentsJob
   class << self
     def perform
       Investment.where(auto_update: true).each do |investment|

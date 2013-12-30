@@ -2,8 +2,13 @@ require 'best_match_hash'
 
 
 class PortfolioPresenter
+  def self.portfolio
+    self.new(Transaction.includes(:lot))
+  end
+
   def initialize(transactions)
-    @shares_lookups = {}
+    @price_matchers = {}
+    @shares_matchers = {}
     transactions.group_by(&:investment).each do |inv, transactions|
       shares_by_date = {}
       total_shares = 0
@@ -11,7 +16,7 @@ class PortfolioPresenter
         total_shares += transaction.shares
         shares_by_date[transaction.date] = total_shares
       end
-      @shares_lookups[inv] = BestMatchHash.new(shares_by_date, 0)
+      @shares_matchers[inv] = BestMatchHash.new(shares_by_date, 0)
     end
   end
 
@@ -25,14 +30,19 @@ class PortfolioPresenter
   end
 
   def price_for(investment, date)
+    price_matcher(investment)[date]
   end
 
   def shares_for(investment, date)
-    @shares_lookups[investment][date]
+    @shares_matchers[investment][date]
   end
 
   private
   def investments
-    @shares_lookups.keys
+    @shares_matchers.keys
+  end
+
+  def price_matcher(investment)
+    @price_matchers[investment] ||= investment.price_matcher
   end
 end
