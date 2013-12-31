@@ -16,7 +16,7 @@ class Investment < ActiveRecord::Base
   end
 
   def current_price
-    historical_prices.order('date').last.close
+    historical_prices.last.close
   end
 
   def year_high
