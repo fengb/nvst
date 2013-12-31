@@ -10,13 +10,7 @@ class TransactionsGrowthPresenter
     @price_matchers = {}
     @shares_matchers = {}
     transactions.group_by(&:investment).each do |inv, transactions|
-      shares_by_date = {}
-      total_shares = 0
-      transactions.sort_by(&:date).each do |transaction|
-        total_shares += transaction.shares
-        shares_by_date[transaction.date] = total_shares
-      end
-      @shares_matchers[inv] = BestMatchHash.new(shares_by_date, 0)
+      @shares_matchers[inv] = BestMatchHash.sum(transactions.map{|t| [t.date, t.shares]})
     end
   end
 

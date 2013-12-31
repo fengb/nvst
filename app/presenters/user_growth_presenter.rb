@@ -6,8 +6,7 @@ class UserGrowthPresenter
     @transactions_growth = TransactionsGrowthPresenter.all
 
     @contributions = user.contributions.order(:date)
-    @units_matcher = sum_matcher(@contributions.map{|c| [c.date, c.units]})
-    @amount_matcher = sum_matcher(@contributions.map{|c| [c.date, c.amount]})
+    @units_matcher = BestMatchHash.sum(@contributions.map{|c| [c.date, c.units]})
   end
 
   def value_at(date)
@@ -17,15 +16,5 @@ class UserGrowthPresenter
   private
   def total_units
     @total_units ||= Contribution.sum(:units)
-  end
-
-  def sum_matcher(values)
-    by_key = {}
-    sum = 0
-    values.each do |key, value|
-      sum += value
-      by_key[key] = sum
-    end
-    BestMatchHash.new(by_key)
   end
 end

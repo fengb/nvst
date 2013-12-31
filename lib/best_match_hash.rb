@@ -27,4 +27,14 @@ class BestMatchHash
   def keys
     @items.map(&:first).reverse
   end
+
+  def self.sum(hash)
+    sum = 0
+    sum_by_key = {}
+    hash.sort.each do |key, value|
+      sum += value
+      sum_by_key[key] = sum
+    end
+    self.new(sum_by_key, 0)
+  end
 end

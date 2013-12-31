@@ -25,4 +25,17 @@ describe BestMatchHash do
       expect(hash.keys).to eq(['2013-01-01', '2013-01-05'])
     end
   end
+
+  describe '.sum' do
+    it 'returns a special version that sums up values' do
+      hash = BestMatchHash.sum('2013-01-03' => 1,
+                               '2013-01-04' => 2,
+                               '2013-01-05' => 3)
+      expect(hash['2013-01-02']).to eq(0)
+      expect(hash['2013-01-03']).to eq(1)
+      expect(hash['2013-01-04']).to eq(3)
+      expect(hash['2013-01-05']).to eq(6)
+      expect(hash['2013-01-07']).to eq(6)
+    end
+  end
 end
