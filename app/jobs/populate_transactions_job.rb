@@ -10,7 +10,7 @@ class PopulateTransactionsJob
         ActiveRecord::Base.connection.tables.each do |table|
           str = table.singularize.camelize
           begin
-            klass = Object.const_get(str)
+            klass = str.constantize
           rescue NameError
             next
           end
