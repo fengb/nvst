@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131231074201) do
+ActiveRecord::Schema.define(version: 20131231163856) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -50,6 +50,7 @@ ActiveRecord::Schema.define(version: 20131231074201) do
     t.decimal  "amount",     precision: 18, scale: 4
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.decimal  "units",      precision: 18, scale: 8
     t.index ["user_id"], :name => "fk__contributions_user_id"
     t.foreign_key ["user_id"], "users", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_contributions_user_id"
   end
