@@ -40,6 +40,20 @@ describe Investment do
         expect(investment.price_matcher[Date.today-1  ]).to eq(900)
         expect(investment.price_matcher[Date.today-181]).to eq(200)
       end
+
+      context 'start date' do
+        it 'cuts off at the start date' do
+          matcher = investment.price_matcher(Date.today - 180)
+          expect(matcher[Date.today-180]).to eq(900)
+          expect(matcher[Date.today-181]).to be(nil)
+        end
+
+        it 'cuts off at the closest available start date' do
+          matcher = investment.price_matcher(Date.today - 179)
+          expect(matcher[Date.today-180]).to eq(900)
+          expect(matcher[Date.today-181]).to be(nil)
+        end
+      end
     end
   end
 end

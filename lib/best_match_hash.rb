@@ -23,4 +23,8 @@ class BestMatchHash
     found = @items.bsearch{|x| x[0] <= key}
     found ? found[1] : @default
   end
+
+  def keys
+    @items.map(&:first).reverse
+  end
 end

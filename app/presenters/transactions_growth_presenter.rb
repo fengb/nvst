@@ -43,6 +43,10 @@ class TransactionsGrowthPresenter
   end
 
   def price_matcher(investment)
-    @price_matchers[investment] ||= investment.price_matcher
+    @price_matchers[investment] ||= investment.price_matcher(first_date_for(investment))
+  end
+
+  def first_date_for(investment)
+    @shares_matchers[investments].keys.first
   end
 end

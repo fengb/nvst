@@ -11,8 +11,16 @@ class Investment < ActiveRecord::Base
     symbol
   end
 
-  def price_matcher
-    BestMatchHash.new(historical_prices.pluck('date', 'close'))
+  def price_matcher(start_date=nil)
+    if start_date
+      # start_date may not have a price entry.  We need to backtrack to find the real start date.
+      start_date = historical_prices.where('date <= ?', start_date).last.date
+      prices = historical_prices.where('date >= ?', start_date)
+    else
+      prices = historical_prices
+    end
+
+    BestMatchHash.new(prices.pluck('date', 'close'))
   end
 
   def current_price
