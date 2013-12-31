@@ -12,7 +12,7 @@ class PopulateInvestmentsJob
 
   def initialize(investment)
     @investment = investment
-    @latest_date = InvestmentPrice.where(investment: @investment).order('date DESC').pluck(:date).first || Date.new
+    @latest_date = InvestmentHistoricalPrice.where(investment: @investment).maximum(:date) || Date.new
   end
 
   def run!
@@ -27,11 +27,11 @@ class PopulateInvestmentsJob
     YahooFinance.historical_prices(@investment.symbol).each do |row|
       return if row.date <= @latest_date
 
-      InvestmentPrice.create!(investment: @investment,
-                              date:       row.date,
-                              high:       row.high,
-                              low:        row.low,
-                              close:      row.close)
+      InvestmentHistoricalPrice.create!(investment: @investment,
+                                        date:       row.date,
+                                        high:       row.high,
+                                        low:        row.low,
+                                        close:      row.close)
     end
   end
 

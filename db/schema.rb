@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131228211649) do
+ActiveRecord::Schema.define(version: 20131231074201) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -133,16 +133,16 @@ ActiveRecord::Schema.define(version: 20131228211649) do
     t.foreign_key ["investment_id"], "investments", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_investment_dividends_investment_id"
   end
 
-  create_table "investment_prices", force: true do |t|
+  create_table "investment_historical_prices", force: true do |t|
     t.integer "investment_id"
     t.date    "date"
-    t.decimal "high",          precision: 12, scale: 4
-    t.decimal "low",           precision: 12, scale: 4
-    t.decimal "close",         precision: 12, scale: 4
-    t.float   "adjustment"
-    t.index ["date"], :name => "index_investment_prices_on_date"
-    t.index ["investment_id"], :name => "fk__investment_prices_investment_id"
-    t.foreign_key ["investment_id"], "investments", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_investment_prices_investment_id"
+    t.decimal "high",           precision: 12, scale: 4
+    t.decimal "low",            precision: 12, scale: 4
+    t.decimal "close",          precision: 12, scale: 4
+    t.float   "raw_adjustment"
+    t.index ["date"], :name => "index_investment_historical_prices_on_date"
+    t.index ["investment_id"], :name => "fk__investment_historical_prices_investment_id"
+    t.foreign_key ["investment_id"], "investments", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_investment_historical_prices_investment_id"
   end
 
   create_table "investment_splits", force: true do |t|

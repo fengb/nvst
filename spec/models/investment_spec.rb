@@ -6,9 +6,9 @@ describe Investment do
     let(:investment) { Investment.create! }
 
     before do
-      FactoryGirl.create(:investment_price, date: Date.today-0, investment: investment, high:  500, low: 400, close: 400)
-      FactoryGirl.create(:investment_price, date: Date.today-180, investment: investment, high: 1000, low: 800, close: 900)
-      FactoryGirl.create(:investment_price, date: Date.today-360, investment: investment, high:  400, low: 100, close: 200)
+      FactoryGirl.create(:investment_historical_price, date: Date.today-0, investment: investment, high:  500, low: 400, close: 400)
+      FactoryGirl.create(:investment_historical_price, date: Date.today-180, investment: investment, high: 1000, low: 800, close: 900)
+      FactoryGirl.create(:investment_historical_price, date: Date.today-360, investment: investment, high:  400, low: 100, close: 200)
     end
 
     describe '#year_high' do

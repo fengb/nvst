@@ -1,7 +1,7 @@
 class Investment < ActiveRecord::Base
-  has_many :prices,    class_name: 'InvestmentPrice'
-  has_many :dividends, class_name: 'InvestmentDividend'
-  has_many :splits,    class_name: 'InvestmentSplit'
+  has_many :historical_prices, class_name: 'InvestmentHistoricalPrice'
+  has_many :dividends,         class_name: 'InvestmentDividend'
+  has_many :splits,            class_name: 'InvestmentSplit'
 
   def self.cash
     find_by(auto_update: false)
@@ -12,18 +12,18 @@ class Investment < ActiveRecord::Base
   end
 
   def price_matcher
-    BestMatchHash.new(prices.pluck('date', 'close'))
+    BestMatchHash.new(historical_prices.pluck('date', 'close'))
   end
 
   def current_price
-    prices.order('date').last.close
+    historical_prices.order('date').last.close
   end
 
   def year_high
-    prices.year_range.maximum(:high)
+    historical_prices.year_range.maximum(:high)
   end
 
   def year_low
-    prices.year_range.minimum(:low)
+    historical_prices.year_range.minimum(:low)
   end
 end
