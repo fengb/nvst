@@ -3,15 +3,17 @@ describe Contribution do
     context 'no existing contributions' do
       it 'is the amount' do
         c = FactoryGirl.create(:contribution, amount: 101)
+        TransactionsGrowthPresenter.stub(all: double(value_at: 101))
         expect(c.calculate_units).to eq(c.amount)
       end
     end
 
     context 'existing contribution on the same day' do
-      let!(:existing) { FactoryGirl.create(:contribution) }
+      let!(:existing) { FactoryGirl.create(:contribution, amount: 100) }
 
       it 'is the amount' do
         c = FactoryGirl.create(:contribution, date: existing.date, amount: 42)
+        TransactionsGrowthPresenter.stub(all: double(value_at: 142))
         expect(c.calculate_units).to eq(c.amount)
       end
     end
@@ -21,7 +23,7 @@ describe Contribution do
 
       it 'is total units / current total value * contribution amount' do
         c = FactoryGirl.create(:contribution, date: existing.date + 1, amount: 42)
-        TransactionsGrowthPresenter.stub(all: double(value_at: 100))
+        TransactionsGrowthPresenter.stub(all: double(value_at: 142))
 
         # We contributed 50 in the past and it grew to 100.
         # New contributions should have 1/2 the unit value

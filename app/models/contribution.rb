@@ -17,10 +17,18 @@ class Contribution < ActiveRecord::Base
   end
 
   def calculate_units
-    total_value = TransactionsGrowthPresenter.all.value_at(date)
+    total_value = TransactionsGrowthPresenter.all.value_at(date) - Contribution.where(date: date).value
     return amount if total_value == 0
 
     total_units = Contribution.where('date < ?', date).sum(:units)
     total_units / total_value * amount
+  end
+
+  def self.value
+    sum('amount')
+  end
+
+  def value
+    amount
   end
 end

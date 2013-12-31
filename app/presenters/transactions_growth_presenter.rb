@@ -47,6 +47,6 @@ class TransactionsGrowthPresenter
   end
 
   def first_date_for(investment)
-    @shares_matchers[investments].keys.first
+    @shares_matchers[investment].keys.first
   end
 end
