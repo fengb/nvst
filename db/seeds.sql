@@ -1,5 +1,6 @@
-INSERT INTO investments(symbol, name,          auto_update)
-                 VALUES('USD', 'U.S. Dollars', false);
+INSERT INTO investments(symbol, name,               auto_update)
+                 VALUES('USD',  'U.S. Dollars',     false),
+                       ('SPY',  'SPDR S&P 500 ETF', true);
 
 INSERT INTO investment_historical_prices(investment_id,         date, high, low, close, raw_adjustment)
                                   SELECT id,            '1900-01-01',    1,   1,     1,              1

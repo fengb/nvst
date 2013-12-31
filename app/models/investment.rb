@@ -4,7 +4,11 @@ class Investment < ActiveRecord::Base
   has_many :splits,            class_name: 'InvestmentSplit'
 
   def self.cash
-    find_by(auto_update: false)
+    find_by(symbol: 'USD')
+  end
+
+  def self.benchmark
+    find_by(symbol: 'SPY')
   end
 
   def title
