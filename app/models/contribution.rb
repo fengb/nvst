@@ -1,4 +1,6 @@
 class Contribution < ActiveRecord::Base
+  include GenerateTransactions
+
   belongs_to :user
   has_and_belongs_to_many :transactions
 

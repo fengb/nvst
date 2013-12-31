@@ -1,4 +1,6 @@
 class Trade < ActiveRecord::Base
+  include GenerateTransactions
+
   belongs_to :sell_investment, class_name: 'Investment'
   belongs_to :buy_investment,  class_name: 'Investment'
   has_and_belongs_to_many :transactions
