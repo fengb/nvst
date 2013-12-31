@@ -1,4 +1,7 @@
 # Generated
+require 'time_cache'
+
+
 class InvestmentHistoricalPrice < ActiveRecord::Base
   belongs_to :investment
 
@@ -6,8 +9,10 @@ class InvestmentHistoricalPrice < ActiveRecord::Base
 
   scope :year_range, ->(end_date=Date.today) { where(date: (end_date - 365)..end_date) }
 
-  def self.latest_raw_adjustment(investment)
-    self.where(investment: investment).last.raw_adjustment
+  def self.latest_raw_adjustment(investment_id)
+    @cache ||= TimeCache.new(600) # 10 minute expiration
+    investment_id = investment_id.id if investment_id.instance_of?(Investment)
+    @cache[investment_id] ||= where(investment_id: investment_id).last.raw_adjustment
   end
 
   def adjusted(attr)
