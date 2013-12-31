@@ -3,7 +3,6 @@ describe Contribution do
     context 'no existing contributions' do
       it 'is the amount' do
         c = FactoryGirl.create(:contribution, amount: 101)
-        TransactionsGrowthPresenter.stub(all: double(value_at: 101))
         expect(c.calculate_units).to eq(c.amount)
       end
     end
@@ -13,7 +12,6 @@ describe Contribution do
 
       it 'is the amount' do
         c = FactoryGirl.create(:contribution, date: existing.date, amount: 42)
-        TransactionsGrowthPresenter.stub(all: double(value_at: 142))
         expect(c.calculate_units).to eq(c.amount)
       end
     end

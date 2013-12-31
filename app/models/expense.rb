@@ -9,4 +9,12 @@ class Expense < ActiveRecord::Base
       shares:     -amount,
       price:      1}]
   end
+
+  def self.value
+    sum('amount')
+  end
+
+  def value
+    amount
+  end
 end

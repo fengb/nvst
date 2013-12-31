@@ -17,7 +17,8 @@ class Contribution < ActiveRecord::Base
   end
 
   def calculate_units
-    total_value = TransactionsGrowthPresenter.all.value_at(date) - Contribution.where(date: date).value
+    # Assume all contributions and expenses are incurred at once on the same day
+    total_value = TransactionsGrowthPresenter.all.value_at(date) - Contribution.where(date: date).value + Expense.where(date: date).value
     return amount if total_value == 0
 
     total_units = Contribution.where('date < ?', date).sum(:units)
