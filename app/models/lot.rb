@@ -30,16 +30,16 @@ class Lot < ActiveRecord::Base
     nil
   end
 
-  def purchase_transaction
-    transactions.first
+  def purchase_transactions
+    transactions.select{|t| t.date == purchase_date and t.price == purchase_price}
   end
 
   def purchase_date
-    purchase_transaction.date
+    transactions.first.date
   end
 
   def purchase_price
-    purchase_transaction.price
+    transactions.first.price
   end
 
   def purchase_value
