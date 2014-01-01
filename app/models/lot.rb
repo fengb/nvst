@@ -19,31 +19,31 @@ class Lot < ActiveRecord::Base
     ).where("t.outstanding_shares #{op} 0")
   }
 
-  def self.order_by_purchase
+  def self.order_by_origination
     includes(:transactions).sort_by{|l| yield(l.transactions.first)}
   end
 
   def self.corresponding(search)
     Lot.includes(:transactions).find_each do |lot|
-      return lot if lot.purchase_date == search[:purchase_date] and lot.purchase_price == search[:purchase_price]
+      return lot if lot.origination_date == search[:origination_date] and lot.origination_price == search[:origination_price]
     end
     nil
   end
 
-  def purchase_transactions
-    transactions.select{|t| t.date == purchase_date and t.price == purchase_price}
+  def origination_transactions
+    transactions.select{|t| t.date == origination_date and t.price == origination_price}
   end
 
-  def purchase_date
+  def origination_date
     transactions.first.date
   end
 
-  def purchase_price
+  def origination_price
     transactions.first.price
   end
 
-  def purchase_value
-    purchase_transaction.value
+  def origination_value
+    origination_transaction.value
   end
 
   def outstanding_shares
@@ -59,10 +59,10 @@ class Lot < ActiveRecord::Base
   end
 
   def unrealized_gain
-    (current_price - purchase_price) * outstanding_shares
+    (current_price - origination_price) * outstanding_shares
   end
 
   def unrealized_gain_percent
-    unrealized_gain / purchase_value
+    unrealized_gain / origination_value
   end
 end

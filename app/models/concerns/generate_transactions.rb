@@ -15,8 +15,8 @@ module GenerateTransactions
   class << self
     def transact!(data)
       if corresponding = Lot.corresponding(investment: data[:investment],
-                                           purchase_date: data[:date],
-                                           purchase_price: data[:price])
+                                           origination_date: data[:date],
+                                           origination_price: data[:price])
         return [corresponding.transactions.create!(data.except(:investment))]
       end
 
@@ -44,7 +44,7 @@ module GenerateTransactions
     def outstanding_lots(investment, new_shares)
       # Shares +new fill -outstanding, -new fill +outstanding
       direction = new_shares > 0 ? '-' : '+'
-      Lot.outstanding(direction).where(investment: investment).order_by_purchase do |trans|
+      Lot.outstanding(direction).where(investment: investment).order_by_origination do |trans|
         [-trans.price, trans.date, trans.id]
       end
     end
