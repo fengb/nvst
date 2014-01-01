@@ -43,7 +43,7 @@ class Lot < ActiveRecord::Base
   end
 
   def origination_value
-    origination_transaction.value
+    origination_transactions.map(&:value).sum
   end
 
   def outstanding_shares
