@@ -7,8 +7,8 @@ class Event < ActiveRecord::Base
 
   enumerize :reason, in: {'interest'                   => 'int',
                           'tax'                        => 'tax',
+                          'dividend - ordinary'        => 'dvo',
                           'dividend - qualified'       => 'dvq',
-                          'dividend - unqualified'     => 'dvu',
                           'dividend - tax-exempt'      => 'dve',
                           'capital gains - short-term' => 'cgs',
                           'capital gains - long-term'  => 'cgl'}
