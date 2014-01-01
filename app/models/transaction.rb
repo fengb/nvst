@@ -9,4 +9,8 @@ class Transaction < ActiveRecord::Base
   def value
     shares * price
   end
+
+  def realized_gain
+    shares * (lot.origination_price - price)
+  end
 end

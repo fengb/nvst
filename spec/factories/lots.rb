@@ -3,7 +3,9 @@ FactoryGirl.define do
     investment
 
     after(:create) do |lot, evaluator|
-      FactoryGirl.create(:transaction, lot: lot)
+      if lot.transactions.count == 0
+        FactoryGirl.create(:transaction, lot: lot)
+      end
     end
   end
 end

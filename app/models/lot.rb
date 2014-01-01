@@ -58,6 +58,10 @@ class Lot < ActiveRecord::Base
     current_price * outstanding_shares
   end
 
+  def realized_gain
+    transactions.map(&:realized_gain).sum
+  end
+
   def unrealized_gain
     (current_price - origination_price) * outstanding_shares
   end
