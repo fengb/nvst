@@ -23,6 +23,13 @@ class Lot < ActiveRecord::Base
     includes(:transactions).sort_by{|l| yield(l.transactions.first)}
   end
 
+  def self.corresponding(search)
+    Lot.includes(:transactions).find_each do |lot|
+      return lot if lot.purchase_date == search[:purchase_date] and lot.purchase_price == search[:purchase_price]
+    end
+    nil
+  end
+
   def purchase_transaction
     transactions.first
   end

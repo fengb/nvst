@@ -14,9 +14,16 @@ module GenerateTransactions
 
   class << self
     def transact!(data)
+      if corresponding = Lot.corresponding(investment: data[:investment],
+                                           purchase_date: data[:date],
+                                           purchase_price: data[:price])
+        return [corresponding.transactions.create!(data.except(:investment))]
+      end
+
       shared_data = data.slice(:date, :price)
       investment = data[:investment]
       remaining_shares = data[:shares]
+
       transactions = []
       outstanding_lots(investment, remaining_shares).each do |lot|
         if lot.outstanding_shares.abs >= remaining_shares.abs

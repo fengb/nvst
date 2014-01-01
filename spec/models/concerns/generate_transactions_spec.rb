@@ -72,6 +72,14 @@ describe GenerateTransactions do
                             price: 5)
       end
 
+      it 'reuses a lot if found corresponding lot' do
+        Lot.stub(corresponding: existing.lot)
+        transactions = GenerateTransactions.transact!(data)
+        expect(transactions.size).to eq(1)
+        expect_all(transactions[0], data)
+        expect(transactions[0].lot).to eq(existing.lot)
+      end
+
       it 'ignores lots it cannot fill' do
         existing.update(shares: 10)
         transactions = GenerateTransactions.transact!(data)
