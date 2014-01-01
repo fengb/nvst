@@ -13,4 +13,8 @@ class Transaction < ActiveRecord::Base
   def realized_gain
     shares * (lot.origination_price - price)
   end
+
+  def origination?
+    date == lot.origination_date && price == lot.origination_price
+  end
 end

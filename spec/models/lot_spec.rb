@@ -17,20 +17,6 @@ describe Lot do
     end
   end
 
-  describe '#origination_transactions' do
-    let!(:lot)          { FactoryGirl.create(:lot) }
-    let(:transaction1)  { lot.transactions.first }
-    let!(:transaction2) { FactoryGirl.create(:transaction, lot: lot,
-                                                           date: transaction1.date,
-                                                           price: transaction1.price) }
-
-    it 'has both transactions as origination transactions' do
-      lot.reload
-      expect(lot.origination_transactions).to include(transaction1)
-      expect(lot.origination_transactions).to include(transaction2)
-    end
-  end
-
   context 'gains' do
     let(:lot) { FactoryGirl.build(:lot) }
     let!(:transactions) do

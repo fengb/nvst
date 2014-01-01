@@ -31,7 +31,7 @@ class Lot < ActiveRecord::Base
   end
 
   def origination_transactions
-    transactions.select{|t| t.date == origination_date and t.price == origination_price}
+    transactions.select(&:origination?)
   end
 
   def origination_date
