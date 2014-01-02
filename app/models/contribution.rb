@@ -2,6 +2,7 @@ class Contribution < ActiveRecord::Base
   include GenerateTransactions
 
   belongs_to :user
+  belongs_to :ownership
   has_and_belongs_to_many :transactions
 
   def to_raw_transactions_data
@@ -11,8 +12,8 @@ class Contribution < ActiveRecord::Base
       price:      1}]
   end
 
-  def calculate_units!
-    self.units = calculate_units
+  def generate_ownership!
+    self.build_ownership(units: calculate_units, date: date, user: user)
     self.save!
   end
 
@@ -21,8 +22,7 @@ class Contribution < ActiveRecord::Base
     total_value = TransactionsGrowthPresenter.all.value_at(date) - Contribution.where(date: date).value + Expense.where(date: date).value
     return amount if total_value == 0
 
-    total_units = Contribution.where('date < ?', date).sum(:units)
-    total_units / total_value * amount
+    Ownership.total_at(date) / total_value * amount
   end
 
   def self.value
