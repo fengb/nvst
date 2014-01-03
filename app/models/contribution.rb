@@ -13,16 +13,10 @@ class Contribution < ActiveRecord::Base
   end
 
   def generate_ownership!
-    self.build_ownership(units: calculate_units, date: date, user: user)
+    self.build_ownership(user: user,
+                         date: date,
+                         units: Ownership.new_unit_per_amount_multiplier_at(date) * amount)
     self.save!
-  end
-
-  def calculate_units
-    # Assume all contributions and expenses are incurred at once on the same day
-    total_value = TransactionsGrowthPresenter.all.value_at(date) - Contribution.where(date: date).value + Expense.where(date: date).value
-    return amount if total_value == 0
-
-    Ownership.total_at(date) / total_value * amount
   end
 
   def self.value
