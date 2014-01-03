@@ -9,8 +9,16 @@ class Transfer < ActiveRecord::Base
   end
 
   def generate_ownerships!
-    self.build_from_ownership(user: from_user, date: date, units: -amount)
-    self.build_to_ownership(user: to_user, date: date, units: amount)
+    self.build_from_ownership(user: from_user,
+                              date: date,
+                              units: -effective_units)
+    self.build_to_ownership(user: to_user,
+                            date: date,
+                            units: effective_units)
     self.save!
+  end
+
+  def effective_units
+    amount * Ownership.new_unit_per_amount_multiplier_at(date)
   end
 end
