@@ -26,7 +26,7 @@ RailsAdmin.config do |config|
   # config.default_items_per_page = 20
 
   # config.excluded_models = ['Admin', 'Investment', 'InvestmentDividend', 'InvestmentPrice', 'InvestmentSplit', 'User']
-  config.included_models = %w[Admin User Investment Contribution Trade Event Expense]
+  config.included_models = %w[Admin User Investment Contribution Transfer Trade Event Expense]
 
   # Label methods for model instances:
   config.label_methods = [:title, :name]
