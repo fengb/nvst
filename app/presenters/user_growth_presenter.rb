@@ -9,7 +9,7 @@ class UserGrowthPresenter
   end
 
   def gross_value_at(date)
-    units_matcher[date] / total_units * @transactions_growth.value_at(date)
+    units_matcher[date] / Ownership.total_at(date) * @transactions_growth.value_at(date)
   end
 
   def benchmark_value_at(date)
@@ -25,10 +25,6 @@ class UserGrowthPresenter
   end
 
   private
-  def total_units
-    @total_units ||= Contribution.sum(:units)
-  end
-
   def units_matcher
     @units_matcher ||= BestMatchHash.sum(@ownerships.map{|c| [c.date, c.units]})
   end
