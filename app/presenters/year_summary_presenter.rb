@@ -11,12 +11,20 @@ class TaxPresenter
     @interest ||= event_by('int')
   end
 
-  def dividends
-    @dividends ||= event_by(%w[dvo dvq dve])
+  def ordinary_dividends
+    @ordinary_dividends ||= event_by('dvo')
+  end
+
+  def qualified_dividends
+    @qualified_dividends ||= event_by('dvq')
+  end
+
+  def tax_exempt_dividends
+    @tax_exempt_dividends ||= event_by('dve')
   end
 
   def expenses
-    @expenses ||= Expense.where('extract(year from date) = ?', @year)
+    @expenses ||= Expense.where('EXTRACT(year FROM date) = ?', @year)
   end
 
   def close_transactions
