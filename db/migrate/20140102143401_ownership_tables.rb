@@ -10,6 +10,7 @@ class OwnershipTables < ActiveRecord::Migration
 
     change_table :contributions do |t|
       t.integer :ownership_id, references: :ownerships
+      t.remove  :units
     end
 
     create_table :transfers do |t|

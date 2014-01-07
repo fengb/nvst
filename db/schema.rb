@@ -60,7 +60,6 @@ ActiveRecord::Schema.define(version: 20140102143401) do
     t.decimal  "amount",       precision: 18, scale: 4
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.decimal  "units",        precision: 18, scale: 8
     t.integer  "ownership_id"
     t.index ["ownership_id"], :name => "fk__contributions_ownership_id"
     t.index ["user_id"], :name => "fk__contributions_user_id"
