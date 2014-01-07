@@ -5,10 +5,11 @@ class UserGrowthPresenter
   def initialize(user)
     @transactions_growth = TransactionsGrowthPresenter.all
     @contributions = user.contributions.order(:date)
+    @ownerships = user.ownerships.order(:date)
   end
 
   def gross_value_at(date)
-    units_matcher[date] / total_units * @transactions_growth.value_at(date)
+    units_matcher[date] / Ownership.total_at(date) * @transactions_growth.value_at(date)
   end
 
   def benchmark_value_at(date)
@@ -24,12 +25,8 @@ class UserGrowthPresenter
   end
 
   private
-  def total_units
-    @total_units ||= Contribution.sum(:units)
-  end
-
   def units_matcher
-    @units_matcher ||= BestMatchHash.sum(@contributions.map{|c| [c.date, c.units]})
+    @units_matcher ||= BestMatchHash.sum(@ownerships.map{|c| [c.date, c.units]})
   end
 
   def benchmark_shares_matcher
@@ -37,6 +34,6 @@ class UserGrowthPresenter
   end
 
   def benchmark_price_matcher
-    @benchmark_price_matcher ||= Investment.benchmark.price_matcher(@contributions.first.date)
+    @benchmark_price_matcher ||= Investment.benchmark.price_matcher(@ownerships.first.date)
   end
 end

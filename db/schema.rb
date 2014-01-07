@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131231163856) do
+ActiveRecord::Schema.define(version: 20140102143401) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -44,14 +44,26 @@ ActiveRecord::Schema.define(version: 20131231163856) do
     t.datetime "updated_at"
   end
 
+  create_table "ownerships", force: true do |t|
+    t.integer  "user_id"
+    t.date     "date"
+    t.decimal  "units",      precision: 18, scale: 8
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.index ["user_id"], :name => "fk__ownerships_user_id"
+    t.foreign_key ["user_id"], "users", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_ownerships_user_id"
+  end
+
   create_table "contributions", force: true do |t|
     t.integer  "user_id"
     t.date     "date"
-    t.decimal  "amount",     precision: 18, scale: 4
+    t.decimal  "amount",       precision: 18, scale: 4
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.decimal  "units",      precision: 18, scale: 8
+    t.integer  "ownership_id"
+    t.index ["ownership_id"], :name => "fk__contributions_ownership_id"
     t.index ["user_id"], :name => "fk__contributions_user_id"
+    t.foreign_key ["ownership_id"], "ownerships", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_contributions_ownership_id"
     t.foreign_key ["user_id"], "users", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_contributions_user_id"
   end
 
@@ -191,6 +203,23 @@ ActiveRecord::Schema.define(version: 20131231163856) do
     t.index ["transaction_id"], :name => "index_trades_transactions_on_transaction_id", :unique => true
     t.foreign_key ["trade_id"], "trades", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_trades_transactions_trade_id"
     t.foreign_key ["transaction_id"], "transactions", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_trades_transactions_transaction_id"
+  end
+
+  create_table "transfers", force: true do |t|
+    t.date    "date"
+    t.decimal "amount",            precision: 21, scale: 8
+    t.integer "from_user_id"
+    t.integer "to_user_id"
+    t.integer "from_ownership_id"
+    t.integer "to_ownership_id"
+    t.index ["from_ownership_id"], :name => "fk__transfers_from_ownership_id"
+    t.index ["from_user_id"], :name => "fk__transfers_from_user_id"
+    t.index ["to_ownership_id"], :name => "fk__transfers_to_ownership_id"
+    t.index ["to_user_id"], :name => "fk__transfers_to_user_id"
+    t.foreign_key ["from_ownership_id"], "ownerships", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_transfers_from_ownership_id"
+    t.foreign_key ["from_user_id"], "users", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_transfers_from_user_id"
+    t.foreign_key ["to_ownership_id"], "ownerships", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_transfers_to_ownership_id"
+    t.foreign_key ["to_user_id"], "users", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_transfers_to_user_id"
   end
 
 end
