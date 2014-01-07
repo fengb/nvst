@@ -103,7 +103,7 @@ ActiveRecord::Schema.define(version: 20140107233018) do
     t.integer  "src_investment_id"
     t.date     "date"
     t.decimal  "amount",            precision: 12, scale: 4
-    t.string   "reason"
+    t.string   "category"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.index ["src_investment_id"], :name => "fk__events_src_investment_id"

@@ -5,13 +5,13 @@ class Event < ActiveRecord::Base
   belongs_to :src_investment, class_name: 'Investment'
   has_and_belongs_to_many :transactions
 
-  enumerize :reason, in: {'interest'                   => 'int',
-                          'tax'                        => 'tax',
-                          'dividend - ordinary'        => 'dvo',
-                          'dividend - qualified'       => 'dvq',
-                          'dividend - tax-exempt'      => 'dve',
-                          'capital gains - short-term' => 'cgs',
-                          'capital gains - long-term'  => 'cgl'}
+  enumerize :category, in: {'interest'                   => 'int',
+                            'tax'                        => 'tax',
+                            'dividend - ordinary'        => 'dvo',
+                            'dividend - qualified'       => 'dvq',
+                            'dividend - tax-exempt'      => 'dve',
+                            'capital gains - short-term' => 'cgs',
+                            'capital gains - long-term'  => 'cgl'}
 
   def to_raw_transactions_data
     [{investment: Investment.cash,
