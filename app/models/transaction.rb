@@ -1,5 +1,7 @@
 # Generated
 class Transaction < ActiveRecord::Base
+  include Scopes::Year
+
   belongs_to :lot
 
   validates :lot, presence: true
