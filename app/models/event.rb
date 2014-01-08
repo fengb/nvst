@@ -13,6 +13,8 @@ class Event < ActiveRecord::Base
                             'capital gains - short-term' => 'cgs',
                             'capital gains - long-term'  => 'cgl'}
 
+  scope :year, ->(year){where('EXTRACT(year FROM date) = ?', year)}
+
   def to_raw_transactions_data
     [{investment: Investment.cash,
       date:       date,
