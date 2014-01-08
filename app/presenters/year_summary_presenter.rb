@@ -8,23 +8,23 @@ class YearSummaryPresenter
   end
 
   def interest
-    @interest ||= event_by('int')
+    events['interest']
   end
 
   def ordinary_dividends
-    @ordinary_dividends ||= event_by('dvo')
+    events['dividend - ordinary']
   end
 
   def qualified_dividends
-    @qualified_dividends ||= event_by('dvq')
+    events['dividend - qualified']
   end
 
   def tax_exempt_dividends
-    @tax_exempt_dividends ||= event_by('dve')
+    events['dividend - tax-exempt']
   end
 
   def expenses
-    @expenses ||= Expense.year(@year)
+    @expenses ||= Hash[Expense.year(@year).group_by(&:category)]
   end
 
   def close_transactions
@@ -36,7 +36,7 @@ class YearSummaryPresenter
     @transactions ||= Transaction.year(@year).includes(lot: :transactions)
   end
 
-  def event_by(reason)
-    Event.year(@year).where(reason: reasons)
+  def events
+    @events ||= Hash[Event.year(@year).group_by(&:category)]
   end
 end
