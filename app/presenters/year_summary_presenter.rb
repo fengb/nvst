@@ -1,4 +1,4 @@
-class TaxPresenter
+class YearSummaryPresenter
   def initialize(year)
     @year = year
   end
@@ -24,7 +24,7 @@ class TaxPresenter
   end
 
   def expenses
-    @expenses ||= Expense.where('EXTRACT(year FROM date) = ?', @year)
+    @expenses ||= Expense.year(@year)
   end
 
   def close_transactions
@@ -33,10 +33,10 @@ class TaxPresenter
 
   private
   def transactions
-    @transactions ||= Transaction.where('EXTRACT(year FROM date) = ?', @year).includes(lot: :transactions)
+    @transactions ||= Transaction.year(@year).includes(lot: :transactions)
   end
 
-  def event_by(*reasons)
-    Event.where('EXTRACT(year FROM date) = ?', @year).where(reason: reasons)
+  def event_by(reason)
+    Event.year(@year).where(reason: reasons)
   end
 end
