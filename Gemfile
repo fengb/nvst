@@ -13,8 +13,6 @@ gem 'rails_admin'
 gem 'enumerize'
 
 # View
-gem 'jbuilder'
-gem 'simple_form'
 gem 'haml-rails'
 
 # Assets
@@ -23,7 +21,6 @@ gem 'uglifier'
 gem 'therubyracer', platforms: :ruby
 gem 'jquery-rails'
 gem 'turbolinks'
-gem 'foundation-rails'
 
 group :development, :test do
   gem 'rspec-rails'
