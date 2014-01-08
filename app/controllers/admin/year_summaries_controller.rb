@@ -10,6 +10,6 @@ class Admin::YearSummariesController < Admin::BaseController
     if params[:id].blank?
       return redirect_to '/admin'
     end
-    @year_summary = YearSummaryPresenter.new(params[:year])
+    @year_summary = YearSummaryPresenter.new(params[:id])
   end
 end

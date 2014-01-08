@@ -24,7 +24,17 @@ class YearSummaryPresenter
   end
 
   def expenses
-    @expenses ||= Hash[Expense.year(@year).group_by(&:category)]
+    @expenses ||= begin
+      expenses = Expense.year(@year)
+      Hash[Expense.category.values.map{|c| [c, expenses.select{|e| e.category == c}]}]
+    end
+  end
+
+  def events
+    @events ||= begin
+      events = Event.year(@year)
+      Hash[Event.category.values.map{|c| [c, events.select{|e| e.category == c}]}]
+    end
   end
 
   def close_transactions
@@ -34,9 +44,5 @@ class YearSummaryPresenter
   private
   def transactions
     @transactions ||= Transaction.year(@year).includes(lot: :transactions)
-  end
-
-  def events
-    @events ||= Hash[Event.year(@year).group_by(&:category)]
   end
 end

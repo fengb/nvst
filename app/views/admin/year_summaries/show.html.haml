@@ -1,0 +1,15 @@
+%h2 Expenses
+%dl
+  - @year_summary.expenses.each do |category, expenses|
+    %dt
+      = category
+    %dd
+      = number_to_currency expenses.sum(&:amount)
+
+%h2 Events
+%dl
+  - @year_summary.events.each do |category, events|
+    %dt
+      = category
+    %dd
+      = number_to_currency events.sum(&:amount)
