@@ -17,6 +17,8 @@ class Expense < ActiveRecord::Base
                             'employee benefit programs' => 'ben',
                             'other'                     => 'oth'}
 
+  scope :year, ->(year){where('EXTRACT(year FROM date) = ?', year)}
+
   def to_raw_transactions_data
     [{investment: Investment.cash,
       date:       date,
