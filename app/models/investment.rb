@@ -1,14 +1,20 @@
 class Investment < ActiveRecord::Base
+  extend Enumerize
+
   has_many :historical_prices, class_name: 'InvestmentHistoricalPrice'
   has_many :dividends,         class_name: 'InvestmentDividend'
   has_many :splits,            class_name: 'InvestmentSplit'
 
+  enumerize :category, in: %w[cash stock benchmark], default: 'stock', scope: true
+
+  scope :auto_update, ->{where('category != ?', 'cash')}
+
   def self.cash
-    find_by(symbol: 'USD')
+    find_by(category: 'cash')
   end
 
   def self.benchmark
-    find_by(symbol: 'SPY')
+    find_by(category: 'benchmark')
   end
 
   def title
