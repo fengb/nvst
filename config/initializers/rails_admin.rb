@@ -31,6 +31,10 @@ RailsAdmin.config do |config|
   # Label methods for model instances:
   config.label_methods = [:title, :name]
 
+  config.navigation_static_links = {
+    'Year Summaries' => '/admin/year_summaries'
+  }
+
 
   ################  Model configuration  ################
 
