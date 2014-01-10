@@ -34,14 +34,6 @@ class Lot < ActiveRecord::Base
     transactions.select(&:open?)
   end
 
-  def open_date
-    transactions.first.date
-  end
-
-  def open_price
-    transactions.first.price
-  end
-
   def open_value
     open_transactions.map(&:value).sum
   end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140110150240) do
+ActiveRecord::Schema.define(version: 20140110233838) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -77,6 +77,8 @@ ActiveRecord::Schema.define(version: 20140110150240) do
 
   create_table "lots", force: true do |t|
     t.integer "investment_id"
+    t.date    "open_date"
+    t.decimal "open_price",    precision: 12, scale: 4
     t.index ["investment_id"], :name => "fk__lots_investment_id"
     t.foreign_key ["investment_id"], "investments", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_lots_investment_id"
   end

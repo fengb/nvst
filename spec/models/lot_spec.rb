@@ -18,10 +18,10 @@ describe Lot do
   end
 
   context 'gains' do
-    let(:lot) { FactoryGirl.build(:lot) }
+    let(:lot) { FactoryGirl.build(:lot, open_price: 100) }
     let!(:transactions) do
       [ FactoryGirl.create(:transaction, lot:    lot,
-                                         price:  100,
+                                         price:  lot.open_price,
                                          shares: 100),
         FactoryGirl.create(:transaction, lot:    lot,
                                          date:   Date.today,
