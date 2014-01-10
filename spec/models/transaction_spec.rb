@@ -1,5 +1,5 @@
 describe Transaction do
-  describe '#origination?' do
+  describe '#open?' do
     let!(:lot)          { FactoryGirl.create(:lot) }
     let(:transaction1)  { lot.transactions.first }
     let!(:transaction2) { FactoryGirl.create(:transaction, lot: lot,
@@ -7,8 +7,8 @@ describe Transaction do
                                                            price: transaction1.price) }
 
     it 'is true when data matches lot' do
-      expect(transaction1.origination?).to be(true)
-      expect(transaction2.origination?).to be(true)
+      expect(transaction1.open?).to be(true)
+      expect(transaction2.open?).to be(true)
     end
   end
 end

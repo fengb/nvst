@@ -2,17 +2,17 @@ describe Lot do
   describe '.corresponding' do
     let(:lot) { FactoryGirl.create(:lot) }
 
-    it 'finds the lot by investment / origination date / origination price' do
-      search = Lot.corresponding(investment:        lot.investment,
-                                 origination_date:  lot.origination_date,
-                                 origination_price: lot.origination_price)
+    it 'finds the lot by investment / open date / open price' do
+      search = Lot.corresponding(investment: lot.investment,
+                                 open_date:  lot.open_date,
+                                 open_price: lot.open_price)
       expect(search).to eq(lot)
     end
 
     it 'finds nil when nothing matches' do
-      search = Lot.corresponding(investment:     lot.investment,
-                                 origination_date:  lot.origination_date + 1,
-                                 origination_price: lot.origination_price)
+      search = Lot.corresponding(investment: lot.investment,
+                                 open_date:  lot.open_date + 1,
+                                 open_price: lot.open_price)
       expect(search).to be(nil)
     end
   end
