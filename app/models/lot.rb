@@ -24,10 +24,7 @@ class Lot < ActiveRecord::Base
   end
 
   def self.corresponding(search)
-    Lot.includes(:transactions).find_each do |lot|
-      return lot if lot.open_date == search[:open_date] and lot.open_price == search[:open_price]
-    end
-    nil
+    find_by(search)
   end
 
   def open_transactions
