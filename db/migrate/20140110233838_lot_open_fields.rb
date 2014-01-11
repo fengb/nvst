@@ -14,7 +14,7 @@ class LotOpenFields < ActiveRecord::Migration
                    , date
                    , price
                 FROM transactions
-               ORDER BY lot_id, date DESC) t
+               ORDER BY lot_id, date) t
        WHERE t.lot_id = l.id
     SQL
   end
