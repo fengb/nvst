@@ -1,9 +1,9 @@
 describe Transfer do
   describe '#generate_ownerships!' do
-    let(:transfer) { Transfer.new(date:      Date.today - 5,
-                                  amount:    1942.12,
-                                  from_user: FactoryGirl.create(:user),
-                                  to_user:   FactoryGirl.create(:user)) }
+    let(:transfer) { Transfer.create(date:      Date.today - 5,
+                                     amount:    1942.12,
+                                     from_user: FactoryGirl.create(:user),
+                                     to_user:   FactoryGirl.create(:user)) }
 
     it 'creates both from and to ownerships' do
       transfer.generate_ownerships!

@@ -2,7 +2,7 @@ class Contribution < ActiveRecord::Base
   include GenerateTransactions
 
   belongs_to :user
-  belongs_to :ownership
+  has_and_belongs_to_many :ownerships
   has_and_belongs_to_many :transactions
 
   def to_raw_transactions_data
@@ -13,10 +13,9 @@ class Contribution < ActiveRecord::Base
   end
 
   def generate_ownership!
-    self.build_ownership(user: user,
-                         date: date,
-                         units: Ownership.new_unit_per_amount_multiplier_at(date) * amount)
-    self.save!
+    self.ownerships.create(user: user,
+                           date: date,
+                           units: Ownership.new_unit_per_amount_multiplier_at(date) * amount)
   end
 
   def self.value
