@@ -18,9 +18,11 @@ gem 'haml-rails'
 # Assets
 gem 'sass-rails'
 gem 'uglifier'
-gem 'therubyracer', platforms: :ruby
 gem 'jquery-rails'
 gem 'turbolinks'
+#Server can has node
+# gem 'therubyracer', platforms: :ruby
+# gem 'therubyrhino', platforms: :jruby
 
 group :development, :test do
   gem 'rspec-rails'
