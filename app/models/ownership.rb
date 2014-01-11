@@ -10,6 +10,7 @@ class Ownership < ActiveRecord::Base
     total_value = TransactionsGrowthPresenter.all.value_at(date) - Contribution.where(date: date).value + Expense.where(date: date).value
     return 1 if total_value == 0
 
-    Ownership.total_at(date) / total_value
+    # Assume all unit movement are incurred at once on the same day
+    Ownership.total_at(date - 1) / total_value
   end
 end
