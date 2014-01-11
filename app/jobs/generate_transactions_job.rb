@@ -1,4 +1,4 @@
-class PopulateTransactionsJob
+class GenerateTransactionsJob
   class << self
     def perform
       objects_needing_processing.sort_by{|o| [o.date, o.created_at]}.each do |o|
