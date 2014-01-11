@@ -18,13 +18,24 @@ class Trade < ActiveRecord::Base
   end
 
   def to_raw_transactions_data
-    [{investment: sell_investment,
-      date:       date,
-      shares:     -sell_shares,
-      price:      sell_price},
-     {investment: buy_investment,
-      date:       date,
-      shares:     buy_shares,
-      price:      buy_price}]
+    if buy_investment.category.cash?
+      [{investment: sell_investment,
+        date:       date,
+        shares:     -sell_shares,
+        price:      sell_price * buy_value / sell_value},
+       {investment: buy_investment,
+        date:       date,
+        shares:     buy_shares,
+        price:      buy_price}]
+    else
+      [{investment: sell_investment,
+        date:       date,
+        shares:     -sell_shares,
+        price:      sell_price},
+       {investment: buy_investment,
+        date:       date,
+        shares:     buy_shares,
+        price:      buy_price * sell_value / buy_value}]
+    end
   end
 end

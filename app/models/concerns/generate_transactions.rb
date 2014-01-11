@@ -36,8 +36,11 @@ module GenerateTransactions
       end
 
       # Shares remaining with no lot
-      lot = Lot.new(investment: investment)
-      transactions << Transaction.create!(shared_data.merge lot: lot, shares: remaining_shares)
+      lot = Lot.new(investment: investment,
+                    open_date:  data[:date],
+                    open_price: data[:price])
+      transactions << Transaction.create!(shared_data.merge lot: lot,
+                                                            shares: remaining_shares)
       transactions
     end
 
