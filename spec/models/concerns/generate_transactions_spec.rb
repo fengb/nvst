@@ -54,8 +54,15 @@ describe GenerateTransactions do
     end
 
     def create_transaction!(options)
-      lot = options[:lot] || Lot.new(investment: options.delete(:investment))
-      Transaction.create!(options.merge lot: lot)
+      if options[:lot]
+        Transaction.create!(options.merge lot: options[:lot])
+      else
+        lot = Lot.new(investment: options.delete(:investment))
+        trans = Transaction.create!(options.merge lot: lot)
+        lot.update!(open_date: trans.date,
+                    open_price: trans.price)
+        trans
+      end
     end
 
     it 'creates new lot with single transaction when none exists' do
@@ -64,20 +71,28 @@ describe GenerateTransactions do
       expect_all(transactions[0], data)
     end
 
-    context 'existing lot' do
+    context 'existing lot with same open data' do
+      let!(:existing) do
+        create_transaction!(investment: investment,
+                            date: data[:date],
+                            shares: -10,
+                            price: data[:price])
+      end
+
+      it 'reuses a lot if found corresponding lot' do
+        transactions = GenerateTransactions.transact!(data)
+        expect(transactions.size).to eq(1)
+        expect_all(transactions[0], data)
+        expect(transactions[0].lot).to eq(existing.lot)
+      end
+    end
+
+    context 'existing lot with different open data' do
       let!(:existing) do
         create_transaction!(investment: investment,
                             date: Date.today - 2000,
                             shares: -10,
                             price: 5)
-      end
-
-      it 'reuses a lot if found corresponding lot' do
-        Lot.stub(corresponding: existing.lot)
-        transactions = GenerateTransactions.transact!(data)
-        expect(transactions.size).to eq(1)
-        expect_all(transactions[0], data)
-        expect(transactions[0].lot).to eq(existing.lot)
       end
 
       it 'ignores lots it cannot fill' do

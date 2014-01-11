@@ -23,10 +23,6 @@ class Lot < ActiveRecord::Base
     includes(:transactions).sort_by{|l| yield(l.transactions.first)}
   end
 
-  def self.corresponding(search)
-    find_by(search)
-  end
-
   def open_transactions
     transactions.select(&:open?)
   end
