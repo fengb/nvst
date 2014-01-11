@@ -3,10 +3,6 @@ class YearSummaryPresenter
     @year = year
   end
 
-  def realized_gain
-    transactions.map(&:realized_gain).sum
-  end
-
   def interest
     events['interest']
   end
@@ -38,11 +34,6 @@ class YearSummaryPresenter
   end
 
   def close_transactions
-    @close_transactions ||= transactions.select(&:close?)
-  end
-
-  private
-  def transactions
-    @transactions ||= Transaction.year(@year).includes(lot: :transactions)
+    @close_transactions ||= Transaction.year(@year).tracked.close.order(:date)
   end
 end

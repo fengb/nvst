@@ -9,3 +9,25 @@
   - @year_summary.events.each do |category, events|
     %dt= category
     %dd= number_to_currency events.sum(&:amount)
+
+%h2 Trades
+%table
+  %thead
+    %tr
+      %th Investment
+      %th Open Date
+      %th Close Date
+      %th Open Price
+      %th Close Price
+      %th Shares
+      %th Realized Gain
+  %tbody
+    - @year_summary.close_transactions.each do |transaction|
+      %tr
+        %th= transaction.investment.symbol
+        %td= transaction.lot.open_date.to_formatted_s
+        %td= transaction.date.to_formatted_s
+        %td= number_to_currency transaction.lot.open_price
+        %td= number_to_currency transaction.price
+        %td= -transaction.shares
+        %td= number_to_currency transaction.realized_gain
