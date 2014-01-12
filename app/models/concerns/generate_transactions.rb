@@ -1,4 +1,6 @@
 module GenerateTransactions
+  extend ModelsIncluded
+
   def generate_transactions!
     return if transactions.count > 0
 

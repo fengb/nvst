@@ -8,18 +8,7 @@ class GenerateTransactionsJob
 
     private
     def models_needing_processing
-      [].tap do |ret|
-        ActiveRecord::Base.connection.tables.each do |table|
-          str = table.singularize.camelize
-          begin
-            klass = str.constantize
-          rescue NameError
-            next
-          end
-
-          ret << klass if klass.method_defined?(:generate_transactions!)
-        end
-      end
+      GenerateTransactions.models_included
     end
 
     def objects_needing_processing
