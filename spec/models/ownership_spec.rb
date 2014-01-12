@@ -37,7 +37,7 @@ describe Ownership do
 
         # We contributed 50 in the past and it grew to 100.
         # New contributions should have 1/2 the unit value
-        expect(Ownership.new_unit_per_amount_multiplier_at existing.date).to eq(0.5)
+        expect(Ownership.new_unit_per_amount_multiplier_at existing.date + 1).to eq(0.5)
       end
     end
   end
