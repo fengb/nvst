@@ -7,14 +7,8 @@ class GenerateOwnershipsJob
     end
 
     private
-    def models_needing_processing
-      GenerateOwnerships.models_included
-    end
-
     def objects_needing_processing
-      models_needing_processing.map do |model|
-        model.all
-      end.flatten
+      GenerateOwnerships.models_included.map(&:all).flatten
     end
   end
 end
