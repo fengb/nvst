@@ -50,6 +50,6 @@ class LotSummaryPresenter
   end
 
   def sum_by(name)
-    @lots.map(&name).sum
+    @lots.sum(&name)
   end
 end

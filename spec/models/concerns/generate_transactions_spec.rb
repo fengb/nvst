@@ -186,7 +186,7 @@ describe GenerateTransactions do
         expect(transactions[2].lot).to_not eq(existing[0].lot)
         expect(transactions[2].lot).to_not eq(existing[1].lot)
         expect_all(transactions[2], date: data[:date],
-                                    shares: data[:shares] + existing.map(&:shares).sum,
+                                    shares: data[:shares] + existing.sum(&:shares),
                                     price: data[:price])
       end
     end

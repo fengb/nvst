@@ -28,7 +28,7 @@ class Lot < ActiveRecord::Base
   end
 
   def open_value
-    open_transactions.map(&:value).sum
+    open_transactions.sum(&:value)
   end
 
   def outstanding_shares
@@ -44,7 +44,7 @@ class Lot < ActiveRecord::Base
   end
 
   def realized_gain
-    transactions.map(&:realized_gain).sum
+    transactions.to_a.sum(&:realized_gain)
   end
 
   def unrealized_gain

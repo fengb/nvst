@@ -13,7 +13,7 @@ describe Transfer do
 
     it 'sums generated ownership units to 0' do
       transfer.generate_ownerships!
-      expect(transfer.ownerships.map(&:units).sum).to eq(0)
+      expect(transfer.ownerships.sum(:units)).to eq(0)
     end
   end
 end
