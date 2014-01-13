@@ -13,11 +13,15 @@ class Transaction < ActiveRecord::Base
   scope :close,   ->{joins(:lot).where('lots.open_date != transactions.date OR lots.open_price != transactions.price')}
 
   def value
-    shares * price
+    -shares * price
+  end
+
+  def cost_basis
+    -shares * lot.open_price
   end
 
   def realized_gain
-    shares * (lot.open_price - price)
+    value - cost_basis
   end
 
   def open?

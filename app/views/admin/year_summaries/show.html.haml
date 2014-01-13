@@ -17,9 +17,9 @@
       %th Investment
       %th Open Date
       %th Close Date
-      %th Open Price
-      %th Close Price
       %th Shares
+      %th Cost Basis
+      %th Value
       %th Realized Gain
   %tbody
     - @year_summary.close_transactions.each do |transaction|
@@ -27,7 +27,16 @@
         %th= transaction.investment.symbol
         %td= transaction.lot.open_date.to_formatted_s
         %td= transaction.date.to_formatted_s
-        %td= number_to_currency transaction.lot.open_price
-        %td= number_to_currency transaction.price
         %td= -transaction.shares
+        %td= number_to_currency transaction.cost_basis
+        %td= number_to_currency transaction.value
         %td= number_to_currency transaction.realized_gain
+  %tfoot
+    %tr
+      %td
+      %td
+      %td
+      %td
+      %th= number_to_currency @year_summary.close_transactions.to_a.sum(&:cost_basis)
+      %th= number_to_currency @year_summary.close_transactions.to_a.sum(&:value)
+      %th= number_to_currency @year_summary.close_transactions.to_a.sum(&:realized_gain)
