@@ -1,6 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'rails'
+gem 'big_decimal_helper'
 
 # Third Party
 gem 'rest-client'
