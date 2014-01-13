@@ -10,4 +10,8 @@ class InvestmentDividend < ActiveRecord::Base
   def percent
     amount / ex_previous_price.close
   end
+
+  def adjustment_to_past
+    1 - percent
+  end
 end
