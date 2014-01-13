@@ -2,16 +2,22 @@
 class InvestmentDividend < ActiveRecord::Base
   belongs_to :investment
 
+  default_scope ->{order(:ex_date)}
+
   # FIXME: turn into a real relation
   def ex_previous_price
-    InvestmentHistoricalPrice.find_by('investment_id = ? AND date < ?', investment_id, ex_date)
+    InvestmentHistoricalPrice.where('investment_id = ? AND date < ?', investment_id, ex_date).last
   end
 
   def percent
     amount / ex_previous_price.close
   end
 
-  def adjustment_to_past
+  def adjustment
     1 - percent
+  end
+
+  def adjust_up_to_date
+    ex_date - 1
   end
 end

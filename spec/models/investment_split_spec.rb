@@ -8,7 +8,7 @@ describe InvestmentSplit do
       # Today       1.00     2:1            1.00
       # Yesterday   2.00                    1.00
       investment_split = InvestmentSplit.new(after: 2, before: 1)
-      expect(investment_split.adjustment_to_past * 2).to eq(1)
+      expect(investment_split.adjustment * 2).to eq(1)
     end
   end
 end

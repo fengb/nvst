@@ -10,7 +10,7 @@ describe InvestmentDividend do
       dividend = InvestmentDividend.new
       past_price = BigDecimal('1.25')
       dividend.stub(percent: BigDecimal('0.25') / past_price)
-      expect(dividend.adjustment_to_past * past_price).to eq(1)
+      expect(dividend.adjustment * past_price).to eq(1)
     end
   end
 

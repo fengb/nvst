@@ -16,65 +16,58 @@ class PopulateInvestmentsJob
 
   def run!
     ActiveRecord::Base.transaction do
+      historical_prices!
       dividends!
       splits!
-      historical_prices!
-    end
-  end
-
-  def dividends!
-    YahooFinance.dividends(@investment.symbol).each do |row|
-      return if row.date <= latest_date
-
-      InvestmentDividend.create!(investment: @investment,
-                                 date:       row.date,
-                                 amount:     row.amount)
-    end
-  end
-
-  def splits!
-    YahooFinance.splits(@investment.symbol).each do |row|
-      return if row.date <= latest_date
-
-      InvestmentSplit.create!(investment: @investment,
-                              date:       row.date,
-                              before:     row.before,
-                              after:      row.after)
     end
   end
 
   def historical_prices!
-    raw_adjustment = latest_historical_price.try(:raw_adjustment) || 1.0
-    splits = existing_hash_by_date(InvestmentSplit)
-    dividends = existing_hash_by_date(InvestmentDividend)
-
+    latest_date = InvestmentHistoricalPrice.where(investment: @investment).last.try(:date) || Date.new(1900)
     YahooFinance.historical_prices(@investment.symbol, start_date: latest_date + 1).reverse.each do |row|
-      if split = splits[row.date]
-        raw_adjustment *= split.after.to_f / split.before.to_f
-      end
-      if dividend = dividends[row.date]
-        raw_adjustment *= (dividend.amount.to_f + row.close.to_f) / row.close.to_f
-      end
-
       InvestmentHistoricalPrice.create!(investment:     @investment,
                                         date:           row.date,
                                         high:           row.high,
                                         low:            row.low,
                                         close:          row.close,
-                                        raw_adjustment: raw_adjustment)
+                                        adjustment:     1.0)
+    end
+  end
+
+  def dividends!
+    latest_date = InvestmentDividend.where(investment: @investment).last.try(:ex_date) || Date.new(1900)
+    YahooFinance.dividends(@investment.symbol).each do |row|
+      return if row.date <= latest_date
+
+      dividend = InvestmentDividend.create!(investment: @investment,
+                                            ex_date:    row.date,
+                                            amount:     row.amount)
+      adjust_prices_by(dividend)
+    end
+  end
+
+  def splits!
+    latest_date = InvestmentSplit.where(investment: @investment).last.try(:date) || Date.new(1900)
+    YahooFinance.splits(@investment.symbol).each do |row|
+      return if row.date <= latest_date
+
+      split = InvestmentSplit.create!(investment: @investment,
+                                      date:       row.date,
+                                      before:     row.before,
+                                      after:      row.after)
+      adjust_prices_by(split)
     end
   end
 
   private
-  def latest_historical_price
-    @price ||= InvestmentHistoricalPrice.where(investment: @investment).last
-  end
-
-  def latest_date
-    @latest_date ||= latest_historical_price.try(:date) || Date.new(1900)
-  end
-
-  def existing_hash_by_date(model)
-    Hash[model.where(investment: @investment).map{|r| [r.date, r]}]
+  def adjust_prices_by(instance)
+    # instance needs to implement #investment_id, #adjust_through_date, and #adjustment
+      sql = ActiveRecord::Base.send(:sanitize_sql_array, [<<-SQL, instance.adjustment, instance.investment_id, instance.adjust_up_to_date])
+        UPDATE #{InvestmentHistoricalPrice.table_name}
+           SET adjustment = adjustment * ?
+         WHERE investment_id = ?
+           AND date <= ?
+      SQL
+      instance.connection.execute sql
   end
 end
