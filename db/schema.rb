@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140112010306) do
+ActiveRecord::Schema.define(version: 20140113141448) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -148,9 +148,9 @@ ActiveRecord::Schema.define(version: 20140112010306) do
 
   create_table "investment_dividends", force: true do |t|
     t.integer "investment_id"
-    t.date    "date"
+    t.date    "ex_date"
     t.decimal "amount",        precision: 12, scale: 4
-    t.index ["date"], :name => "index_investment_dividends_on_date"
+    t.index ["ex_date"], :name => "index_investment_dividends_on_ex_date"
     t.index ["investment_id"], :name => "fk__investment_dividends_investment_id"
     t.foreign_key ["investment_id"], "investments", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_investment_dividends_investment_id"
   end
@@ -158,10 +158,10 @@ ActiveRecord::Schema.define(version: 20140112010306) do
   create_table "investment_historical_prices", force: true do |t|
     t.integer "investment_id"
     t.date    "date"
-    t.decimal "high",           precision: 12, scale: 4
-    t.decimal "low",            precision: 12, scale: 4
-    t.decimal "close",          precision: 12, scale: 4
-    t.float   "raw_adjustment"
+    t.decimal "high",          precision: 12, scale: 4
+    t.decimal "low",           precision: 12, scale: 4
+    t.decimal "close",         precision: 12, scale: 4
+    t.float   "adjustment"
     t.index ["date"], :name => "index_investment_historical_prices_on_date"
     t.index ["investment_id"], :name => "fk__investment_historical_prices_investment_id"
     t.foreign_key ["investment_id"], "investments", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_investment_historical_prices_investment_id"

@@ -29,29 +29,4 @@ describe InvestmentHistoricalPrice do
       expect(price.adjusted(:low)).to eq(price.low * 100)
     end
   end
-
-  describe '#adjustment' do
-    let(:price) { FactoryGirl.create(:investment_historical_price, raw_adjustment: 40) }
-
-    it 'is price.raw_adjustment / InvestmentHistoricalPrice.latest_raw_adjustment' do
-      InvestmentHistoricalPrice.should_receive(:latest_raw_adjustment).with(price.investment).and_return(100)
-
-      expect(price.adjustment).to eq(BigDecimal('0.4'))
-    end
-  end
-
-  describe '.latest_raw_adjustment' do
-    let(:investment) { FactoryGirl.create(:investment) }
-    let!(:prices) do
-      [ FactoryGirl.create(:investment_historical_price, investment: investment),
-        FactoryGirl.create(:investment_historical_price, investment: investment),
-        FactoryGirl.create(:investment_historical_price, investment: investment)
-      ]
-    end
-
-    it 'is the latest raw adjustment value' do
-      latest = InvestmentHistoricalPrice.latest_raw_adjustment(investment)
-      expect(latest).to eq(prices.sort_by(&:date).last.reload.raw_adjustment)
-    end
-  end
 end
