@@ -7,6 +7,7 @@ class Event < ActiveRecord::Base
   has_and_belongs_to_many :transactions
 
   enumerize :category, in: {'interest'                   => 'int',
+                            'interest - margin'          => 'inm',
                             'tax'                        => 'tax',
                             'dividend - ordinary'        => 'dvo',
                             'dividend - qualified'       => 'dvq',
