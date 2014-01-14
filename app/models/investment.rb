@@ -17,10 +17,6 @@ class Investment < ActiveRecord::Base
     find_by(category: 'benchmark')
   end
 
-  def title
-    symbol
-  end
-
   def price_matcher(start_date=nil)
     if start_date
       # start_date may not have a price entry.  We need to backtrack to find the real start date.
@@ -43,5 +39,9 @@ class Investment < ActiveRecord::Base
 
   def year_low
     historical_prices.year_range.minimum(:low)
+  end
+
+  rails_admin do
+    object_label_method :symbol
   end
 end
