@@ -1,7 +1,6 @@
 source 'https://rubygems.org'
 
 gem 'rails'
-gem 'big_decimal_helper'
 
 # Third Party
 gem 'rest-client'
@@ -26,6 +25,7 @@ gem 'turbolinks'
 # gem 'therubyrhino', platforms: :jruby
 
 group :development, :test do
+  gem 'big_decimal_helper'
   gem 'rspec-rails'
   gem 'factory_girl_rails'
   gem 'ffaker'
