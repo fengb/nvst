@@ -1,7 +1,3 @@
-# Generated
-require 'time_cache'
-
-
 class InvestmentHistoricalPrice < ActiveRecord::Base
   belongs_to :investment
 
