@@ -2,7 +2,7 @@ task :jobs => 'jobs:list'
 namespace 'jobs' do
   desc 'List all fengb jobs'
   task :list do |t|
-    Dir[Rails.root + 'app/jobs/*'].each do |filename|
+    Dir[Rails.root + 'app/jobs/*'].sort.each do |filename|
       puts "rake jobs:run[#{File.basename(filename).chomp('_job.rb')}]"
     end
   end
