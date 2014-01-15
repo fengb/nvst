@@ -19,7 +19,7 @@ class Trade < ActiveRecord::Base
 
   def sell_value
     if buy_investment.cash?
-      raw_sell_value - fee
+      raw_buy_value
     else
       raw_sell_value
     end
@@ -29,7 +29,7 @@ class Trade < ActiveRecord::Base
     if buy_investment.cash?
       raw_buy_value
     else
-      raw_buy_value - fee
+      raw_sell_value
     end
   end
 

@@ -13,46 +13,49 @@ describe Trade do
     end
   end
 
-  describe '#fee' do
-    it 'is raw_sell_value - raw_buy_value' do
-      t = Trade.new
-      t.stub(raw_sell_value: 150,
-             raw_buy_value:  145)
-      expect(t.fee).to eq(t.raw_sell_value - t.raw_buy_value)
-    end
-  end
-
-  describe '#sell_value' do
-    it 'is raw_sell_value if buy_investment is not cash' do
-      t = Trade.new
-      t.stub(raw_sell_value: 101,
-             buy_investment: double(cash?: false))
-      expect(t.sell_value).to eq(t.raw_sell_value)
+  context 'fee calculations' do
+    let(:trade) do
+      Trade.new.tap do |t|
+        t.stub(raw_sell_value: 150,
+               raw_buy_value: 145)
+      end
     end
 
-    it 'is raw_sell_value - fee if buy_investment is cash' do
-      t = Trade.new
-      t.stub(raw_sell_value: 101,
-             fee:              4,
-             buy_investment: double(cash?: true))
-      expect(t.sell_value).to eq(t.raw_sell_value - t.fee)
-    end
-  end
-
-  describe '#buy_value' do
-    it 'is raw_buy_value - fee if buy_investment is not cash' do
-      t = Trade.new
-      t.stub(raw_buy_value:  101,
-             fee:              4,
-             buy_investment: double(cash?: false))
-      expect(t.buy_value).to eq(t.raw_buy_value - t.fee)
+    describe '#fee' do
+      it 'is raw_sell_value - raw_buy_value' do
+        expect(trade.fee).to eq(trade.raw_sell_value - trade.raw_buy_value)
+      end
     end
 
-    it 'is raw_buy_value if buy_investment is cash' do
-      t = Trade.new
-      t.stub(raw_buy_value:  101,
-             buy_investment: double(cash?: true))
-      expect(t.buy_value).to eq(t.raw_buy_value)
+    describe '#sell_value' do
+      it 'is raw_sell_value if buy_investment is not cash' do
+        trade.stub(buy_investment: double(cash?: false))
+        expect(trade.sell_value).to eq(trade.raw_sell_value)
+      end
+
+      it 'is raw_sell_value - fee if buy_investment is cash' do
+        trade.stub(buy_investment: double(cash?: true))
+        expect(trade.sell_value).to eq(trade.raw_sell_value - trade.fee)
+      end
+    end
+
+    describe '#buy_value' do
+      it 'is raw_buy_value + fee if buy_investment is not cash' do
+        trade.stub(buy_investment: double(cash?: false))
+        expect(trade.buy_value).to eq(trade.raw_buy_value + trade.fee)
+      end
+
+      it 'is raw_buy_value if buy_investment is cash' do
+        trade.stub(buy_investment: double(cash?: true))
+        expect(trade.buy_value).to eq(trade.raw_buy_value)
+      end
+    end
+
+    specify '#sell_value == #buy_value' do
+      10.times do
+        trade = FactoryGirl.create(:trade)
+        expect(trade.sell_value).to eq(trade.buy_value)
+      end
     end
   end
 end
