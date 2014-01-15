@@ -5,7 +5,7 @@ module GenerateTransactions
     return if transactions.count > 0
 
     ActiveRecord::Base.transaction do
-      to_raw_transactions_data.each do |data|
+      raw_transactions_data.each do |data|
         transactions = GenerateTransactions.transact!(data)
         self.transactions.concat(transactions)
       end

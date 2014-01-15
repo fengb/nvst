@@ -18,7 +18,7 @@ class Expense < ActiveRecord::Base
                             'employee benefit programs' => 'ben',
                             'other'                     => 'oth'}
 
-  def to_raw_transactions_data
+  def raw_transactions_data
     [{investment: Investment.cash,
       date:       date,
       shares:     -amount,

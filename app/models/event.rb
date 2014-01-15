@@ -15,7 +15,7 @@ class Event < ActiveRecord::Base
                             'capital gains - short-term' => 'cgs',
                             'capital gains - long-term'  => 'cgl'}
 
-  def to_raw_transactions_data
+  def raw_transactions_data
     [{investment: Investment.cash,
       date:       date,
       shares:     amount,

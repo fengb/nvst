@@ -10,7 +10,7 @@ class Contribution < ActiveRecord::Base
     sum('amount')
   end
 
-  def to_raw_transactions_data
+  def raw_transactions_data
     [{investment: Investment.cash,
       date:       date,
       shares:     amount,

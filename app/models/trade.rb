@@ -41,7 +41,7 @@ class Trade < ActiveRecord::Base
     buy_value / buy_shares
   end
 
-  def to_raw_transactions_data
+  def raw_transactions_data
     [{investment: sell_investment,
       date:       date,
       shares:     -sell_shares,

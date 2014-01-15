@@ -7,7 +7,7 @@ describe GenerateTransactions do
       include GenerateTransactions
     end
 
-    let(:instance) { TestClass.new(transactions: [], to_raw_transactions_data: []) }
+    let(:instance) { TestClass.new(transactions: [], raw_transactions_data: []) }
 
     context 'already has transactions' do
       before { instance.transactions = [1] }
@@ -23,7 +23,7 @@ describe GenerateTransactions do
     end
 
     it 'passes raw transaction data to GenerateTransactions.transact!' do
-      instance.to_raw_transactions_data = [4, 2, 5]
+      instance.raw_transactions_data = [4, 2, 5]
       GenerateTransactions.should_receive(:transact!).with(4).and_return([4])
       GenerateTransactions.should_receive(:transact!).with(2).and_return([2])
       GenerateTransactions.should_receive(:transact!).with(5).and_return([5])
@@ -32,7 +32,7 @@ describe GenerateTransactions do
     end
 
     it 'adds GenerateTransactions.transact! returned values to transactions' do
-      instance.to_raw_transactions_data = [:a, :z]
+      instance.raw_transactions_data = [:a, :z]
       GenerateTransactions.stub(transact!: [1, 2])
 
       instance.generate_transactions!
