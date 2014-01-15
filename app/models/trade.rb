@@ -5,37 +5,50 @@ class Trade < ActiveRecord::Base
   belongs_to :buy_investment,  class_name: 'Investment'
   has_and_belongs_to_many :transactions
 
-  def sell_value
+  def raw_sell_value
     sell_shares * sell_price
   end
 
-  def buy_value
+  def raw_buy_value
     buy_shares * buy_price
   end
 
   def fee
-    sell_value - buy_value
+    raw_sell_value - raw_buy_value
+  end
+
+  def sell_value
+    if buy_investment.cash?
+      raw_sell_value - fee
+    else
+      raw_sell_value
+    end
+  end
+
+  def buy_value
+    if buy_investment.cash?
+      raw_buy_value
+    else
+      raw_buy_value - fee
+    end
+  end
+
+  def sell_price_fee_adjusted
+    sell_value / sell_shares
+  end
+
+  def buy_price_fee_adjusted
+    buy_value / buy_shares
   end
 
   def to_raw_transactions_data
-    if buy_investment.category.cash?
-      [{investment: sell_investment,
-        date:       date,
-        shares:     -sell_shares,
-        price:      sell_price * buy_value / sell_value},
-       {investment: buy_investment,
-        date:       date,
-        shares:     buy_shares,
-        price:      buy_price}]
-    else
-      [{investment: sell_investment,
-        date:       date,
-        shares:     -sell_shares,
-        price:      sell_price},
-       {investment: buy_investment,
-        date:       date,
-        shares:     buy_shares,
-        price:      buy_price * sell_value / buy_value}]
-    end
+    [{investment: sell_investment,
+      date:       date,
+      shares:     -sell_shares,
+      price:      sell_price_fee_adjusted},
+     {investment: buy_investment,
+      date:       date,
+      shares:     buy_shares,
+      price:      buy_price_fee_adjusted}]
   end
 end

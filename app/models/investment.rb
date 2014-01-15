@@ -17,6 +17,10 @@ class Investment < ActiveRecord::Base
     find_by(category: 'benchmark')
   end
 
+  def cash?
+    category.cash?
+  end
+
   def price_matcher(start_date=nil)
     if start_date
       # start_date may not have a price entry.  We need to backtrack to find the real start date.
