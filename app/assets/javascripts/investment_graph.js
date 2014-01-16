@@ -20,7 +20,7 @@ InvestmentGraph = function(){
     var chart = new dimple.chart(this.svg, keepN(this.savedData, 200))
     chart.setBounds(60, 30, 505, 305)
     chart.addCategoryAxis('x', 'date').addOrderRule('Date')
-    chart.addMeasureAxis('y', 'adjusted_price')
+    chart.addMeasureAxis('y', 'adjusted_close')
     chart.addSeries('investment', dimple.plot.line)
     chart.draw();
     return this;

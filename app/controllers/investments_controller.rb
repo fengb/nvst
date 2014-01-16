@@ -4,11 +4,12 @@ class InvestmentsController < ApplicationController
   def show
   end
 
-  def adjusted_prices
-    @prices = @investment.historical_prices.pluck(:date, 'close * adjustment').map do |p|
+  def prices
+    @prices = @investment.historical_prices.pluck(:date, :close, 'close * adjustment').map do |p|
       { investment:     @investment.symbol,
         date:           p[0],
-        adjusted_price: p[1],
+        close:          p[1],
+        adjusted_close: p[2],
       }
     end
 

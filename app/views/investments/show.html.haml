@@ -10,6 +10,6 @@
 
 %div#price
   :javascript
-    $.getJSON('#{url_for([:adjusted_prices, @investment])}', function(data){
+    $.getJSON('#{url_for([:prices, @investment])}', function(data){
       new InvestmentGraph('#price').add(data)
     })
