@@ -45,6 +45,14 @@ class Investment < ActiveRecord::Base
     historical_prices.year_range.minimum(:low)
   end
 
+  def self.find_by_param(param)
+    find_by(symbol: param)
+  end
+
+  def to_param
+    symbol
+  end
+
   rails_admin do
     object_label_method :symbol
   end
