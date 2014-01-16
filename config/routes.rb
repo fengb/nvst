@@ -1,4 +1,6 @@
 FengbNvst::Application.routes.draw do
+  resources :investments
+
   devise_for :users
 
   devise_for :admin

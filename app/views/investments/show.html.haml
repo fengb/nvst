@@ -1,0 +1,9 @@
+%dl
+  %dt Symbol
+  %dd= @investment.symbol
+
+  %dt Name
+  %dd= @investment.name
+
+  %dt 52 week price
+  %dd #{number_to_currency @investment.year_low} - #{number_to_currency @investment.year_high}
