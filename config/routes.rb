@@ -1,5 +1,7 @@
 FengbNvst::Application.routes.draw do
-  resources :investments
+  resources :investments do
+    get 'adjusted_prices', on: :member
+  end
 
   devise_for :users
 
