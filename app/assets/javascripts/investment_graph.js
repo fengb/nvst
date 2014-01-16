@@ -9,15 +9,11 @@ InvestmentGraph = function(){
     this.render()
   }
 
-  function everyNth(array, n, offset){
-    offset = offset || 0
+  function keepN(array, n){
+    var match = array.length / n
     return array.filter(function(e, i){
-      return Math.floor((i + offset) % n) == 0
+      return Math.floor(i % match) == 0
     })
-  }
-
-  function keepN(array, n, offset){
-    return everyNth(array, array.length / n, offset)
   }
 
   Class.prototype.render = function(){
