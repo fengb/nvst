@@ -10,27 +10,6 @@
 
 %div#price
   :javascript
-    !function(){
-      function everyNth(array, n, offset){
-        offset = offset || 0
-        return array.filter(function(e, i){
-          return Math.floor((i + offset) % n) == 0
-        })
-      }
-
-      function keepN(array, n, offset){
-        return everyNth(array, array.length / n, offset)
-      }
-
-      var savedData
-      var svg = dimple.newSvg('#price', 590, 400)
-      $.getJSON('#{url_for([:adjusted_prices, @investment])}', function(data){
-        savedData = data
-        var chart = new dimple.chart(svg, keepN(savedData, 200))
-        chart.setBounds(60, 30, 505, 305)
-        chart.addCategoryAxis('x', 'date').addOrderRule('Date')
-        chart.addMeasureAxis('y', 'adjusted_price')
-        chart.addSeries('investment', dimple.plot.line)
-        chart.draw();
-      })
-    }()
+    $.getJSON('#{url_for([:adjusted_prices, @investment])}', function(data){
+      new InvestmentGraph('#price').add(data)
+    })
