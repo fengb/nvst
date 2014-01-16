@@ -47,11 +47,12 @@ module GenerateTransactions
     end
 
     def outstanding_lots(investment, new_shares)
-      # Shares +new fill -outstanding, -new fill +outstanding
+      # Buy shares fill -outstanding, sell shares fill +outstanding
       direction = new_shares > 0 ? '-' : '+'
-      Lot.outstanding(direction).where(investment: investment).order_by_open do |trans|
-        [-trans.price, trans.date, trans.id]
-      end
+
+      # FIFO:         Lot.outstanding(direction).where(investment: investment).order('open_date, id')
+      # Highest cost: Lot.outstanding(direction).where(investment: investment).order('open_price DESC, open_date, id')
+      Lot.outstanding(direction).where(investment: investment).order('open_price DESC, open_date, id')
     end
   end
 end

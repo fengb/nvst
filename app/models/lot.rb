@@ -1,7 +1,11 @@
 # Generated
 class Lot < ActiveRecord::Base
   belongs_to :investment
-  has_many   :transactions, ->{order('date')}
+  has_many   :transactions, ->{order('date')} do
+    def open
+      select(&:open?)
+    end
+  end
 
   validates :investment, presence: true
 
@@ -19,16 +23,8 @@ class Lot < ActiveRecord::Base
     ).where("t.outstanding_shares #{op} 0")
   }
 
-  def self.order_by_open
-    includes(:transactions).sort_by{|l| yield(l.transactions.first)}
-  end
-
-  def open_transactions
-    transactions.select(&:open?)
-  end
-
   def open_value
-    open_transactions.sum(&:value)
+    transactions.open.sum(&:value)
   end
 
   def outstanding_shares
