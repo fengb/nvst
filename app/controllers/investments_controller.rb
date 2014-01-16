@@ -5,7 +5,9 @@ class InvestmentsController < ApplicationController
   end
 
   def prices
-    @prices = @investment.historical_prices.pluck(:date, :close, 'close * adjustment').map do |p|
+    end_date = params[:end_date] ? Date.parse(params[:end_date]) : Date.today
+    start_date = params[:start_date] ? Date.parse(params[:start_date]) : end_date - 365
+    @prices = @investment.historical_prices.where(date: start_date..end_date).pluck(:date, :close, 'close * adjustment').map do |p|
       { investment:     @investment.symbol,
         date:           p[0],
         close:          p[1],
