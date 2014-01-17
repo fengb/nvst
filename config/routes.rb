@@ -1,5 +1,5 @@
 FengbNvst::Application.routes.draw do
-  root to: 'application#index'
+  root to: 'portfolio#index'
 
   resource :portfolio, controller: :portfolio do
     member do
