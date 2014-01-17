@@ -1,6 +1,3 @@
-require 'best_match_hash'
-
-
 class BenchmarkPresenter
   def initialize(investment)
     contributions = Contribution.order(:date)

@@ -1,6 +1,3 @@
-require 'best_match_hash'
-
-
 class UserGrowthPresenter
   def initialize(user)
     @transactions_growth = TransactionsGrowthPresenter.all

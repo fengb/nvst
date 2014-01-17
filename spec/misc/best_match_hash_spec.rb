@@ -1,6 +1,3 @@
-require 'best_match_hash'
-
-
 describe BestMatchHash do
   let(:hash) { BestMatchHash.new({'2013-01-01' => 50, '2013-01-05' => 60}, 40) }
 

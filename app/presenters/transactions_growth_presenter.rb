@@ -1,6 +1,3 @@
-require 'best_match_hash'
-
-
 class TransactionsGrowthPresenter
   def self.all
     self.new(Transaction.includes(lot: :investment))
