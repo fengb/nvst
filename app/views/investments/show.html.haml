@@ -14,5 +14,5 @@
     %div#price-wrapper
     :javascript
       $.getJSON('#{url_for([:prices, @investment])}', function(data){
-        new InvestmentGraph('#price-wrapper', 'adjusted_close').add(data)
+        new InvestmentGraph('#price-wrapper', 'adjusted_close').add('#{@investment.symbol}', data)
       })

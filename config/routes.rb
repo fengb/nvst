@@ -1,4 +1,6 @@
 FengbNvst::Application.routes.draw do
+  root to: 'application#index'
+
   resources :investments do
     member do
       get 'prices'

@@ -1,12 +1,15 @@
 InvestmentGraph = function(){
   function Class(target, yAxis){
-    this.svg = dimple.newSvg(target, 590, 400)
-    this.savedData = []
+    this.target = target
+    this.savedData = {}
     this.yAxis = yAxis
   }
 
-  Class.prototype.add = function(data){
-    this.savedData = data
+  Class.prototype.add = function(name, data){
+    for(var i=0; i < data.length; i++){
+      data[i].name = name
+    }
+    this.savedData[name] = data
     this.render()
   }
 
@@ -17,14 +20,25 @@ InvestmentGraph = function(){
     })
   }
 
+  Class.prototype.data = function(){
+    var data = []
+    for(var name in this.savedData){
+      data = data.concat(keepN(this.savedData[name], 200))
+    }
+      console.log(data)
+    return data
+  }
+
   Class.prototype.render = function(){
-    var chart = new dimple.chart(this.svg, keepN(this.savedData, 200))
+    $(this.target + ' svg').remove()
+    var svg = dimple.newSvg(this.target, 590, 400)
+    var chart = new dimple.chart(svg, this.data())
     chart.setBounds(60, 30, 505, 305)
     chart.addCategoryAxis('x', 'date').addOrderRule('Date')
     chart.addMeasureAxis('y', this.yAxis)
-    chart.addSeries('investment', dimple.plot.line)
-    chart.draw();
-    return this;
+    chart.addSeries('name', dimple.plot.line)
+    chart.draw()
+    return this
   }
 
   return Class
