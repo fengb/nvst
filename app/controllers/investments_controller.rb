@@ -11,7 +11,7 @@ class InvestmentsController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.json { render json: @prices }
+      format.json
     end
   end
 

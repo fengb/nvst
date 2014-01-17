@@ -14,6 +14,7 @@ gem 'enumerize'
 
 # View
 gem 'haml-rails'
+gem 'jbuilder'
 
 # Assets
 gem 'sass-rails'
