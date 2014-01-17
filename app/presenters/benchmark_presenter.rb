@@ -1,12 +1,15 @@
 class BenchmarkPresenter
+  attr_reader :dates
+
   def initialize(investment)
-    contributions = Contribution.order(:date)
-    @price_matcher = investment.price_matcher(contributions.first.date)
-    @share_matcher = BestMatchHash.sum(contributions.map{|c| [c.date, c.amount / @price_matcher[c.date]]})
+    @contributions = Contribution.order(:date)
+    @price_matcher = investment.price_matcher(@contributions.first.date)
+    @share_matcher = BestMatchHash.sum(@contributions.map{|c| [c.date, c.amount / @price_matcher[c.date]]})
   end
 
   def dates
-    @price_matcher.keys
+    # FIXME: defuglify
+    @dates ||= Investment.benchmark.price_matcher(@contributions.first.date).keys
   end
 
   def value_at(date)
