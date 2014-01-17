@@ -1,9 +1,9 @@
 %div#growth-wrapper
   :javascript
     var graph = new InvestmentGraph('#growth-wrapper', 'value')
-    var symbols = #{@investments.map(&:symbol)}
-    symbols.forEach(function(symbol){
-      $.getJSON('/investments/'+symbol+'/benchmark', function(data){
-        graph.add(symbol, data)
-      })
+    $.getJSON('/portfolio/benchmark', function(data){
+      graph.add('S&P500', data)
+    })
+    $.getJSON('/portfolio/principal', function(data){
+      graph.add('principal', data)
     })

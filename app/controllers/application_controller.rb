@@ -4,7 +4,6 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   def index
-    @investments = [Investment.cash, Investment.benchmark]
   end
 
   private

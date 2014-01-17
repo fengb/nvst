@@ -25,7 +25,6 @@ InvestmentGraph = function(){
     for(var name in this.savedData){
       data = data.concat(keepN(this.savedData[name], 200))
     }
-      console.log(data)
     return data
   }
 

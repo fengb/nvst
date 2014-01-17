@@ -1,0 +1,5 @@
+%div#growth-wrapper
+  :javascript
+    $.getJSON(window.location, function(data){
+      new InvestmentGraph('#growth-wrapper', 'value').add('', data)
+    })

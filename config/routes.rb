@@ -1,10 +1,16 @@
 FengbNvst::Application.routes.draw do
   root to: 'application#index'
 
+  resource :portfolio, controller: :portfolio do
+    member do
+      get 'benchmark'
+      get 'principal'
+    end
+  end
+
   resources :investments do
     member do
       get 'prices'
-      get 'benchmark'
     end
   end
 
