@@ -8,8 +8,11 @@
   %dt 52 week price
   %dd #{number_to_currency @investment.year_low} - #{number_to_currency @investment.year_high}
 
-%div#price
-  :javascript
-    $.getJSON('#{url_for([:prices, @investment])}', function(data){
-      new InvestmentGraph('#price').add(data)
-    })
+  %dt Price
+  %dd
+    = link_to 'table', [:prices, @investment]
+    %div#price-wrapper
+    :javascript
+      $.getJSON('#{url_for([:prices, @investment])}', function(data){
+        new InvestmentGraph('#price-wrapper').add(data)
+      })

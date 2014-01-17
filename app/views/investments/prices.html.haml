@@ -1,0 +1,16 @@
+%table
+  %thead
+    %tr
+      %th Date
+      %th High
+      %th Low
+      %th Close
+      %th Adjusted Close
+  %tbody
+    - @prices.each do |price|
+      %tr
+        %th= price.date
+        %td= number_to_currency price.high
+        %td= number_to_currency price.low
+        %td= number_to_currency price.close
+        %td= number_to_currency price.adjusted(:close)
