@@ -5,11 +5,11 @@ class PortfolioController < ApplicationController
   end
 
   def benchmark
-    @growth = BenchmarkGrowthPresenter.new(Investment.benchmark, contributions)
+    @growth = BenchmarkGrowthPresenter.new(Investment.benchmark, contributions, normalize_to: 10000)
   end
 
   def principal
-    @growth = BenchmarkGrowthPresenter.new(Investment.cash, contributions)
+    @growth = BenchmarkGrowthPresenter.new(Investment.cash, contributions, normalize_to: 10000)
     render action: 'benchmark'
   end
 
