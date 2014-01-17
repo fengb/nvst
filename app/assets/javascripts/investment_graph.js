@@ -1,7 +1,8 @@
 InvestmentGraph = function(){
-  function Class(target){
+  function Class(target, yAxis){
     this.svg = dimple.newSvg(target, 590, 400)
     this.savedData = []
+    this.yAxis = yAxis
   }
 
   Class.prototype.add = function(data){
@@ -20,7 +21,7 @@ InvestmentGraph = function(){
     var chart = new dimple.chart(this.svg, keepN(this.savedData, 200))
     chart.setBounds(60, 30, 505, 305)
     chart.addCategoryAxis('x', 'date').addOrderRule('Date')
-    chart.addMeasureAxis('y', 'adjusted_close')
+    chart.addMeasureAxis('y', this.yAxis)
     chart.addSeries('investment', dimple.plot.line)
     chart.draw();
     return this;
