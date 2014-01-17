@@ -15,6 +15,10 @@ class InvestmentsController < ApplicationController
     end
   end
 
+  def benchmark
+    @benchmark = BenchmarkPresenter.new(@investment)
+  end
+
   private
   def set_investment
     @investment = Investment.find_by_param(params[:id])

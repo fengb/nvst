@@ -1,6 +1,9 @@
 FengbNvst::Application.routes.draw do
   resources :investments do
-    get 'prices', on: :member
+    member do
+      get 'prices'
+      get 'benchmark'
+    end
   end
 
   devise_for :users

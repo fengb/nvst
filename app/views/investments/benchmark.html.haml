@@ -1,0 +1,5 @@
+%div#growth-wrapper
+  :javascript
+    $.getJSON('#{url_for([:benchmark, @investment])}', function(data){
+      new InvestmentGraph('#growth-wrapper', 'value').add(data)
+    })
