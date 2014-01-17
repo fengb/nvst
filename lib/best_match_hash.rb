@@ -24,6 +24,12 @@ class BestMatchHash
     found ? found[1] : @default
   end
 
+  def each
+    @items.reverse_each do |item|
+      yield *item
+    end
+  end
+
   def keys
     @items.map(&:first).reverse
   end

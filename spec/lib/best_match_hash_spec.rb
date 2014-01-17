@@ -26,6 +26,18 @@ describe BestMatchHash do
     end
   end
 
+  describe '#each' do
+    it 'yields in order' do
+      yielded = []
+      hash.each do |key, value|
+        yielded << [key, value]
+      end
+      expect(yielded.size).to eq(2)
+      expect(yielded[0]).to eq(['2013-01-01', 50])
+      expect(yielded[1]).to eq(['2013-01-05', 60])
+    end
+  end
+
   describe '.sum' do
     it 'returns a special version that sums up values' do
       hash = BestMatchHash.sum('2013-01-03' => 1,
