@@ -1,4 +1,4 @@
-require 'best_match_hash'
+require 'spec_helper'
 
 
 describe BestMatchHash do
