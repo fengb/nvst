@@ -1,0 +1,11 @@
+# Don't put production data in here...
+
+FENGB_NVST_DB_POOL: '5'
+FENGB_NVST_DB_HOST: 'localhost'
+FENGB_NVST_DB_PORT: ''
+FENGB_NVST_DB_NAME: 'fengb_nvst_development'
+FENGB_NVST_DB_USER: 'fengb_nvst'
+FENGB_NVST_DB_PASS: ''
+
+test:
+  FENGB_NVST_DB_NAME: 'fengb_nvst_test'

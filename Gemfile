@@ -1,6 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'rails'
+gem 'figaro', git: 'git://github.com/laserlemon/figaro.git'
 
 # Third Party
 gem 'rest-client'

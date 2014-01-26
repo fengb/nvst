@@ -1,25 +1,13 @@
-development: &development
+default: &default
   adapter:  postgresql
   encoding: unicode
-  pool:     5
-  host:     localhost
-  database: fengb_nvst_development
-  username: fengb_nvst
-  password:
-
-# Warning: The database defined as "test" will be erased and
-# re-generated from your development database when you run "rake".
-# Do not set this db to the same as development or production.
-test: &test
-  <<: *development
-  database: fengb_nvst_test
-
-production:
-  adapter:  postgresql
-  encoding: unicode
-  pool:     5
+  pool:     <%= ENV['FENGB_NVST_DB_POOL'] %>
   host:     <%= ENV['FENGB_NVST_DB_HOST'] %>
   port:     <%= ENV['FENGB_NVST_DB_PORT'] %>
   database: <%= ENV['FENGB_NVST_DB_NAME'] %>
   username: <%= ENV['FENGB_NVST_DB_USER'] %>
   password: <%= ENV['FENGB_NVST_DB_PASS'] %>
+
+development: *default
+test:        *default
+production:  *default
