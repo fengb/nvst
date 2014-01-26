@@ -3,4 +3,4 @@
 
 require File.expand_path('../config/application', __FILE__)
 
-FengbNvst::Application.load_tasks
+Nvst::Application.load_tasks

@@ -1,13 +1,13 @@
 task :jobs => 'jobs:list'
 namespace 'jobs' do
-  desc 'List all fengb jobs'
+  desc 'List all nvst jobs'
   task :list do |t|
     Dir[Rails.root + 'app/jobs/*'].sort.each do |filename|
       puts "rake jobs:run[#{File.basename(filename).chomp('_job.rb')}]"
     end
   end
 
-  desc 'Run a fengb job'
+  desc 'Run nvst job'
   task :run, [:name] => :environment do |t, args|
     filename = args[:name].underscore.sub(/(_job)?$/, '_job')
     fullpath = Rails.root + "app/jobs/#{filename}.rb"

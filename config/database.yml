@@ -1,12 +1,12 @@
 default: &default
   adapter:  postgresql
   encoding: unicode
-  pool:     <%= ENV['FENGB_NVST_DB_POOL'] %>
-  host:     <%= ENV['FENGB_NVST_DB_HOST'] %>
-  port:     <%= ENV['FENGB_NVST_DB_PORT'] %>
-  database: <%= ENV['FENGB_NVST_DB_NAME'] %>
-  username: <%= ENV['FENGB_NVST_DB_USER'] %>
-  password: <%= ENV['FENGB_NVST_DB_PASS'] %>
+  pool:     <%= ENV['NVST_DB_POOL'] %>
+  host:     <%= ENV['NVST_DB_HOST'] %>
+  port:     <%= ENV['NVST_DB_PORT'] %>
+  database: <%= ENV['NVST_DB_NAME'] %>
+  username: <%= ENV['NVST_DB_USER'] %>
+  password: <%= ENV['NVST_DB_PASS'] %>
 
 development: *default
 test:        *default

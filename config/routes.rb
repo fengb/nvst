@@ -1,4 +1,4 @@
-FengbNvst::Application.routes.draw do
+Nvst::Application.routes.draw do
   root to: 'portfolio#index'
 
   resource :portfolio, controller: :portfolio do
