@@ -4,13 +4,13 @@ Devise.setup do |config|
   # The secret key used by Devise. Devise uses this key to generate
   # random tokens. Changing this key will render invalid all existing
   # confirmation, reset password and unlock tokens in the database.
-  config.secret_key = '416dd5d1136932e10c01333f2415a4871a56582c52c7e8320230074ae4294df3211e8598a11536ebf28f425c2cb66dd0622d2ec72f6dbef942f8b390f6357b71'
+  config.secret_key = ENV['NVST_DEVISE_SECRET_KEY']
 
   # ==> Mailer Configuration
   # Configure the e-mail address which will be shown in Devise::Mailer,
   # note that it will be overwritten if you use your own mailer class
   # with default "from" parameter.
-  config.mailer_sender = 'admin@fengb-nvst.com'
+  config.mailer_sender = ENV['NVST_DEVISE_MAILER_SENDER']
 
   # Configure the class responsible to send e-mails.
   # config.mailer = 'Devise::Mailer'
