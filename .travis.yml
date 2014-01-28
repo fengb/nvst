@@ -1,0 +1,8 @@
+language: ruby
+script: 'bundle exec rake'
+before_install:
+  - gem install bundler
+  - createuser -U postgres -s nvst
+rvm:
+  - 2.0.0
+  - 2.1.0
