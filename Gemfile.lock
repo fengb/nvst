@@ -110,6 +110,8 @@ GEM
       coderay (~> 1.0)
       method_source (~> 0.8)
       slop (~> 3.4)
+    quiet_assets (1.0.2)
+      railties (>= 3.1, < 5.0)
     rack (1.5.2)
     rack-pjax (0.7.0)
       nokogiri (~> 1.5)
@@ -215,6 +217,7 @@ DEPENDENCIES
   jquery-rails
   pg
   pry
+  quiet_assets
   rails
   rails_admin
   rest-client
