@@ -1,12 +1,8 @@
-class Admin::YearSummariesController < Admin::BaseController
+class Admin::TaxDocsController < Admin::BaseController
   before_action :set_year_summary, except: [:index]
 
   def index
     @years = [2013]
-  end
-
-  def show
-    render layout: 'application'
   end
 
   private

@@ -18,7 +18,7 @@ Nvst::Application.routes.draw do
 
   devise_for :admin
   namespace :admin do
-    resources :year_summaries do
+    resources :tax_docs do
       member do
         get 'form_1065'
         get 'schedule_d'
