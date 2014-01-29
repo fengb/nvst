@@ -1,42 +1,10 @@
-%h2 Expenses
-%dl
-  - @year_summary.expenses.each do |category, expenses|
-    %dt= category
-    %dd= number_to_currency expenses.sum(&:amount)
+%h2 Form 1065
 
-%h2 Events
+%h2 Deductions
 %dl
-  - @year_summary.events.each do |category, events|
-    %dt= category
-    %dd= number_to_currency events.sum(&:amount)
+  - @year_summary.expense_categories.each_with_index do |category, i|
+    %dt #{i+9}. #{category.capitalize}
+    %dd= number_to_currency @year_summary.expenses(category).sum(&:amount)
 
-%h2 Trades
-%table
-  %thead
-    %tr
-      %th Investment
-      %th Open Date
-      %th Close Date
-      %th Shares
-      %th Cost Basis
-      %th Value
-      %th Realized Gain
-  %tbody
-    - @year_summary.close_transactions.each do |transaction|
-      %tr
-        %th= transaction.investment.symbol
-        %td= transaction.lot.open_date.to_formatted_s
-        %td= transaction.date.to_formatted_s
-        %td= -transaction.shares
-        %td= number_to_currency transaction.cost_basis
-        %td= number_to_currency transaction.value
-        %td= number_to_currency transaction.realized_gain
-  %tfoot
-    %tr
-      %td
-      %td
-      %td
-      %td
-      %th= number_to_currency @year_summary.close_transactions.to_a.sum(&:cost_basis)
-      %th= number_to_currency @year_summary.close_transactions.to_a.sum(&:value)
-      %th= number_to_currency @year_summary.close_transactions.to_a.sum(&:realized_gain)
+  %dt 21. Total
+  %dd= number_to_currency @year_summary.expenses.sum(&:amount)

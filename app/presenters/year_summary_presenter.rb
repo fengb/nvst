@@ -24,11 +24,13 @@ class YearSummaryPresenter
     events['dividend - tax-exempt']
   end
 
-  def expenses
-    @expenses ||= begin
-      expenses = Expense.year(@year)
-      Hash[Expense.category.values.map{|c| [c, expenses.select{|e| e.category == c}]}]
-    end
+  def expense_categories
+    Expense.category.values
+  end
+
+  def expenses(category=nil)
+    @expenses ||= Expense.year(@year).to_a
+    category.nil? ? @expenses : @expenses.select{|e| e.category == category}
   end
 
   def events
