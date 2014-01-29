@@ -1,12 +1,13 @@
 class UserGrowthPresenter
   def initialize(user)
+    @user = user
     @transactions_growth = TransactionsGrowthPresenter.all
     @contributions = user.contributions.order(:date)
-    @user_ownership = UserOwnershipPresenter.new(user)
+    @ownership = OwnershipPresenter.all
   end
 
   def gross_value_at(date)
-    @user_ownership.percent_at(date) * @transactions_growth.value_at(date)
+    @ownership.user_percent(@user, date) * @transactions_growth.value_at(date)
   end
 
   def benchmark_value_at(date)
