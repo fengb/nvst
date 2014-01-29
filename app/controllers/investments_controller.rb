@@ -1,4 +1,4 @@
-class InvestmentsController < ApplicationController
+class InvestmentsController < LoggedInController
   before_action :set_investment
 
   def show
