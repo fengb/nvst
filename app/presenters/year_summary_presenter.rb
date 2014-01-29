@@ -3,6 +3,11 @@ class YearSummaryPresenter
     @year = year
   end
 
+  def users
+    # FIXME: return active users
+    User.all
+  end
+
   def interest
     events['interest']
   end
@@ -34,6 +39,6 @@ class YearSummaryPresenter
   end
 
   def close_transactions
-    @close_transactions ||= Transaction.year(@year).tracked.close.order(:date)
+    @close_transactions ||= Transaction.year(@year).tracked.close.order(:date).to_a
   end
 end

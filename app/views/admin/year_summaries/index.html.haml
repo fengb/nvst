@@ -1,3 +1,7 @@
 %ul
   - @years.each do |year|
-    %li= link_to year, admin_year_summary_path(year)
+    %li
+      = year
+      = link_to 'Form 1065',  id: year, action: :form_1065
+      = link_to 'Schedule D', id: year, action: :schedule_d
+      = link_to 'Schedule K', id: year, action: :schedule_k

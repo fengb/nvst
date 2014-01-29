@@ -1,0 +1,54 @@
+%table
+  %thead
+    %tr
+      %th Expenses
+    %tr
+      %th Category
+      %th Total
+      - @year_summary.users.each do |user|
+        %th= user.email
+  %tbody
+    - @year_summary.expenses.each do |category, expenses|
+      %tr
+        %th= category
+        %td= number_to_currency expenses.sum(&:amount)
+
+  %thead
+    %tr
+      %th Events
+  %tbody
+    - @year_summary.events.each do |category, events|
+      %tr
+        %th= category
+        %td= number_to_currency events.sum(&:amount)
+
+%h2 Trades
+%table
+  %thead
+    %tr
+      %th Investment
+      %th Open Date
+      %th Close Date
+      %th Shares
+      %th Cost Basis
+      %th Value
+      %th Realized Gain
+  %tbody
+    - @year_summary.close_transactions.each do |transaction|
+      %tr
+        %th= transaction.investment.symbol
+        %td= transaction.lot.open_date.to_formatted_s
+        %td= transaction.date.to_formatted_s
+        %td= -transaction.shares
+        %td= number_to_currency transaction.cost_basis
+        %td= number_to_currency transaction.value
+        %td= number_to_currency transaction.realized_gain
+  %tfoot
+    %tr
+      %td
+      %td
+      %td
+      %td
+      %th= number_to_currency @year_summary.close_transactions.sum(&:cost_basis)
+      %th= number_to_currency @year_summary.close_transactions.sum(&:value)
+      %th= number_to_currency @year_summary.close_transactions.sum(&:realized_gain)

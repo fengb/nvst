@@ -18,7 +18,13 @@ Nvst::Application.routes.draw do
 
   devise_for :admin
   namespace :admin do
-    resources :year_summaries
+    resources :year_summaries do
+      member do
+        get 'form_1065'
+        get 'schedule_d'
+        get 'schedule_k'
+      end
+    end
   end
   mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
 end
