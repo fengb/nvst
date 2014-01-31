@@ -7,13 +7,7 @@
       - @schedule_k.users.each do |user|
         %th= user.email
   %tbody
-    %tr
-      %th Ordinary income
-      %td= number_to_currency -@schedule_k.expenses.sum(&:amount)
-    - @schedule_k.events.each do |category, events|
+    - @schedule_k.categories.each do |category|
       %tr
         %th= category
-        %td= number_to_currency events.sum(&:amount)
-    %tr
-      %th Short-term capital gain
-      %td= number_to_currency @schedule_k.close_transactions.sum(&:realized_gain)
+        %td= number_to_currency @schedule_k.value(category)
