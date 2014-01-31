@@ -22,6 +22,6 @@
   %tfoot
     %tr
       %td{colspan: 4}
-      %th= number_to_currency @schedule_d.close_transactions.to_a.sum(&:value)
-      %th= number_to_currency @schedule_d.close_transactions.to_a.sum(&:cost_basis)
-      %th= number_to_currency @schedule_d.close_transactions.to_a.sum(&:realized_gain)
+      %th= number_to_currency @schedule_d.close_transactions.sum(&:value)
+      %th= number_to_currency @schedule_d.close_transactions.sum(&:cost_basis)
+      %th= number_to_currency @schedule_d.close_transactions.sum(&:realized_gain)
