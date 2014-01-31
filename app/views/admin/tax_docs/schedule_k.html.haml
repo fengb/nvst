@@ -11,3 +11,5 @@
       %tr
         %th= category
         %td= number_to_currency @schedule_k.value(category)
+        - @schedule_k.users.each do |user|
+          %td= number_to_currency @schedule_k.value(category, user)

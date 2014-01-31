@@ -13,20 +13,25 @@ module TaxDocs
       ['ordinary_income', *Event.category.values, 'short_term_capital_gain']
     end
 
-    def value(category)
-      if self.respond_to?(category)
-        self.send(category)
+    def value(category, user=nil)
+      raw = if self.respond_to?(category)
+              self.send(category)
+            else
+              events[category].map{|e| [e.date, e.amount]}
+            end
+      if user
+        raw.sum{|e| user_percent(user, e.first)*e.last}
       else
-        events[category].sum(&:amount)
+        raw.sum(&:last)
       end
     end
 
     def ordinary_income
-      expenses.sum(:amount)
+      expenses.map{|e| [e.date, -e.amount]}
     end
 
     def short_term_capital_gain
-      close_transactions.sum(&:realized_gain)
+      close_transactions.map{|t| [t.date, t.realized_gain]}
     end
 
     private
@@ -43,6 +48,11 @@ module TaxDocs
 
     def close_transactions
       @close_transactions ||= Transaction.year(@year).tracked.close.order(:date).to_a
+    end
+
+    def user_percent(user, date)
+      @ownership ||= OwnershipPresenter.all
+      @ownership.user_percent(user, date)
     end
   end
 end
