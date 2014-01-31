@@ -10,7 +10,7 @@ class Admin::TaxDocsController < Admin::BaseController
   end
 
   def schedule_k
-    @schedule_k = ScheduleKPresenter.new(year)
+    @schedule_k = TaxDocs::ScheduleKPresenter.new(year)
   end
 
   private
@@ -18,7 +18,7 @@ class Admin::TaxDocsController < Admin::BaseController
     if year.blank?
       return redirect_to '/admin'
     end
-    @year_summary = YearSummaryPresenter.new(year)
+    @year_summary = TaxDocs::YearSummaryPresenter.new(year)
   end
 
   def year
