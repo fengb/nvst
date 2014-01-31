@@ -5,6 +5,10 @@ class Admin::TaxDocsController < Admin::BaseController
     @years = [2013]
   end
 
+  def show
+    redirect_to action: :index, anchor: "y#{year}"
+  end
+
   def schedule_k
     @schedule_k = ScheduleKPresenter.new(year)
   end

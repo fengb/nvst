@@ -1,6 +1,6 @@
 %ul
   - @years.each do |year|
-    %li
+    %li{id: "y#{year}"}
       = year
       = link_to 'Form 1065',  id: year, action: :form_1065
       = link_to 'Schedule D', id: year, action: :schedule_d
