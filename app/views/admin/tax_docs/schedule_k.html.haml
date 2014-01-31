@@ -4,16 +4,16 @@
     %tr
       %th Category
       %th Total
-      - @year_summary.users.each do |user|
+      - @schedule_k.users.each do |user|
         %th= user.email
   %tbody
     %tr
       %th Ordinary income
-      %td= number_to_currency -@year_summary.expenses.sum(&:amount)
-    - @year_summary.events.each do |category, events|
+      %td= number_to_currency -@schedule_k.expenses.sum(&:amount)
+    - @schedule_k.events.each do |category, events|
       %tr
         %th= category
         %td= number_to_currency events.sum(&:amount)
     %tr
       %th Short-term capital gain
-      %td= number_to_currency @year_summary.close_transactions.sum(&:realized_gain)
+      %td= number_to_currency @schedule_k.close_transactions.sum(&:realized_gain)
