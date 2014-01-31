@@ -2,9 +2,9 @@
 
 %h2 Deductions
 %dl
-  - @year_summary.expense_categories.each_with_index do |category, i|
+  - @form_1065.expense_categories.each_with_index do |category, i|
     %dt #{i+9}. #{category.capitalize}
-    %dd= number_to_currency @year_summary.expenses(category).sum(&:amount)
+    %dd= number_to_currency @form_1065.expenses(category).sum(&:amount)
 
   %dt 21. Total
-  %dd= number_to_currency @year_summary.expenses.sum(&:amount)
+  %dd= number_to_currency @form_1065.expenses.sum(&:amount)

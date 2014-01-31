@@ -1,5 +1,5 @@
 module TaxDocs
-  class YearSummaryPresenter
+  class ScheduleDPresenter
     def initialize(year)
       @year = year
     end

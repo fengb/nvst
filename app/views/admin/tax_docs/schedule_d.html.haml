@@ -10,7 +10,7 @@
       %th Cost Basis
       %th Realized Gain
   %tbody
-    - @year_summary.close_transactions.each do |transaction|
+    - @schedule_d.close_transactions.each do |transaction|
       %tr
         %th= transaction.investment.symbol
         %td= transaction.lot.open_date.to_formatted_s
@@ -22,6 +22,6 @@
   %tfoot
     %tr
       %td{colspan: 4}
-      %th= number_to_currency @year_summary.close_transactions.to_a.sum(&:value)
-      %th= number_to_currency @year_summary.close_transactions.to_a.sum(&:cost_basis)
-      %th= number_to_currency @year_summary.close_transactions.to_a.sum(&:realized_gain)
+      %th= number_to_currency @schedule_d.close_transactions.to_a.sum(&:value)
+      %th= number_to_currency @schedule_d.close_transactions.to_a.sum(&:cost_basis)
+      %th= number_to_currency @schedule_d.close_transactions.to_a.sum(&:realized_gain)
