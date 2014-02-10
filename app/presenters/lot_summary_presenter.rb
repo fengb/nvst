@@ -1,4 +1,6 @@
 class LotSummaryPresenter
+  attr_reader :lots
+
   def self.all
     Lot.outstanding.includes(:transactions).group_by(&:investment).map{|inv, lots| self.new(lots)}
   end
@@ -11,24 +13,20 @@ class LotSummaryPresenter
     unique_by(:investment)
   end
 
-  def purchase_date
-    unique_by(:purchase_date)
+  def open_date
+    unique_by(:open_date)
   end
 
   def outstanding_shares
     sum_by(:outstanding_shares)
   end
 
-  def purchase_price
-    unique_by(:purchase_price)
+  def open_price
+    unique_by(:open_price)
   end
 
   def current_price
     unique_by(:current_price)
-  end
-
-  def purchase_value
-    sum_by(:purchase_value)
   end
 
   def current_value
@@ -40,7 +38,7 @@ class LotSummaryPresenter
   end
 
   def unrealized_gain_percent
-    unrealized_gain / purchase_value
+    unrealized_gain / lots.sum{|lot| lot.outstanding_shares * lot.open_price}
   end
 
   private

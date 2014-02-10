@@ -23,10 +23,6 @@ class Lot < ActiveRecord::Base
     ).where("t.outstanding_shares #{op} 0")
   }
 
-  def open_value
-    transactions.open.sum(&:value)
-  end
-
   def outstanding_shares
     transactions.sum('shares')
   end
@@ -48,6 +44,6 @@ class Lot < ActiveRecord::Base
   end
 
   def unrealized_gain_percent
-    unrealized_gain / open_value
+    unrealized_gain / (outstanding_shares * open_price)
   end
 end

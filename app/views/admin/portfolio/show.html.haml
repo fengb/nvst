@@ -1,0 +1,28 @@
+%table
+  %thead
+    %tr
+      %th Investment
+      %th Purchase Date
+      %th Purchase Price
+      %th Current Price
+      %th Outstanding Shares
+      %th{colspan: 2} Unrealized Gain
+  - @lot_summaries.each do |summary|
+    %tbody
+      %tr.summary
+        %th{rowspan: summary.lots.size+1}= summary.investment.symbol
+        %td= summary.open_date
+        %td= number_to_currency summary.open_price
+        %td= number_to_currency summary.current_price
+        %td= summary.outstanding_shares
+        %td= number_to_currency summary.unrealized_gain
+        %td= number_to_percentage 100*summary.unrealized_gain_percent
+      - if summary.lots.size > 1
+        - summary.lots.each do |lot|
+          %tr.lot
+            %td= lot.open_date
+            %td= number_to_currency lot.open_price
+            %td= number_to_currency lot.current_price
+            %td= lot.outstanding_shares
+            %td= number_to_currency lot.unrealized_gain
+            %td= number_to_percentage 100*lot.unrealized_gain_percent

@@ -18,6 +18,8 @@ Nvst::Application.routes.draw do
 
   devise_for :admin
   namespace :admin do
+    resource :portfolio, controller: :portfolio
+
     resources :tax_docs do
       member do
         get 'form_1065'
