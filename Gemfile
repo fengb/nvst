@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 
 gem 'rails'
 gem 'figaro', git: 'git://github.com/laserlemon/figaro.git'
+gem 'unicorn'
 
 # Third Party
 gem 'rest-client'
