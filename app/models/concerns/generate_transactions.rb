@@ -16,9 +16,7 @@ module GenerateTransactions
 
   class << self
     def transact!(data)
-      if corresponding = Lot.find_by(investment: data[:investment],
-                                     open_date: data[:date],
-                                     open_price: data[:price])
+      if corresponding = Lot.corresponding(data)
         return [corresponding.transactions.create!(data.except(:investment))]
       end
 

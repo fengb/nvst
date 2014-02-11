@@ -23,6 +23,12 @@ class Lot < ActiveRecord::Base
     ).where("t.outstanding_shares #{op} 0")
   }
 
+  def self.corresponding(options)
+    Lot.find_by(investment: options[:investment],
+                open_date:  options[:date],
+                open_price: options[:price])
+  end
+
   def outstanding_shares
     transactions.sum('shares')
   end
