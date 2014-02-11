@@ -2,7 +2,7 @@ class LotSummaryPresenter
   attr_reader :lots
 
   def self.all
-    Lot.outstanding.includes(:transactions).group_by(&:investment).map{|inv, lots| self.new(lots)}
+    Lot.outstanding.includes(:transactions).order(:open_date).group_by(&:investment).map{|inv, lots| self.new(lots)}
   end
 
   def initialize(lots)
