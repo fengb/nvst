@@ -71,15 +71,17 @@ describe GenerateTransactions do
       expect_all(transactions[0], data)
     end
 
-    context 'existing lot with same open data' do
-      let!(:existing) do
+    context 'corresponding lot' do
+      let(:existing) do
         create_transaction!(investment: investment,
                             date: data[:date],
                             shares: -10,
                             price: data[:price])
       end
 
-      it 'reuses a lot if found corresponding lot' do
+      before { Lot.stub(corresponding: existing.lot) }
+
+      it 'reuses the lot' do
         transactions = GenerateTransactions.transact!(data)
         expect(transactions.size).to eq(1)
         expect_all(transactions[0], data)
