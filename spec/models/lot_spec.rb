@@ -1,4 +1,25 @@
 describe Lot do
+  describe '.corresponding' do
+    let(:lot)    { FactoryGirl.create(:lot) }
+    let(:shares) { lot.transactions[0].shares }
+    let(:data)   { {investment: lot.investment,
+                    date:       lot.open_date,
+                    price:      lot.open_price,
+                    shares:     shares } }
+
+    it 'finds existing when all data matches' do
+      expect(Lot.corresponding(data)).to eq(lot)
+    end
+
+    it 'finds existing when shares have same +/- sign' do
+      expect(Lot.corresponding(data.merge shares: shares / shares.abs)).to eq(lot)
+    end
+
+    it 'does not find existing when shares have opposite sign' do
+      expect(Lot.corresponding(data.merge shares: -shares)).to be(nil)
+    end
+  end
+
   context 'gains' do
     let(:lot) { FactoryGirl.build(:lot, open_price: 100) }
     let!(:transactions) do

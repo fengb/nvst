@@ -24,9 +24,14 @@ class Lot < ActiveRecord::Base
   }
 
   def self.corresponding(options)
-    Lot.find_by(investment: options[:investment],
-                open_date:  options[:date],
-                open_price: options[:price])
+    lot = Lot.find_by(investment: options[:investment],
+                      open_date:  options[:date],
+                      open_price: options[:price])
+    if lot && options[:shares].angle == lot.transactions.first.shares.angle
+      lot
+    else
+      nil
+    end
   end
 
   def outstanding_shares
