@@ -6,8 +6,9 @@ class Ownership < ActiveRecord::Base
   end
 
   def self.new_unit_per_amount_multiplier_at(date)
-    # Assume all contributions and expenses are incurred at once on the same day
-    total_value = TransactionsGrowthPresenter.all.value_at(date) - Contribution.where(date: date).value + Expense.where(date: date).value
+    portfolio = TransactionsGrowthPresenter.all
+    # Assume all cashflows are incurred at once on the same day
+    total_value = portfolio.value_at(date) - portfolio.cashflow_at(date)
     return 1 if total_value == 0
 
     # Assume all unit movement are incurred at once on the same day

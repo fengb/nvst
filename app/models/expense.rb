@@ -21,12 +21,16 @@ class Expense < ActiveRecord::Base
   def raw_transactions_data
     [{investment: Investment.cash,
       date:       date,
-      shares:     -amount,
+      shares:     cashflow_amount,
       price:      1}]
   end
 
   def self.value
     sum('amount')
+  end
+
+  def cashflow_amount
+    -amount
   end
 
   def value

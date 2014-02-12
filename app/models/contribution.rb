@@ -23,6 +23,10 @@ class Contribution < ActiveRecord::Base
       units: amount * Ownership.new_unit_per_amount_multiplier_at(date)}]
   end
 
+  def cashflow_amount
+    amount
+  end
+
   def value
     amount
   end

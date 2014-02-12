@@ -33,11 +33,11 @@ describe Ownership do
       let!(:existing) { FactoryGirl.create(:ownership, units: 50) }
 
       it 'is total units / current total value * contribution amount' do
-        TransactionsGrowthPresenter.stub(all: double(value_at: 100))
+        TransactionsGrowthPresenter.stub(all: double(value_at: 100, cashflow_at: 0))
 
         # We contributed 50 in the past and it grew to 100.
         # New contributions should have 1/2 the unit value
-        expect(Ownership.new_unit_per_amount_multiplier_at existing.date + 1).to eq(0.5)
+        expect(Ownership.new_unit_per_amount_multiplier_at(existing.date + 1)).to eq(0.5)
       end
     end
   end

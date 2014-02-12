@@ -11,11 +11,11 @@ class TransactionsGrowthPresenter
     transactions.group_by(&:investment).each do |inv, transactions|
       @shares_matchers[inv] = BestMatchHash.sum(transactions.map{|t| [t.date, t.shares]})
     end
-    @principal_matcher = BestMatchHash.sum(cashflows.map{|c| [c.date, c.amount]})
+    @principal_matcher = BestMatchHash.sum(cashflows.map{|c| [c.date, c.cashflow_amount]})
     @cashflow_amounts = {}
-    cashflows.each do |cashflow|
-      @cashflow_amounts[cashflow.date] ||= 0
-      @cashflow_amounts[cashflow.date] += cashflow.amount
+    cashflows.each do |cf|
+      @cashflow_amounts[cf.date] ||= 0
+      @cashflow_amounts[cf.date] += cf.cashflow_amount
     end
   end
 

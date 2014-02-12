@@ -35,9 +35,9 @@ describe TransactionsGrowthPresenter do
   context 'cashflows' do
     subject do
       TransactionsGrowthPresenter.new(cashflows: [
-        double(date: '2013-01-04', amount: 10),
-        double(date: '2013-01-05', amount: 100),
-        double(date: '2013-01-05', amount: 200)
+        double(date: '2013-01-04', cashflow_amount: 10),
+        double(date: '2013-01-05', cashflow_amount: 100),
+        double(date: '2013-01-05', cashflow_amount: 200)
       ])
     end
 
