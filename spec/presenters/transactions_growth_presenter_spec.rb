@@ -1,10 +1,10 @@
 require 'spec_helper'
 
 
-describe TransactionsGrowthPresenter do
+describe PortfolioPresenter do
   describe '#value_at' do
     let(:presenter) do
-      TransactionsGrowthPresenter.new(transactions: [
+      PortfolioPresenter.new(transactions: [
         double(investment: 'FOO', date: '2013-01-02', shares: 100),
         double(investment: 'FOO', date: '2013-01-03', shares: 100),
         double(investment: 'BAR', date: '2013-01-04', shares: 100)
@@ -34,7 +34,7 @@ describe TransactionsGrowthPresenter do
 
   context 'cashflows' do
     subject do
-      TransactionsGrowthPresenter.new(cashflows: [
+      PortfolioPresenter.new(cashflows: [
         double(date: '2013-01-04', cashflow_amount: 10),
         double(date: '2013-01-05', cashflow_amount: 100),
         double(date: '2013-01-05', cashflow_amount: 200)

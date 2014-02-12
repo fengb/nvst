@@ -1,4 +1,4 @@
-class TransactionsGrowthPresenter
+class PortfolioPresenter
   def self.all
     self.new(transactions: Transaction.includes(lot: :investment),
              cashflows:    Contribution.all + Expense.all)
