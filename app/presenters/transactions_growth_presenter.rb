@@ -12,9 +12,10 @@ class TransactionsGrowthPresenter
   end
 
   def value_at(date)
-    investments.map{|i| value_for(i, date)}.sum
+    investments.sum{|i| value_for(i, date)}
   end
 
+  private
   def value_for(investment, date)
     shares = shares_for(investment, date)
     shares.zero? ? 0 : shares * price_for(investment, date)
@@ -28,7 +29,6 @@ class TransactionsGrowthPresenter
     @shares_matchers[investment][date]
   end
 
-  private
   def investments
     @shares_matchers.keys
   end
