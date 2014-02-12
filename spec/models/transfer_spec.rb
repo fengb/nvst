@@ -1,19 +1,21 @@
 describe Transfer do
   describe '#generate_ownerships!' do
-    let(:transfer) { Transfer.create(date:      Date.today - 5,
-                                     amount:    1942.12,
-                                     from_user: FactoryGirl.create(:user),
-                                     to_user:   FactoryGirl.create(:user)) }
+    subject do
+      Transfer.create(date:      Date.today - 5,
+                      amount:    1942.12,
+                      from_user: FactoryGirl.create(:user),
+                      to_user:   FactoryGirl.create(:user))
+    end
 
     it 'creates both from and to ownerships' do
-      transfer.generate_ownerships!
-      expect(transfer.from_ownership.user).to eq(transfer.from_user)
-      expect(transfer.to_ownership.user).to eq(transfer.to_user)
+      subject.generate_ownerships!
+      expect(subject.from_ownership.user).to eq(subject.from_user)
+      expect(subject.to_ownership.user).to eq(subject.to_user)
     end
 
     it 'sums generated ownership units to 0' do
-      transfer.generate_ownerships!
-      expect(transfer.ownerships.sum(:units)).to eq(0)
+      subject.generate_ownerships!
+      expect(subject.ownerships.sum(:units)).to eq(0)
     end
   end
 end

@@ -7,36 +7,36 @@ describe GenerateTransactions do
       include GenerateTransactions
     end
 
-    let(:instance) { TestClass.new(transactions: [], raw_transactions_data: []) }
+    subject { TestClass.new(transactions: [], raw_transactions_data: []) }
 
     context 'already has transactions' do
-      before { instance.transactions = [1] }
+      before { subject.transactions = [1] }
 
       it 'returns nil' do
-        expect(instance.generate_transactions!).to be(nil)
+        expect(subject.generate_transactions!).to be(nil)
       end
 
       it 'does absolutely nothing' do
         GenerateTransactions.should_not_receive(:transact!)
-        instance.generate_transactions!
+        subject.generate_transactions!
       end
     end
 
     it 'passes raw transaction data to GenerateTransactions.transact!' do
-      instance.raw_transactions_data = [4, 2, 5]
+      subject.raw_transactions_data = [4, 2, 5]
       GenerateTransactions.should_receive(:transact!).with(4).and_return([4])
       GenerateTransactions.should_receive(:transact!).with(2).and_return([2])
       GenerateTransactions.should_receive(:transact!).with(5).and_return([5])
 
-      instance.generate_transactions!
+      subject.generate_transactions!
     end
 
     it 'adds GenerateTransactions.transact! returned values to transactions' do
-      instance.raw_transactions_data = [:a, :z]
+      subject.raw_transactions_data = [:a, :z]
       GenerateTransactions.stub(transact!: [1, 2])
 
-      instance.generate_transactions!
-      expect(instance.transactions).to eq([1, 2, 1, 2])
+      subject.generate_transactions!
+      expect(subject.transactions).to eq([1, 2, 1, 2])
     end
   end
 

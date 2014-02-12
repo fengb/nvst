@@ -7,18 +7,18 @@ describe GenerateOwnerships do
       include GenerateOwnerships
     end
 
-    let(:instance) { TestClass.new(ownerships: [], raw_ownerships_data: []) }
+    subject { TestClass.new(ownerships: [], raw_ownerships_data: []) }
 
     context 'already has ownerships' do
-      before { instance.ownerships = [1] }
+      before { subject.ownerships = [1] }
 
       it 'returns nil' do
-        expect(instance.generate_ownerships!).to be(nil)
+        expect(subject.generate_ownerships!).to be(nil)
       end
 
       it 'does absolutely nothing' do
-        instance.ownerships.should_not_receive(:create!)
-        instance.generate_ownerships!
+        subject.ownerships.should_not_receive(:create!)
+        subject.generate_ownerships!
       end
     end
   end

@@ -14,7 +14,7 @@ describe Trade do
   end
 
   context 'fee calculations' do
-    let(:trade) do
+    subject do
       Trade.new.tap do |t|
         t.stub(raw_sell_value: 150,
                raw_buy_value: 145)
@@ -23,31 +23,31 @@ describe Trade do
 
     describe '#fee' do
       it 'is raw_sell_value - raw_buy_value' do
-        expect(trade.fee).to eq(trade.raw_sell_value - trade.raw_buy_value)
+        expect(subject.fee).to eq(subject.raw_sell_value - subject.raw_buy_value)
       end
     end
 
     describe '#sell_value' do
       it 'is raw_sell_value if buy_investment is not cash' do
-        trade.stub(buy_investment: double(cash?: false))
-        expect(trade.sell_value).to eq(trade.raw_sell_value)
+        subject.stub(buy_investment: double(cash?: false))
+        expect(subject.sell_value).to eq(subject.raw_sell_value)
       end
 
       it 'is raw_sell_value - fee if buy_investment is cash' do
-        trade.stub(buy_investment: double(cash?: true))
-        expect(trade.sell_value).to eq(trade.raw_sell_value - trade.fee)
+        subject.stub(buy_investment: double(cash?: true))
+        expect(subject.sell_value).to eq(subject.raw_sell_value - subject.fee)
       end
     end
 
     describe '#buy_value' do
       it 'is raw_buy_value + fee if buy_investment is not cash' do
-        trade.stub(buy_investment: double(cash?: false))
-        expect(trade.buy_value).to eq(trade.raw_buy_value + trade.fee)
+        subject.stub(buy_investment: double(cash?: false))
+        expect(subject.buy_value).to eq(subject.raw_buy_value + subject.fee)
       end
 
       it 'is raw_buy_value if buy_investment is cash' do
-        trade.stub(buy_investment: double(cash?: true))
-        expect(trade.buy_value).to eq(trade.raw_buy_value)
+        subject.stub(buy_investment: double(cash?: true))
+        expect(subject.buy_value).to eq(subject.raw_buy_value)
       end
     end
 
