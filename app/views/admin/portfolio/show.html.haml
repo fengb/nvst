@@ -6,6 +6,7 @@
       %th Purchase Price
       %th Current Price
       %th Outstanding Shares
+      %th Current Value
       %th{colspan: 2} Unrealized Gain
   - @lot_summaries.each do |summary|
     %tbody
@@ -15,6 +16,7 @@
         %td= number_to_currency summary.open_price
         %td= number_to_currency summary.current_price
         %td= summary.outstanding_shares
+        %td= number_to_currency summary.current_value
         %td= number_to_currency summary.unrealized_gain
         %td= number_to_percentage 100*summary.unrealized_gain_percent
       - if summary.lots.size > 1
@@ -24,5 +26,6 @@
             %td= number_to_currency lot.open_price
             %td= number_to_currency lot.current_price
             %td= lot.outstanding_shares
+            %td= number_to_currency lot.current_value
             %td= number_to_currency lot.unrealized_gain
             %td= number_to_percentage 100*lot.unrealized_gain_percent
