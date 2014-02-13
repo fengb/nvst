@@ -1,7 +1,7 @@
 %div#growth-wrapper
   :javascript
     var graph = new InvestmentGraph('#growth-wrapper', 'value')
-    $.getJSON('/portfolio/benchmark', function(data){
+    $.getJSON('/', function(data){
       graph.add(data.portfolio, 'Portfolio')
       graph.add(data.benchmark, 'S&P 500')
     })

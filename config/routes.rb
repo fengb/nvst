@@ -1,12 +1,5 @@
 Nvst::Application.routes.draw do
-  root to: 'portfolio#index'
-
-  resource :portfolio, controller: :portfolio do
-    member do
-      get 'benchmark'
-      get 'principal'
-    end
-  end
+  root to: 'portfolio#show'
 
   resources :investments do
     member do
