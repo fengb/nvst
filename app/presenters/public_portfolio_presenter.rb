@@ -13,18 +13,21 @@ class PublicPortfolioPresenter
   private
   def adjusted_principal_at(date)
     @adjustment_matcher ||= begin
+      previous_adjusted = 1
       adjustments = @portfolio.cashflows.map do |date, amount|
         current_principal = @portfolio.principal_at(date)
         previous_principal = current_principal - amount
         if previous_principal.zero?
-          adjusted_principal = amount
+          new_adjusted = amount
         else
           current_value = @portfolio.value_at(date)
           previous_value = current_value - amount
-          adjusted_principal = current_value / (previous_value / previous_principal)
+          #new_adjusted = previous_adjusted + (current_value - previous_value) / (previous_value / previous_adjusted)
+          new_adjusted = previous_adjusted + (current_value - previous_value) * previous_adjusted / previous_value
         end
+        previous_adjusted = new_adjusted
 
-        [date, adjusted_principal]
+        [date, new_adjusted]
       end
       BestMatchHash.new(adjustments)
     end
