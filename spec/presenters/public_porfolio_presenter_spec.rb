@@ -11,6 +11,7 @@ describe PublicPortfolioPresenter do
       {date: '2013-02-03'.to_date, value: 14, principal: 12, cashflow: 10},
       {date: '2013-02-04'.to_date, value: 21, principal: 12, cashflow:  0},
       {date: '2013-02-05'.to_date, value: 24, principal: 15, cashflow:  3},
+      {date: '2013-02-06'.to_date, value: 54, principal: 21, cashflow:  6},
     ])
   end
 
@@ -35,8 +36,12 @@ describe PublicPortfolioPresenter do
       expect(subject.gross_value_at('2013-02-04'.to_date)).to eq(normalize_to*3)
     end
 
-    it 'accounts for two adjustments' do
+    it 'accounts for two cashflows' do
       expect(subject.gross_value_at('2013-02-05'.to_date)).to eq(normalize_to*3)
+    end
+
+    it 'accounts for concurrent growth and cashflow' do
+      expect(subject.gross_value_at('2013-02-06'.to_date)).to eq(normalize_to*6)
     end
   end
 end
