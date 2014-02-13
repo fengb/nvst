@@ -7,7 +7,7 @@ class PortfolioController < ApplicationController
   end
 
   def principal
-    @growth = BenchmarkGrowthPresenter.new(Investment.cash, contributions, normalize_to: 10000)
+    @growth = PublicPortfolioPresenter.all(10000)
     render action: 'benchmark'
   end
 

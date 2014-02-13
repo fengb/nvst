@@ -1,7 +1,20 @@
 class PublicPortfolioPresenter
+  def self.all(normalize_to)
+    self.new(PortfolioPresenter.all, normalize_to)
+  end
+
   def initialize(portfolio, normalize_to)
     @portfolio = portfolio
     @normalize_to = normalize_to
+  end
+
+  def dates
+    # FIXME: tap into portfolio instead
+    benchmark_price_matcher.keys
+  end
+
+  def value_at(date)
+    gross_value_at(date) - fee_at(date)
   end
 
   def gross_value_at(date)
@@ -10,7 +23,23 @@ class PublicPortfolioPresenter
     @normalize_to * pv / adjusted_principal_at(date)
   end
 
+  def fee_at(date)
+    [(gross_value_at(date) - benchmark_value_at(date)) / 2, 0].max
+  end
+
+  def benchmark_value_at(date)
+    benchmark_shares * benchmark_price_matcher[date]
+  end
+
   private
+  def benchmark_shares
+    @benchmark_shares ||= @normalize_to / benchmark_price_matcher[@portfolio.start_date]
+  end
+
+  def benchmark_price_matcher
+    @benchmark_price_matcher ||= Investment.benchmark.price_matcher(@portfolio.start_date)
+  end
+
   def adjusted_principal_at(date)
     @adjustment_matcher ||= begin
       previous_adjusted = 1

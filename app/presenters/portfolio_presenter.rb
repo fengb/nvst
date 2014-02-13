@@ -19,6 +19,10 @@ class PortfolioPresenter
     end
   end
 
+  def start_date
+    @cashflow_amounts.keys.first
+  end
+
   def value_at(date)
     investments.sum{|i| value_for(i, date)}
   end
@@ -29,6 +33,10 @@ class PortfolioPresenter
 
   def cashflow_at(date)
     @cashflow_amounts[date] || 0
+  end
+
+  def cashflows
+    @cashflow_amounts
   end
 
   private
@@ -50,10 +58,10 @@ class PortfolioPresenter
   end
 
   def price_matcher(investment)
-    @price_matchers[investment] ||= investment.price_matcher(first_date_for(investment))
+    @price_matchers[investment] ||= investment.price_matcher(start_date_for(investment))
   end
 
-  def first_date_for(investment)
+  def start_date_for(investment)
     @shares_matchers[investment].keys.first
   end
 end
