@@ -5,7 +5,7 @@ InvestmentGraph = function(){
     this.yAxis = yAxis
   }
 
-  Class.prototype.add = function(name, data){
+  Class.prototype.add = function(data, name){
     for(var i=0; i < data.length; i++){
       data[i].name = name
     }
