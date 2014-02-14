@@ -9,5 +9,6 @@ class Admin::UserSummariesController < Admin::BaseController
     year = params[:year]
     user = User.find(params[:user_id])
     @user_summary = YearUserSummaryPresenter.new(year, user)
+    render 'user/summary'
   end
 end

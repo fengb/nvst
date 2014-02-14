@@ -3,6 +3,10 @@ Nvst::Application.routes.draw do
 
   resource :portfolio, controller: :portfolio
 
+  controller :user do
+    get 'summary/:year', action: :summary
+  end
+
   devise_for :users
 
   devise_for :admin
