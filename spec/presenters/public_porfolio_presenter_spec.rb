@@ -5,7 +5,7 @@ describe PublicPortfolioPresenter do
   subject { PublicPortfolioPresenter.new(portfolio, normalize_to) }
   let(:normalize_to) { 1000 }
   let(:portfolio) do
-    PortfolioPresenter::Stub.new([
+    Stubs::PortfolioPresenter.new([
       {date: '2013-02-01'.to_date, value:  2, principal:  2, cashflow:  2},
       {date: '2013-02-02'.to_date, value:  4, principal:  2, cashflow:  0},
       {date: '2013-02-03'.to_date, value: 14, principal: 12, cashflow: 10},
