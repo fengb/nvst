@@ -1,16 +1,5 @@
-InvestmentGraph = function(){
-  function Class(target, yAxis){
-    this.target = target
-    this.savedData = {}
-    this.yAxis = yAxis
-  }
-
-  Class.prototype.add = function(data, name){
-    for(var i=0; i < data.length; i++){
-      data[i].name = name
-    }
-    this.savedData[name] = data
-  }
+var InvestmentGraph = function(target, yAxis){
+  var savedData = {}
 
   function keepN(array, n){
     var match = array.length / n
@@ -19,24 +8,34 @@ InvestmentGraph = function(){
     })
   }
 
-  Class.prototype.data = function(){
+  function drawData(){
     var data = []
-    for(var name in this.savedData){
-      data = data.concat(keepN(this.savedData[name], 200))
+    for(var name in savedData){
+      data = data.concat(keepN(savedData[name], 200))
     }
     return data
   }
 
-  Class.prototype.render = function(){
-    var svg = dimple.newSvg(this.target, 590, 400)
-    var chart = new dimple.chart(svg, this.data())
-    chart.setBounds(60, 30, 505, 305)
-    chart.addCategoryAxis('x', 'date').addOrderRule('Date')
-    chart.addMeasureAxis('y', this.yAxis)
-    chart.addSeries('name', dimple.plot.line)
-    chart.draw()
-    return this
+  var self = {
+    add: function(name, data){
+      for(var i=0; i < data.length; i++){
+        data[i].name = name
+      }
+      savedData[name] = data
+      return self
+    },
+
+    render: function(){
+      var svg = dimple.newSvg(target, 590, 400)
+      var chart = new dimple.chart(svg, drawData())
+      chart.setBounds(60, 30, 505, 305)
+      chart.addCategoryAxis('x', 'date').addOrderRule('Date')
+      chart.addMeasureAxis('y', yAxis)
+      chart.addSeries('name', dimple.plot.line)
+      chart.draw()
+      return self
+    }
   }
 
-  return Class
-}()
+  return self
+}

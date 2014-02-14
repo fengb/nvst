@@ -3,8 +3,8 @@
     d3.json('/portfolio.json', function(error, data) {
       if (error) return console.warn(error);
 
-      var graph = new InvestmentGraph('#growth-wrapper', 'value')
-      graph.add(data.portfolio, 'Portfolio')
-      graph.add(data.benchmark, 'S&P 500')
-      graph.render()
+      InvestmentGraph('#growth-wrapper', 'value')
+        .add('Portfolio', data.portfolio)
+        .add('S&P 500', data.benchmark)
+        .render()
     })
