@@ -1,0 +1,15 @@
+%dl
+  %dt Starting Balance
+  %dd= number_to_currency @user_summary.starting_balance
+
+  %dt Contributions
+  %dd= number_to_currency @user_summary.contributions
+
+  %dt Gross Gains
+  %dd= number_to_currency @user_summary.gross_gains
+
+  %dt Management Fee
+  %dd= number_to_currency @user_summary.management_fee
+
+  %dt Ending Balance
+  %dd= number_to_currency @user_summary.ending_balance

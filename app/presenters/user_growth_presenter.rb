@@ -11,7 +11,9 @@ class UserGrowthPresenter
   end
 
   def benchmark_value_at(date)
-    benchmark_shares_matcher[date] * benchmark_price_matcher[date]
+    shares = benchmark_shares_matcher[date]
+    return 0 if shares == 0
+    shares * benchmark_price_matcher[date]
   end
 
   def unbooked_fee_at(date)

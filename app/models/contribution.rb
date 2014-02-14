@@ -1,6 +1,7 @@
 class Contribution < ActiveRecord::Base
   include GenerateTransactions
   include GenerateOwnerships
+  include Scopes::Year
 
   belongs_to :user
   has_and_belongs_to_many :ownerships

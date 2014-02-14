@@ -23,7 +23,10 @@ Nvst::Application.routes.draw do
       end
     end
 
-    resources :user_summaries
+    scope path: :user_summaries, controller: :user_summaries do
+      get '',               action: 'index', as: :user_summaries
+      get ':year/:user_id', action: 'show',  as: :user_summary
+    end
   end
   mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
 end
