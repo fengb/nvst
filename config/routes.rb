@@ -1,6 +1,8 @@
 Nvst::Application.routes.draw do
   root to: 'portfolio#show'
 
+  resource :portfolio, controller: :portfolio
+
   resources :investments do
     member do
       get 'prices'

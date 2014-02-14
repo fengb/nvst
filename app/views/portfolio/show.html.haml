@@ -1,7 +1,10 @@
 %div#growth-wrapper
   :javascript
-    var graph = new InvestmentGraph('#growth-wrapper', 'value')
-    $.getJSON('/', function(data){
+    d3.json('/portfolio.json', function(error, data) {
+      if (error) return console.warn(error);
+
+      var graph = new InvestmentGraph('#growth-wrapper', 'value')
       graph.add(data.portfolio, 'Portfolio')
       graph.add(data.benchmark, 'S&P 500')
+      graph.render()
     })

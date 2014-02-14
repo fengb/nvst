@@ -10,7 +10,6 @@ InvestmentGraph = function(){
       data[i].name = name
     }
     this.savedData[name] = data
-    this.render()
   }
 
   function keepN(array, n){
@@ -29,7 +28,6 @@ InvestmentGraph = function(){
   }
 
   Class.prototype.render = function(){
-    $(this.target + ' svg').remove()
     var svg = dimple.newSvg(this.target, 590, 400)
     var chart = new dimple.chart(svg, this.data())
     chart.setBounds(60, 30, 505, 305)
