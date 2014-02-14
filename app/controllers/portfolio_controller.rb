@@ -1,5 +1,8 @@
 class PortfolioController < ApplicationController
+  def index
+  end
+
   def show
-    @growth = PublicPortfolioPresenter.all(10000)
+    @portfolio = PublicPortfolioPresenter.all(10000)
   end
 end

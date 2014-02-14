@@ -1,0 +1,10 @@
+%div#growth-wrapper
+  :javascript
+    d3.json('/portfolio.json', function(error, data) {
+      if (error) return console.warn(error);
+
+      InvestmentGraph('#growth-wrapper', 'value')
+        .add('Portfolio', data.portfolio)
+        .add('S&P 500', data.benchmark)
+        .render()
+    })

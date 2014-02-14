@@ -1,5 +1,5 @@
 Nvst::Application.routes.draw do
-  root to: 'portfolio#show'
+  root 'portfolio#index'
 
   resource :portfolio, controller: :portfolio
 

@@ -1,10 +1,12 @@
-%div#growth-wrapper
-  :javascript
-    d3.json('/portfolio.json', function(error, data) {
-      if (error) return console.warn(error);
-
-      InvestmentGraph('#growth-wrapper', 'value')
-        .add('Portfolio', data.portfolio)
-        .add('S&P 500', data.benchmark)
-        .render()
-    })
+%table
+  %thead
+    %tr
+      %th Date
+      %th Portfolio
+      %th S&amp;P 500
+  %tbody
+    - @portfolio.dates.each do |date|
+      %tr
+        %th= date
+        %td= number_to_currency @portfolio.value_at(date)
+        %td= number_to_currency @portfolio.benchmark_value_at(date)

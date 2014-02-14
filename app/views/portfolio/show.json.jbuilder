@@ -1,9 +1,9 @@
-json.portfolio @growth.dates do |date|
+json.portfolio @portfolio.dates do |date|
   json.date  date
-  json.value @growth.value_at(date).round(2)
+  json.value @portfolio.value_at(date).round(2)
 end
 
-json.benchmark @growth.dates do |date|
+json.benchmark @portfolio.dates do |date|
   json.date  date
-  json.value @growth.benchmark_value_at(date).round(2)
+  json.value @portfolio.benchmark_value_at(date).round(2)
 end
