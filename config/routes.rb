@@ -3,17 +3,17 @@ Nvst::Application.routes.draw do
 
   resource :portfolio, controller: :portfolio
 
-  resources :investments do
-    member do
-      get 'prices'
-    end
-  end
-
   devise_for :users
 
   devise_for :admin
   namespace :admin do
     resource :portfolio, controller: :portfolio
+
+    resources :investments do
+      member do
+        get 'prices'
+      end
+    end
 
     resources :tax_docs do
       member do
