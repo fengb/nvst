@@ -41,6 +41,13 @@ describe PortfolioPresenter do
       ])
     end
 
+    describe '#cashflows' do
+      it 'is' do
+        expect(subject.cashflows).to eq('2013-01-04' => 10,
+                                        '2013-01-05' => 300)
+      end
+    end
+
     describe '#cashflow_at' do
       it 'is 0 on 2013-01-03' do
         expect(subject.cashflow_at('2013-01-03')).to eq(0)
