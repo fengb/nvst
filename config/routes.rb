@@ -22,6 +22,8 @@ Nvst::Application.routes.draw do
         get 'schedule_k'
       end
     end
+
+    resources :user_summaries
   end
   mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
 end

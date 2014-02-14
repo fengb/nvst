@@ -21,7 +21,8 @@ RailsAdmin.config do |config|
   config.label_methods = [:title, :name]
 
   config.navigation_static_links = {
-    'Portfolio' => '/admin/portfolio',
-    'Tax Docs'  => '/admin/tax_docs',
+    'Portfolio'       => '/admin/portfolio',
+    'Tax Docs'        => '/admin/tax_docs',
+    'User Summaries'  => '/admin/user_summaries',
   }
 end

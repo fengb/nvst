@@ -1,0 +1,6 @@
+%table
+  - @users.each do |user|
+    %tr
+      %th= user.email
+      - @years.each do |year|
+        %td= year
