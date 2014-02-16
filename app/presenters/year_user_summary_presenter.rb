@@ -17,9 +17,7 @@ class YearUserSummaryPresenter
   end
 
   def management_fee
-    @management_fee ||=
-      Transfer.where(to_user: @user).year(@year).sum(:amount) -
-      Transfer.where(from_user: @user).year(@year).sum(:amount)
+    @management_fee ||= Fee.where(from_user: @user).year(@year).sum(:amount)
   end
 
   def ending_balance
