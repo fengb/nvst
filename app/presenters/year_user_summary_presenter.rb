@@ -13,25 +13,20 @@ class YearUserSummaryPresenter
   end
 
   def gross_gains
-    gross_value - contributions
+    user_growth.gross_value_at(end_date) - contributions
   end
 
   def management_fee
-    @management_fee ||= Fee.where(from_user: @user).year(@year).sum(:amount)
+    @management_fee ||= -user_growth.booked_fee_at(end_date)
   end
 
   def ending_balance
-    gross_value + management_fee
+    user_growth.gross_value_at(end_date) + management_fee
   end
 
   private
   def user_growth
-    @user_growth ||= UserGrowthPresenter.new(@user)
-  end
-
-  def gross_value
-    # FIXME: gross_value should ignore fees
-    user_growth.gross_value_at(end_date) - management_fee
+    @user_growth ||= YearUserGrowthPresenter.new(@year, @user)
   end
 
   def start_date
