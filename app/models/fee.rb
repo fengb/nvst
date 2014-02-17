@@ -1,8 +1,8 @@
-class Transfer < ActiveRecord::Base
+class Fee < ActiveRecord::Base
   include GenerateOwnerships
+  include Scopes::Year
 
   belongs_to :from_user, class_name: 'User'
-  belongs_to :to_user,   class_name: 'User'
   has_and_belongs_to_many :ownerships
 
   def from_ownership
@@ -17,7 +17,7 @@ class Transfer < ActiveRecord::Base
     [{user: from_user,
       date: date,
       units: -effective_units},
-     {user: to_user,
+     {user: User.fee_collector,
       date: date,
       units: effective_units}
     ]

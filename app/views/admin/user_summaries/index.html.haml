@@ -1,0 +1,6 @@
+%table
+  - @years.each do |year|
+    %tr
+      %th= year
+      - @users.each do |user|
+        %td= link_to user.email, admin_user_summary_path(year, user.id)

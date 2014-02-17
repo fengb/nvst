@@ -7,7 +7,12 @@ class User < ActiveRecord::Base
   has_many :contributions
   has_many :ownerships
 
-  def title
-    email
+  scope :fee_collecting, ->{where(is_fee_collector: false)}
+  def self.fee_collector
+    find_by(is_fee_collector: true)
+  end
+
+  rails_admin do
+    object_label_method :email
   end
 end

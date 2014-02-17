@@ -1,21 +1,28 @@
-class UserGrowthPresenter
-  def initialize(user)
+class YearUserGrowthPresenter
+  def initialize(year, user)
+    @year = year
     @user = user
     @portfolio = PortfolioPresenter.all
-    @contributions = user.contributions.order(:date)
+    @contributions = user.contributions.year(@year).order(:date)
     @ownership = OwnershipPresenter.all
   end
 
   def gross_value_at(date)
-    @ownership.user_percent(@user, date) * @portfolio.value_at(date)
+    @ownership.user_percent(@user, date) * @portfolio.value_at(date) + booked_fee_at(date)
   end
 
   def benchmark_value_at(date)
-    benchmark_shares_matcher[date] * benchmark_price_matcher[date]
+    shares = benchmark_shares_matcher[date]
+    return 0 if shares == 0
+    shares * benchmark_price_matcher[date]
   end
 
   def unbooked_fee_at(date)
     (gross_value_at(date) - benchmark_value_at(date)) / 2
+  end
+
+  def booked_fee_at(date)
+    Fee.where(date: date, from_user: @user).sum(:amount)
   end
 
   def value_at(date)

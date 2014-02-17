@@ -9,6 +9,8 @@ class OwnershipPresenter
   end
 
   def user_percent(user, date)
+    return 0 if total_units(date) == 0
+
     user_units(user, date) / total_units(date)
   end
 

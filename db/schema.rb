@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140113141448) do
+ActiveRecord::Schema.define(version: 20140216212751) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -30,18 +30,19 @@ ActiveRecord::Schema.define(version: 20140113141448) do
   end
 
   create_table "users", force: true do |t|
-    t.string   "email",                              null: false
-    t.string   "encrypted_password",                 null: false
+    t.string   "email",                                  null: false
+    t.string   "encrypted_password",                     null: false
     t.string   "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
-    t.integer  "sign_in_count",          default: 0, null: false
+    t.integer  "sign_in_count",          default: 0,     null: false
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
     t.string   "current_sign_in_ip"
     t.string   "last_sign_in_ip"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "is_fee_collector",       default: false
   end
 
   create_table "contributions", force: true do |t|
@@ -146,6 +147,25 @@ ActiveRecord::Schema.define(version: 20140113141448) do
     t.foreign_key ["transaction_id"], "transactions", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_expenses_transactions_transaction_id"
   end
 
+  create_table "fees", force: true do |t|
+    t.date     "date"
+    t.decimal  "amount",       precision: 21, scale: 8
+    t.integer  "from_user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.index ["from_user_id"], :name => "fk__fees_from_user_id"
+    t.foreign_key ["from_user_id"], "users", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_fees_from_user_id"
+  end
+
+  create_table "fees_ownerships", force: true do |t|
+    t.integer "ownership_id"
+    t.integer "fee_id"
+    t.index ["fee_id"], :name => "fk__fees_ownerships_transfer_id"
+    t.index ["ownership_id"], :name => "fk__fees_ownerships_ownership_id"
+    t.foreign_key ["fee_id"], "fees", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_fees_ownerships_transfer_id"
+    t.foreign_key ["ownership_id"], "ownerships", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_fees_ownerships_ownership_id"
+  end
+
   create_table "investment_dividends", force: true do |t|
     t.integer "investment_id"
     t.date    "ex_date"
@@ -175,28 +195,6 @@ ActiveRecord::Schema.define(version: 20140113141448) do
     t.index ["date"], :name => "index_investment_splits_on_date"
     t.index ["investment_id"], :name => "fk__investment_splits_investment_id"
     t.foreign_key ["investment_id"], "investments", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_investment_splits_investment_id"
-  end
-
-  create_table "transfers", force: true do |t|
-    t.date     "date"
-    t.decimal  "amount",       precision: 21, scale: 8
-    t.integer  "from_user_id"
-    t.integer  "to_user_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.index ["from_user_id"], :name => "fk__transfers_from_user_id"
-    t.index ["to_user_id"], :name => "fk__transfers_to_user_id"
-    t.foreign_key ["from_user_id"], "users", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_transfers_from_user_id"
-    t.foreign_key ["to_user_id"], "users", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_transfers_to_user_id"
-  end
-
-  create_table "ownerships_transfers", force: true do |t|
-    t.integer "ownership_id"
-    t.integer "transfer_id"
-    t.index ["ownership_id"], :name => "fk__ownerships_transfers_ownership_id"
-    t.index ["transfer_id"], :name => "fk__ownerships_transfers_transfer_id"
-    t.foreign_key ["ownership_id"], "ownerships", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_ownerships_transfers_ownership_id"
-    t.foreign_key ["transfer_id"], "transfers", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_ownerships_transfers_transfer_id"
   end
 
   create_table "rails_admin_histories", force: true do |t|
