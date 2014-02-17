@@ -12,7 +12,7 @@ class User < ActiveRecord::Base
     find_by(is_fee_collector: true)
   end
 
-  def title
-    email
+  rails_admin do
+    object_label_method :email
   end
 end
