@@ -8,6 +8,10 @@ class PublicPortfolioPresenter
     @normalize_to = normalize_to
   end
 
+  def cache_key
+    "public_portfolio_presenter/#{dates.last.to_s(:number)}"
+  end
+
   def dates
     # FIXME: tap into portfolio instead
     benchmark_price_matcher.keys
