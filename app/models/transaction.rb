@@ -8,6 +8,8 @@ class Transaction < ActiveRecord::Base
 
   delegate :investment, to: :lot
 
+  has_and_belongs_to_many :adjustments
+
   scope :tracked, ->{joins(lot: :investment).where("investments.category != 'cash'")}
   scope :open,    ->{joins(:lot).where('lots.open_date = transactions.date AND lots.open_price = transactions.price')}
   scope :close,   ->{joins(:lot).where('lots.open_date != transactions.date OR lots.open_price != transactions.price')}

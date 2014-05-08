@@ -16,11 +16,19 @@ module GenerateTransactions
 
   class << self
     def transact!(data)
+      if data[:adjustment] && data[:adjustment] != 1
+        adjustment = Adjustment.new(date: data[:date],
+                                    ratio: data[:adjustment])
+      end
+
       if corresponding = Lot.corresponding(data)
-        return [corresponding.transactions.create!(data.except(:investment))]
+        transaction = corresponding.transactions.build(data.except(:investment, :adjustment))
+        transaction.adjustments << adjustment if adjustment.present?
+        return [transaction]
       end
 
       shared_data = data.slice(:date, :price)
+      shared_data[:adjustments] = [adjustment] if adjustment.present?
       investment = data[:investment]
       remaining_shares = data[:shares]
 
