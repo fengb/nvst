@@ -38,6 +38,15 @@ ActiveRecord::Schema.define(version: 20140507231452) do
     t.foreign_key ["investment_id"], "investments", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_lots_investment_id"
   end
 
+  create_table "adjustments_lots", force: true do |t|
+    t.integer "lot_id"
+    t.integer "adjustment_id"
+    t.index ["adjustment_id"], :name => "fk__adjustments_lots_adjustment_id"
+    t.index ["lot_id"], :name => "fk__adjustments_lots_lot_id"
+    t.foreign_key ["adjustment_id"], "adjustments", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_adjustments_lots_adjustment_id"
+    t.foreign_key ["lot_id"], "lots", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_adjustments_lots_lot_id"
+  end
+
   create_table "transactions", force: true do |t|
     t.integer "lot_id"
     t.date    "date"

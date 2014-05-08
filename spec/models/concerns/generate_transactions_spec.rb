@@ -213,17 +213,35 @@ describe GenerateTransactions do
                                                     ratio: data[:adjustment])
       end
 
-      it 'uses the same adjustment for multiple transactions' do
-        data[:adjustment] = 2
-        create_transaction!(investment: investment,
-                            date: data[:date],
-                            shares: -10,
-                            price: data[:price])
-        transactions = GenerateTransactions.transact!(data)
+      context 'transaction waterfall' do
+        before do
+          data[:adjustment] = 2
+          create_transaction!(investment: investment,
+                              date: data[:date] - 1,
+                              shares: -10,
+                              price: data[:price])
+        end
 
-        expect(transactions.size).to be > 1
-        transactions.each do |transaction|
-          expect(transaction.adjustments).to eq([transactions[0].adjustments[0]])
+        it 'uses the same adjustment for multiple transactions' do
+          transactions = GenerateTransactions.transact!(data)
+
+          expect(transactions.size).to be > 1
+          transactions.each do |transaction|
+            expect(transaction.adjustments).to eq([transactions[0].adjustments[0]])
+          end
+        end
+
+        it 'does not set adjustment for existing lots' do
+          transactions = GenerateTransactions.transact!(data)
+          transactions[0...-1].each do |transaction|
+            expect(transaction.lot.adjustments).to be_blank
+          end
+        end
+
+        it 'sets adjustment for newly created lot' do
+          transactions = GenerateTransactions.transact!(data)
+          transaction = transactions.last
+          expect(transaction.lot.adjustments).to eq(transaction.adjustments)
         end
       end
     end

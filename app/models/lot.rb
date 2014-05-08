@@ -1,11 +1,9 @@
 # Generated
 class Lot < ActiveRecord::Base
   belongs_to :investment
-  has_many   :transactions, ->{order('date')} do
-    def open
-      select(&:open?)
-    end
-  end
+  has_many   :transactions, ->{order('date')}
+
+  has_and_belongs_to_many :adjustments
 
   validates :investment, presence: true
 
@@ -27,7 +25,8 @@ class Lot < ActiveRecord::Base
     lot = Lot.find_by(investment: options[:investment],
                       open_date:  options[:date],
                       open_price: options[:price])
-    if lot && options[:shares].angle == lot.transactions.first.shares.angle
+    if lot && lot.transactions[0].shares.angle == options[:shares].angle &&
+              lot.adjustments[0].try(:ratio) == options[:adjustment]
       lot
     else
       nil

@@ -10,5 +10,10 @@ class CreateAdjustments < ActiveRecord::Migration
       t.integer :transaction_id, references: :transactions
       t.integer :adjustment_id,  references: :adjustments
     end
+
+    create_table :adjustments_lots do |t|
+      t.integer :lot_id,        references: :lots
+      t.integer :adjustment_id, references: :adjustments
+    end
   end
 end
