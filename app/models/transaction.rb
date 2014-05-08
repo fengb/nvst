@@ -15,7 +15,7 @@ class Transaction < ActiveRecord::Base
   scope :close,   ->{joins(:lot).where('lots.open_date != transactions.date OR lots.open_price != transactions.price')}
 
   def value
-    -shares * price
+    -shares * adjusted_price
   end
 
   def cost_basis
@@ -35,6 +35,6 @@ class Transaction < ActiveRecord::Base
   end
 
   def adjusted_price(on: Date.today)
-    price * adjustments.select{|adj| adj.date <= on}.map(&:ratio).inject(1, :*)
+    price * adjustments.ratio(on: on)
   end
 end

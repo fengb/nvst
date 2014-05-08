@@ -13,7 +13,7 @@
       %tr.summary
         %th{rowspan: summary.lots.size+1}= summary.investment.symbol
         %td= summary.open_date
-        %td= number_to_currency summary.open_price
+        %td= number_to_currency summary.adjusted_open_price
         %td= number_to_currency summary.current_price
         %td= summary.outstanding_shares
         %td= number_to_currency summary.current_value
@@ -23,7 +23,7 @@
         - summary.lots.each do |lot|
           %tr.lot
             %td= lot.open_date
-            %td= number_to_currency lot.open_price
+            %td= number_to_currency lot.adjusted_open_price
             %td= number_to_currency lot.current_price
             %td= lot.outstanding_shares
             %td= number_to_currency lot.current_value

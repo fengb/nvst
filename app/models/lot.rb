@@ -33,6 +33,10 @@ class Lot < ActiveRecord::Base
     end
   end
 
+  def adjusted_open_price(on: Date.today)
+    open_price * adjustments.ratio(on: on)
+  end
+
   def outstanding_shares
     transactions.sum('shares')
   end
@@ -50,10 +54,10 @@ class Lot < ActiveRecord::Base
   end
 
   def unrealized_gain
-    (current_price - open_price) * outstanding_shares
+    (current_price - adjusted_open_price) * outstanding_shares
   end
 
   def unrealized_gain_percent
-    unrealized_gain / (outstanding_shares * open_price)
+    unrealized_gain / (outstanding_shares * adjusted_open_price)
   end
 end

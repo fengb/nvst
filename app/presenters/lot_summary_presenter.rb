@@ -25,6 +25,10 @@ class LotSummaryPresenter
     unique_by(:open_price)
   end
 
+  def adjusted_open_price
+    unique_by(:adjusted_open_price)
+  end
+
   def current_price
     unique_by(:current_price)
   end
@@ -38,7 +42,7 @@ class LotSummaryPresenter
   end
 
   def unrealized_gain_percent
-    unrealized_gain / lots.sum{|lot| lot.outstanding_shares * lot.open_price}
+    unrealized_gain / lots.sum{|lot| lot.outstanding_shares * lot.adjusted_open_price}
   end
 
   private
