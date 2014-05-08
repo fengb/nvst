@@ -7,9 +7,8 @@ class Adjustment < ActiveRecord::Base
   end
 
   def ratio=(value)
-    value_r = value.to_r
-    self.numerator = value_r.numerator
-    self.denominator = value_r.denominator
+    self.numerator = value.numerator
+    self.denominator = value.denominator
   end
 
   def ratio

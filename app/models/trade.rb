@@ -38,11 +38,11 @@ class Trade < ActiveRecord::Base
   end
 
   def sell_adjustment
-    Rational(sell_value, raw_sell_value)
+    sell_value.to_r / raw_sell_value.to_r
   end
 
   def buy_adjustment
-    Rational(buy_value, raw_buy_value)
+    buy_value.to_r / raw_buy_value.to_r
   end
 
   def raw_transactions_data
