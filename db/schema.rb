@@ -47,13 +47,13 @@ ActiveRecord::Schema.define(version: 20140507231452) do
     t.foreign_key ["lot_id"], "lots", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_transactions_lot_id"
   end
 
-  create_table "adjustment_transactions", force: true do |t|
+  create_table "adjustments_transactions", force: true do |t|
     t.integer "transaction_id"
     t.integer "adjustment_id"
-    t.index ["adjustment_id"], :name => "fk__adjustment_transactions_adjustment_id"
-    t.index ["transaction_id"], :name => "fk__adjustment_transactions_transaction_id"
-    t.foreign_key ["adjustment_id"], "adjustments", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_adjustment_transactions_adjustment_id"
-    t.foreign_key ["transaction_id"], "transactions", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_adjustment_transactions_transaction_id"
+    t.index ["adjustment_id"], :name => "fk__adjustments_transactions_adjustment_id"
+    t.index ["transaction_id"], :name => "fk__adjustments_transactions_transaction_id"
+    t.foreign_key ["adjustment_id"], "adjustments", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_adjustments_transactions_adjustment_id"
+    t.foreign_key ["transaction_id"], "transactions", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_adjustments_transactions_transaction_id"
   end
 
   create_table "admins", force: true do |t|

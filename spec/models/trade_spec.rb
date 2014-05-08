@@ -49,6 +49,15 @@ describe Trade do
       specify '#buy_value == #raw_buy_value' do
         expect(subject.buy_value).to eq(subject.raw_buy_value)
       end
+
+      specify '#sell_adjustment == (raw_sell_value - fee) / raw_sell_value' do
+        mathed = Rational(subject.raw_sell_value - subject.fee, subject.raw_sell_value)
+        expect(subject.sell_adjustment).to eq(mathed)
+      end
+
+      specify '#buy_adjustment == 1' do
+        expect(subject.buy_adjustment).to eq(1)
+      end
     end
 
     context '!adjust_sell?' do
@@ -60,6 +69,15 @@ describe Trade do
 
       specify '#buy_value == #raw_sell_value' do
         expect(subject.buy_value).to eq(subject.raw_sell_value)
+      end
+
+      specify '#sell_adjustment == 1' do
+        expect(subject.sell_adjustment).to eq(1)
+      end
+
+      specify '#buy_adjustment == (raw_buy_value + fee) / raw_buy_value' do
+        mathed = Rational(subject.raw_buy_value + subject.fee, subject.raw_buy_value)
+        expect(subject.buy_adjustment).to eq(mathed)
       end
     end
 

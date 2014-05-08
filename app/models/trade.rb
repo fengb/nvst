@@ -37,22 +37,24 @@ class Trade < ActiveRecord::Base
     end
   end
 
-  def sell_price_fee_adjusted
-    sell_value / sell_shares
+  def sell_adjustment
+    Rational(sell_value, raw_sell_value)
   end
 
-  def buy_price_fee_adjusted
-    buy_value / buy_shares
+  def buy_adjustment
+    Rational(buy_value, raw_buy_value)
   end
 
   def raw_transactions_data
     [{investment: sell_investment,
       date:       date,
       shares:     -sell_shares,
-      price:      sell_price_fee_adjusted},
+      price:      sell_price,
+      adjustment: sell_adjustment},
      {investment: buy_investment,
       date:       date,
       shares:     buy_shares,
-      price:      buy_price_fee_adjusted}]
+      price:      buy_price,
+      adjustment: buy_adjustment}]
   end
 end

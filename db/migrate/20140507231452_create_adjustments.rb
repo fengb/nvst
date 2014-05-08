@@ -6,7 +6,7 @@ class CreateAdjustments < ActiveRecord::Migration
       t.integer :denominator
     end
 
-    create_table :adjustment_transactions do |t|
+    create_table :adjustments_transactions do |t|
       t.integer :transaction_id, references: :transactions
       t.integer :adjustment_id,  references: :adjustments
     end
