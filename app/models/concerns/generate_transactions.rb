@@ -55,10 +55,21 @@ module GenerateTransactions
     def outstanding_lots(investment, new_shares)
       # Buy shares fill -outstanding, sell shares fill +outstanding
       direction = new_shares > 0 ? '-' : '+'
+      LotStrategies.highest_cost_first(investment, direction)
+    end
 
-      # FIFO:         Lot.outstanding(direction).where(investment: investment).order('open_date, id')
-      # Highest cost: Lot.outstanding(direction).where(investment: investment).order('open_price DESC, open_date, id')
-      Lot.outstanding(direction).where(investment: investment).order('open_price DESC, open_date, id')
+    class LotStrategies
+      class << self
+        def fifo(investment, direction)
+          Lot.outstanding(direction).where(investment: investment)
+                                    .order('open_date, id')
+        end
+
+        def highest_cost_first(investment, direction)
+          Lot.outstanding(direction).where(investment: investment)
+                                    .order('open_price DESC, open_date, id')
+        end
+      end
     end
   end
 end
