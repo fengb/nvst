@@ -31,6 +31,10 @@ class Transaction < ActiveRecord::Base
   end
 
   def close?
-    date == lot.open_date && price == lot.open_price
+    date != lot.open_date || price != lot.open_price
+  end
+
+  def adjusted_price(on: Date.today)
+    price * adjustments.select{|adj| adj.date <= on}.map(&:ratio).inject(1, :*)
   end
 end
