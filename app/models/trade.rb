@@ -17,8 +17,12 @@ class Trade < ActiveRecord::Base
     raw_sell_value - raw_buy_value
   end
 
+  def adjust_sell?
+    buy_investment.cash?
+  end
+
   def sell_value
-    if buy_investment.cash?
+    if adjust_sell?
       raw_buy_value
     else
       raw_sell_value
@@ -26,7 +30,7 @@ class Trade < ActiveRecord::Base
   end
 
   def buy_value
-    if buy_investment.cash?
+    if adjust_sell?
       raw_buy_value
     else
       raw_sell_value
