@@ -1,5 +1,5 @@
 class CreateAdjustments < ActiveRecord::Migration
-  def change
+  def up
     create_table :adjustments do |t|
       t.date    :date
       t.integer :numerator
@@ -18,5 +18,14 @@ class CreateAdjustments < ActiveRecord::Migration
 
     change_column :lots,    :open_price, :decimal, precision: 12, scale: 4
     change_column :transactions, :price, :decimal, precision: 12, scale: 4
+  end
+
+  def down
+    drop_table :adjustments_lots
+    drop_table :adjustments_transactions
+    drop_table :adjustments
+
+    change_column :lots,    :open_price, :decimal, precision: 18, scale: 10
+    change_column :transactions, :price, :decimal, precision: 18, scale: 10
   end
 end
