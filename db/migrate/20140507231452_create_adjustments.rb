@@ -15,5 +15,8 @@ class CreateAdjustments < ActiveRecord::Migration
       t.integer :lot_id,        references: :lots
       t.integer :adjustment_id, references: :adjustments
     end
+
+    change_column :lots,    :open_price, :decimal, precision: 12, scale: 4
+    change_column :transactions, :price, :decimal, precision: 12, scale: 4
   end
 end

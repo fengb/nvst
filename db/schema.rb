@@ -33,7 +33,7 @@ ActiveRecord::Schema.define(version: 20140507231452) do
   create_table "lots", force: true do |t|
     t.integer "investment_id"
     t.date    "open_date"
-    t.decimal "open_price",    precision: 18, scale: 10
+    t.decimal "open_price",    precision: 12, scale: 4
     t.index ["investment_id"], :name => "fk__lots_investment_id"
     t.foreign_key ["investment_id"], "investments", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_lots_investment_id"
   end
@@ -51,7 +51,7 @@ ActiveRecord::Schema.define(version: 20140507231452) do
     t.integer "lot_id"
     t.date    "date"
     t.decimal "shares", precision: 15, scale: 4
-    t.decimal "price",  precision: 18, scale: 10
+    t.decimal "price",  precision: 12, scale: 4
     t.index ["lot_id"], :name => "fk__transactions_lot_id"
     t.foreign_key ["lot_id"], "lots", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_transactions_lot_id"
   end
