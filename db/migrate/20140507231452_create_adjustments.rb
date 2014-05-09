@@ -4,6 +4,7 @@ class CreateAdjustments < ActiveRecord::Migration
       t.date    :date
       t.integer :numerator
       t.integer :denominator
+      t.string  :reason
     end
 
     create_table :adjustments_transactions do |t|

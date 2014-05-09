@@ -20,6 +20,7 @@ ActiveRecord::Schema.define(version: 20140507231452) do
     t.date    "date"
     t.integer "numerator"
     t.integer "denominator"
+    t.string  "reason"
   end
 
   create_table "investments", force: true do |t|
