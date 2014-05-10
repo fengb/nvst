@@ -13,7 +13,7 @@ describe GenerateSplitAdjustmentsJob do
                                               after: 2) }
 
     it 'adds an adjustment to existing lots' do
-      GenerateSplitAdjustmentsJob.perform_single(split)
+      GenerateSplitAdjustmentsJob.perform_single(split, lot)
       expect(lot.adjustments).to_not be_empty
     end
 
@@ -22,22 +22,22 @@ describe GenerateSplitAdjustmentsJob do
       # (What does it mean to split a stock right before a bunch of booked sales?)
       split.date = transaction2.date
       expect {
-        GenerateSplitAdjustmentsJob.perform_single(split)
+        GenerateSplitAdjustmentsJob.perform_single(split, lot)
       }.to raise_error
     end
 
     it 'adds an adjustment to opening transactions' do
-      GenerateSplitAdjustmentsJob.perform_single(split)
+      GenerateSplitAdjustmentsJob.perform_single(split, lot)
       expect(transaction1.adjustments).to_not be_empty
     end
 
     it 'does not adjust closing transactions' do
-      GenerateSplitAdjustmentsJob.perform_single(split)
+      GenerateSplitAdjustmentsJob.perform_single(split, lot)
       expect(transaction2.adjustments).to be_empty
     end
 
     it 'creates a new lot with adjusted data' do
-      new_lot, = GenerateSplitAdjustmentsJob.perform_single(split)
+      new_lot = GenerateSplitAdjustmentsJob.perform_single(split, lot)
       expect(new_lot).to be_present
       expect(new_lot.investment).to eq(lot.investment)
       expect(new_lot.open_date).to  eq(split.date)
@@ -45,7 +45,7 @@ describe GenerateSplitAdjustmentsJob do
     end
 
     it 'creates a new transaction with adjusted data' do
-      new_lot, = GenerateSplitAdjustmentsJob.perform_single(split)
+      new_lot = GenerateSplitAdjustmentsJob.perform_single(split, lot)
       expect(new_lot.transactions.count).to eq(1)
       expect(new_lot.transactions[0].date).to eq(split.date)
       expect(new_lot.transactions[0].adjusted_price).to eq(lot.adjusted_open_price)
@@ -53,7 +53,7 @@ describe GenerateSplitAdjustmentsJob do
 
     it 'creates a lot such that new outstanding shares == old outstanding value / new adjusted open price - existing shares' do
       old_value = lot.outstanding_shares * lot.adjusted_open_price
-      new_lot, = GenerateSplitAdjustmentsJob.perform_single(split)
+      new_lot = GenerateSplitAdjustmentsJob.perform_single(split, lot)
 
       total_outstanding = lot.outstanding_shares + new_lot.outstanding_shares
       expect(new_lot.outstanding_shares).to eq(old_value / new_lot.adjusted_open_price - lot.outstanding_shares)
