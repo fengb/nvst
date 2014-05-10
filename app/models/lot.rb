@@ -7,6 +7,8 @@ class Lot < ActiveRecord::Base
 
   validates :investment, presence: true
 
+  scope :open, ->(at: Date.today){ where('open_date <= ?', at) }
+
   scope :outstanding, ->(direction=nil){
     op = case direction.to_s
            when '+' then '>'

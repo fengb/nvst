@@ -1,3 +1,5 @@
+require 'spec_helper'
+
 describe Lot do
   describe '.corresponding' do
     let(:lot)    { FactoryGirl.create(:lot) }
@@ -21,6 +23,32 @@ describe Lot do
 
     it 'does not find existing when adjustment does not match' do
       expect(Lot.corresponding(data.merge adjustment: 1)).to be(nil)
+    end
+  end
+
+  describe '.open' do
+    let!(:transaction1) { FactoryGirl.create(:transaction) }
+    let!(:lot)          { transaction1.lot }
+
+    context 'open lot' do
+      it 'excludes lots opened at later date' do
+        expect(Lot.open(at: lot.open_date - 1)).to eq([])
+      end
+
+      it 'includes lots opened at date' do
+        expect(Lot.open(at: lot.open_date)).to eq([lot])
+      end
+
+      it 'includes lots opened at before date' do
+        expect(Lot.open(at: lot.open_date + 10000)).to eq([lot])
+      end
+
+      it 'includes not-fully-closed lots' do
+        FactoryGirl.create(:transaction, lot: lot,
+                                         date: lot.open_date + 1,
+                                         shares: -1)
+        expect(Lot.open(at: lot.open_date + 10)).to eq([lot])
+      end
     end
   end
 
