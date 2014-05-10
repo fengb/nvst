@@ -18,6 +18,10 @@ describe Lot do
     it 'does not find existing when shares have opposite sign' do
       expect(Lot.corresponding(data.merge shares: -shares)).to be(nil)
     end
+
+    it 'does not find existing when adjustment does not match' do
+      expect(Lot.corresponding(data.merge adjustment: 1)).to be(nil)
+    end
   end
 
   context 'gains' do
