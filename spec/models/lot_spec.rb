@@ -52,6 +52,29 @@ describe Lot do
     end
   end
 
+  describe '.outstanding' do
+    let!(:transaction1) { FactoryGirl.create(:transaction, shares: 1) }
+    let!(:lot)          { transaction1.lot }
+
+    it 'includes all outstanding lots' do
+      expect(Lot.outstanding).to eq([lot])
+    end
+
+    it 'includes lots in the same direction' do
+      expect(Lot.outstanding('+')).to eq([lot])
+    end
+
+    it 'excludes lots in the opposite direction' do
+      expect(Lot.outstanding('-')).to eq([])
+    end
+
+    it 'excludes closed lots' do
+      FactoryGirl.create(:transaction, lot: lot,
+                                       shares: -1)
+      expect(Lot.outstanding).to eq([])
+    end
+  end
+
   context 'gains' do
     subject { FactoryGirl.build(:lot, open_price: 100) }
     let!(:transactions) do
