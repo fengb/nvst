@@ -7,19 +7,20 @@ class Lot < ActiveRecord::Base
 
   validates :investment, presence: true
 
-  scope :open, ->(at: Date.today, direction: nil){
+  scope :open, ->(during: Date.today, direction: nil){
     op = case direction.to_s
            when '+' then '>'
            when '-' then '<'
            else          '!='
          end
-    joins("LEFT JOIN (SELECT lot_id
-                           , SUM(shares) AS outstanding_shares
-                        FROM transactions
-                       WHERE date <= '#{at.to_date}'
-                       GROUP BY lot_id) t
-                  ON t.lot_id=lots.id"
-    ).where("open_date <= ? AND t.outstanding_shares #{op} 0", at)
+    outstanding_sql = sanitize_sql(['SELECT lot_id
+                                          , SUM(shares) AS outstanding_shares
+                                       FROM transactions
+                                      WHERE date <= ?
+                                      GROUP BY lot_id',
+                                    during.to_date])
+    joins("LEFT JOIN (#{outstanding_sql}) t ON t.lot_id=lots.id")
+    .where("open_date <= ? AND t.outstanding_shares #{op} 0", during)
   }
 
   def self.corresponding(options)
