@@ -27,7 +27,7 @@ describe Lot do
   end
 
   describe '.open' do
-    let!(:transaction1) { FactoryGirl.create(:transaction) }
+    let!(:transaction1) { FactoryGirl.create(:transaction, shares: 1) }
     let!(:lot)          { transaction1.lot }
 
     context 'open lot' do
@@ -46,32 +46,27 @@ describe Lot do
       it 'includes not-fully-closed lots' do
         FactoryGirl.create(:transaction, lot: lot,
                                          date: lot.open_date + 1,
-                                         shares: -1)
+                                         shares: -0.5)
         expect(Lot.open(at: lot.open_date + 10)).to eq([lot])
       end
     end
-  end
-
-  describe '.outstanding' do
-    let!(:transaction1) { FactoryGirl.create(:transaction, shares: 1) }
-    let!(:lot)          { transaction1.lot }
 
     it 'includes all outstanding lots' do
-      expect(Lot.outstanding).to eq([lot])
+      expect(Lot.open).to eq([lot])
     end
 
     it 'includes lots in the same direction' do
-      expect(Lot.outstanding('+')).to eq([lot])
+      expect(Lot.open(direction: '+')).to eq([lot])
     end
 
     it 'excludes lots in the opposite direction' do
-      expect(Lot.outstanding('-')).to eq([])
+      expect(Lot.open(direction: '-')).to eq([])
     end
 
     it 'excludes closed lots' do
       FactoryGirl.create(:transaction, lot: lot,
                                        shares: -1)
-      expect(Lot.outstanding).to eq([])
+      expect(Lot.open).to eq([])
     end
   end
 

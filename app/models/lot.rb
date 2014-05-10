@@ -7,9 +7,7 @@ class Lot < ActiveRecord::Base
 
   validates :investment, presence: true
 
-  scope :open, ->(at: Date.today){ where('open_date <= ?', at) }
-
-  scope :outstanding, ->(direction=nil){
+  scope :open, ->(at: Date.today, direction: nil){
     op = case direction.to_s
            when '+' then '>'
            when '-' then '<'
@@ -20,7 +18,7 @@ class Lot < ActiveRecord::Base
                         FROM transactions
                        GROUP BY lot_id) t
                   ON t.lot_id=lots.id"
-    ).where("t.outstanding_shares #{op} 0")
+    ).where("open_date <= ? AND t.outstanding_shares #{op} 0", at)
   }
 
   def self.corresponding(options)

@@ -36,7 +36,7 @@ module GenerateTransactions
       remaining_shares = data[:shares]
 
       transactions = []
-      outstanding_lots(investment, remaining_shares).each do |lot|
+      open_lots(investment, remaining_shares).each do |lot|
         if lot.outstanding_shares.abs >= remaining_shares.abs
           transactions << lot.transactions.create!(shared_data.merge shares: remaining_shares)
           return transactions
@@ -56,7 +56,7 @@ module GenerateTransactions
       transactions
     end
 
-    def outstanding_lots(investment, new_shares)
+    def open_lots(investment, new_shares)
       # Buy shares fill -outstanding, sell shares fill +outstanding
       direction = new_shares > 0 ? '-' : '+'
       LotStrategies.highest_cost_first(investment, direction)
@@ -65,13 +65,13 @@ module GenerateTransactions
     class LotStrategies
       class << self
         def fifo(investment, direction)
-          Lot.outstanding(direction).where(investment: investment)
-                                    .order('open_date, id')
+          Lot.open(direction: direction).where(investment: investment)
+                                        .order('open_date, id')
         end
 
         def highest_cost_first(investment, direction)
-          Lot.outstanding(direction).where(investment: investment)
-                                    .order('open_price DESC, open_date, id')
+          Lot.open(direction: direction).where(investment: investment)
+                                        .order('open_price DESC, open_date, id')
         end
       end
     end
