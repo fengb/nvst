@@ -35,6 +35,10 @@ describe Lot do
         expect(Lot.open(at: lot.open_date - 1)).to eq([])
       end
 
+      it 'includes all outstanding lots' do
+        expect(Lot.open).to eq([lot])
+      end
+
       it 'includes lots opened at date' do
         expect(Lot.open(at: lot.open_date)).to eq([lot])
       end
@@ -49,24 +53,29 @@ describe Lot do
                                          shares: -0.5)
         expect(Lot.open(at: lot.open_date + 10)).to eq([lot])
       end
+
+      it 'includes lots in the same direction' do
+        expect(Lot.open(direction: '+')).to eq([lot])
+      end
+
+      it 'excludes lots in the opposite direction' do
+        expect(Lot.open(direction: '-')).to eq([])
+      end
     end
 
-    it 'includes all outstanding lots' do
-      expect(Lot.open).to eq([lot])
-    end
+    context 'closed lots' do
+      let(:close_date)    { Date.today - 10 }
+      let!(:transaction2) { FactoryGirl.create(:transaction, lot: lot,
+                                                             shares: -1,
+                                                             date: close_date) }
 
-    it 'includes lots in the same direction' do
-      expect(Lot.open(direction: '+')).to eq([lot])
-    end
+      it 'excludes closed lots' do
+        expect(Lot.open).to eq([])
+      end
 
-    it 'excludes lots in the opposite direction' do
-      expect(Lot.open(direction: '-')).to eq([])
-    end
-
-    it 'excludes closed lots' do
-      FactoryGirl.create(:transaction, lot: lot,
-                                       shares: -1)
-      expect(Lot.open).to eq([])
+      it 'includes closed lots where close_date is later than at' do
+        expect(Lot.open(at: close_date - 1)).to eq([lot])
+      end
     end
   end
 
