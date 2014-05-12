@@ -12,11 +12,6 @@ describe GenerateSplitAdjustmentsJob do
                                               before: 1,
                                               after: 2) }
 
-    it 'adds an adjustment to existing lots' do
-      GenerateSplitAdjustmentsJob.perform_single(split, lot)
-      expect(lot.adjustments).to_not be_empty
-    end
-
     it 'dies when lot has transactions after split date' do
       # I don't see a good way to handle this automatically
       # (What does it mean to split a stock right before a bunch of booked sales?)

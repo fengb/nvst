@@ -17,21 +17,19 @@ class GenerateSplitAdjustmentsJob
     end
 
     ActiveRecord::Base.transaction do
-      existing_lot.adjustments << adjustment
-      existing_lot.transactions.open.each do |transaction|
+      existing_lot.transactions.opening.each do |transaction|
         transaction.adjustments << adjustment
       end
 
-      Lot.create!(investment: existing_lot.investment,
-                  open_date:  split.date,
-                  open_price: existing_lot.open_price).tap do |new_lot|
+      Lot.create!(investment: existing_lot.investment).tap do |new_lot|
         total_shares = existing_lot.outstanding_shares * split.after / split.before
-        new_transaction = Transaction.create!(lot: new_lot,
-                                              date: split.date,
-                                              price: existing_lot.open_price,
-                                              shares: total_shares - existing_lot.outstanding_shares)
+        new_transaction = Transaction.create!(lot:        new_lot,
+                                              is_opening: true,
+                                              date:       split.date,
+                                              price:      existing_lot.open_price,
+                                              shares:     total_shares - existing_lot.outstanding_shares)
 
-        new_transaction.adjustments = new_lot.adjustments = existing_lot.adjustments
+        new_transaction.adjustments = existing_lot.transactions.opening[0].adjustments
       end
     end
   end

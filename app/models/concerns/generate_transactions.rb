@@ -19,7 +19,7 @@ module GenerateTransactions
       if corresponding = Lot.corresponding(data)
         data = data.slice(:date, :price, :shares)
                    .merge(lot:         corresponding,
-                          adjustments: corresponding.adjustments)
+                          adjustments: corresponding.open_adjustments)
 
         return [Transaction.create!(data)]
       end
@@ -47,12 +47,10 @@ module GenerateTransactions
       end
 
       # Shares remaining with no lot
-      lot = Lot.new(investment:  investment,
-                    open_date:   shared_data[:date],
-                    open_price:  shared_data[:price],
-                    adjustments: shared_data[:adjustments])
+      lot = Lot.new(investment:  investment)
       transactions << Transaction.create!(shared_data.merge lot: lot,
-                                                            shares: remaining_shares)
+                                                            shares: remaining_shares,
+                                                            is_opening: true)
       transactions
     end
 
@@ -66,12 +64,12 @@ module GenerateTransactions
       class << self
         def fifo(investment, direction)
           Lot.open(direction: direction).where(investment: investment)
-                                        .order('open_date, id')
+                                        .sort_by{|l| [l.open_date, l.id]}
         end
 
         def highest_cost_first(investment, direction)
           Lot.open(direction: direction).where(investment: investment)
-                                        .order('open_price DESC, open_date, id')
+                                        .sort_by{|l| [-l.open_price, l.open_date, l.id]}
         end
       end
     end

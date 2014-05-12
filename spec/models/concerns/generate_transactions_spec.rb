@@ -55,13 +55,12 @@ describe GenerateTransactions do
 
     def create_transaction!(options)
       if options[:lot]
-        Transaction.create!(options.merge lot: options[:lot])
+        Transaction.create!(options.merge lot: options[:lot],
+                                          is_opening: false)
       else
         lot = Lot.new(investment: options.delete(:investment))
-        trans = Transaction.create!(options.merge lot: lot)
-        lot.update!(open_date: trans.date,
-                    open_price: trans.price)
-        trans
+        Transaction.create!(options.merge lot: lot,
+                                          is_opening: true)
       end
     end
 
@@ -229,19 +228,6 @@ describe GenerateTransactions do
           transactions.each do |transaction|
             expect(transaction.adjustments).to eq([transactions[0].adjustments[0]])
           end
-        end
-
-        it 'does not set adjustment for existing lots' do
-          transactions = GenerateTransactions.transact!(data)
-          transactions[0...-1].each do |transaction|
-            expect(transaction.lot.adjustments).to be_blank
-          end
-        end
-
-        it 'sets adjustment for newly created lot' do
-          transactions = GenerateTransactions.transact!(data)
-          transaction = transactions.last
-          expect(transaction.lot.adjustments).to eq(transaction.adjustments)
         end
       end
     end

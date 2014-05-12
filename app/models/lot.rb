@@ -3,8 +3,6 @@ class Lot < ActiveRecord::Base
   belongs_to :investment
   has_many   :transactions, ->{order('date')}
 
-  has_and_belongs_to_many :adjustments
-
   validates :investment, presence: true
 
   scope :open, ->(during: Date.today, direction: nil){
@@ -45,6 +43,10 @@ class Lot < ActiveRecord::Base
 
   def open_date
     transactions.opening.first.date
+  end
+
+  def open_adjustments
+    transactions.opening.first.adjustments
   end
 
   def outstanding_shares
