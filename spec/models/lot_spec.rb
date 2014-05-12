@@ -80,17 +80,18 @@ describe Lot do
   end
 
   context 'gains' do
-    subject { FactoryGirl.build(:lot, open_price: 100) }
-    let!(:transactions) do
-      [ FactoryGirl.create(:transaction, lot:    subject,
-                                         price:  subject.open_price,
-                                         shares: 100),
-        FactoryGirl.create(:transaction, lot:    subject,
-                                         date:   Date.today,
-                                         price:  110,
-                                         shares: -90)
-      ]
+    subject { FactoryGirl.create(:lot) }
+    let!(:open_transaction) do
+      FactoryGirl.create(:transaction, price:  100,
+                                       shares: 100)
     end
+    let!(:close_transaction) do
+      FactoryGirl.create(:transaction, lot:    open_transaction.lot,
+                                       date:   Date.today,
+                                       price:  110,
+                                       shares: -90)
+    end
+    subject { open_transaction.lot }
 
     it 'has realized gain of (110-100)*90 = 900' do
       expect(subject.realized_gain).to eq(900)

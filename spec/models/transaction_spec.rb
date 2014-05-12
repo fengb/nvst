@@ -1,3 +1,5 @@
+require 'spec_helper'
+
 describe Transaction do
   describe '#open?' do
     let!(:lot)          { FactoryGirl.create(:lot) }

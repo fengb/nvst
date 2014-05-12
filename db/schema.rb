@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140507231452) do
+ActiveRecord::Schema.define(version: 20140512003602) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -33,26 +33,16 @@ ActiveRecord::Schema.define(version: 20140507231452) do
 
   create_table "lots", force: true do |t|
     t.integer "investment_id"
-    t.date    "open_date"
-    t.decimal "open_price",    precision: 12, scale: 4
     t.index ["investment_id"], :name => "fk__lots_investment_id"
     t.foreign_key ["investment_id"], "investments", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_lots_investment_id"
-  end
-
-  create_table "adjustments_lots", force: true do |t|
-    t.integer "lot_id"
-    t.integer "adjustment_id"
-    t.index ["adjustment_id"], :name => "fk__adjustments_lots_adjustment_id"
-    t.index ["lot_id"], :name => "fk__adjustments_lots_lot_id"
-    t.foreign_key ["adjustment_id"], "adjustments", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_adjustments_lots_adjustment_id"
-    t.foreign_key ["lot_id"], "lots", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_adjustments_lots_lot_id"
   end
 
   create_table "transactions", force: true do |t|
     t.integer "lot_id"
     t.date    "date"
-    t.decimal "shares", precision: 15, scale: 4
-    t.decimal "price",  precision: 12, scale: 4
+    t.decimal "shares",     precision: 15, scale: 4
+    t.decimal "price",      precision: 12, scale: 4
+    t.boolean "is_opening"
     t.index ["lot_id"], :name => "fk__transactions_lot_id"
     t.foreign_key ["lot_id"], "lots", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_transactions_lot_id"
   end

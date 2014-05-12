@@ -20,23 +20,31 @@ class Lot < ActiveRecord::Base
                                       GROUP BY lot_id',
                                     during.to_date])
     joins("LEFT JOIN (#{outstanding_sql}) t ON t.lot_id=lots.id")
-    .where("open_date <= ? AND t.outstanding_shares #{op} 0", during)
+    .where("t.outstanding_shares #{op} 0", during)
   }
 
   def self.corresponding(options)
-    lot = Lot.find_by(investment: options[:investment],
-                      open_date:  options[:date],
-                      open_price: options[:price])
-    if lot && lot.transactions[0].shares.angle == options[:shares].angle &&
-              lot.adjustments[0].try(:ratio) == options[:adjustment]
-      lot
+    transaction = Transaction.includes(:lot).find_by(lots: {investment_id: options[:investment]},
+                                                     date: options[:date],
+                                                     price: options[:price])
+    if transaction && transaction.shares.angle == options[:shares].angle &&
+                      transaction.adjustments[0].try(:ratio) == options[:adjustment]
+      transaction.lot
     else
       nil
     end
   end
 
+  def open_price
+    transactions.opening.first.price
+  end
+
   def adjusted_open_price(on: Date.today)
-    open_price * adjustments.ratio(on: on)
+    transactions.opening.first.adjusted_price(on: on)
+  end
+
+  def open_date
+    transactions.opening.first.date
   end
 
   def outstanding_shares

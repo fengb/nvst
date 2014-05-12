@@ -11,8 +11,8 @@ class Transaction < ActiveRecord::Base
   has_and_belongs_to_many :adjustments
 
   scope :tracked, ->{joins(lot: :investment).where("investments.category != 'cash'")}
-  scope :open,    ->{joins(:lot).where('lots.open_date = transactions.date AND lots.open_price = transactions.price')}
-  scope :close,   ->{joins(:lot).where('lots.open_date != transactions.date OR lots.open_price != transactions.price')}
+  scope :opening, ->{where(is_opening: true)}
+  scope :closing, ->{where(is_opening: false)}
 
   def value
     -shares * adjusted_price
