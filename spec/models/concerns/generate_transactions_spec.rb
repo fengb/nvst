@@ -47,12 +47,6 @@ describe GenerateTransactions do
                         shares:     BigDecimal(rand(100..200)),
                         price:      BigDecimal(1)} }
 
-    def expect_data(obj, data, data_extra={})
-      data.merge(data_extra).each do |method, val|
-        expect(obj.send(method)).to eq(val)
-      end
-    end
-
     def create_transaction!(options)
       if options[:lot]
         Transaction.create!(options.merge lot: options[:lot])
