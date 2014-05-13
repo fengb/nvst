@@ -42,7 +42,7 @@ ActiveRecord::Schema.define(version: 20140512003602) do
     t.date    "date"
     t.decimal "shares",     precision: 15, scale: 4
     t.decimal "price",      precision: 12, scale: 4
-    t.boolean "is_opening"
+    t.boolean "is_opening",                          default: false
     t.index ["lot_id"], :name => "fk__transactions_lot_id"
     t.foreign_key ["lot_id"], "lots", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_transactions_lot_id"
   end

@@ -55,8 +55,7 @@ describe GenerateTransactions do
 
     def create_transaction!(options)
       if options[:lot]
-        Transaction.create!(options.merge lot: options[:lot],
-                                          is_opening: false)
+        Transaction.create!(options.merge lot: options[:lot])
       else
         lot = Lot.new(investment: options.delete(:investment))
         Transaction.create!(options.merge lot: lot,

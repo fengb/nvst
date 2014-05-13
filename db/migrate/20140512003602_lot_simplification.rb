@@ -1,7 +1,7 @@
 class LotSimplification < ActiveRecord::Migration
   def change
     change_table :transactions do |t|
-      t.boolean :is_opening
+      t.boolean :is_opening, default: false
     end
 
     change_table :lots do |t|
