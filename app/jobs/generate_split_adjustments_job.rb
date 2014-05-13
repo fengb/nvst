@@ -23,13 +23,12 @@ class GenerateSplitAdjustmentsJob
 
       Lot.create!(investment: existing_lot.investment).tap do |new_lot|
         total_shares = existing_lot.outstanding_shares * split.after / split.before
-        new_transaction = Transaction.create!(lot:        new_lot,
-                                              is_opening: true,
-                                              date:       split.date,
-                                              price:      existing_lot.open_price,
-                                              shares:     total_shares - existing_lot.outstanding_shares)
-
-        new_transaction.adjustments = existing_lot.transactions.opening[0].adjustments
+        Transaction.create!(lot:         new_lot,
+                            is_opening:  true,
+                            date:        split.date,
+                            price:       existing_lot.open_price,
+                            shares:      total_shares - existing_lot.outstanding_shares,
+                            adjustments: existing_lot.open_adjustments)
       end
     end
   end
