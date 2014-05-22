@@ -26,12 +26,12 @@ class Transaction < ActiveRecord::Base
     value - cost_basis
   end
 
-  def open?
-    date == lot.open_date && price == lot.open_price
+  def opening?
+    is_opening?
   end
 
-  def close?
-    date != lot.open_date || price != lot.open_price
+  def closing?
+    !is_opening?
   end
 
   def adjusted_price(on: Date.today)
