@@ -28,6 +28,12 @@ describe InvestmentSplit do
       expect(transaction.adjustments).to_not be_empty
     end
 
+    it 'retains opening transaction data' do
+      old_data = transaction.attributes.dup
+      subject.generate_transaction_for!(lot)
+      expect_data(transaction, old_data)
+    end
+
     it 'creates a new transaction with adjusted data' do
       new_transaction = subject.generate_transaction_for!(lot)
       expect_data(new_transaction, investment:     lot.investment,
@@ -35,15 +41,22 @@ describe InvestmentSplit do
                                    adjusted_price: transaction.adjusted_price)
     end
 
-    it 'creates a lot such that new shares == old outstanding value / new adjusted open price - existing shares' do
-      old_value = lot.outstanding_shares * lot.adjusted_open_price
+    it 'creates enough new shares' do
+      new_transaction = subject.generate_transaction_for!(lot)
+      expected_shares = transaction.shares * subject.after / subject.before
+      expect(new_transaction.shares + transaction.shares).to eq(expected_shares)
+    end
+
+    it 'has total new value == total old value' do
+      old_value = transaction.value
       new_transaction = subject.generate_transaction_for!(lot)
 
-      expect(new_transaction.shares).to eq(old_value / new_transaction.adjusted_price - lot.outstanding_shares)
+      new_value = new_transaction.value + transaction.value
+      expect(new_value).to eq(old_value)
     end
 
     context 'with closing transactions' do
-      let!(:transaction2) do
+      let!(:close_transaction) do
         FactoryGirl.create(:transaction, lot: lot,
                                          shares: -2,
                                          date: transaction.date + 2)
@@ -51,13 +64,13 @@ describe InvestmentSplit do
 
       it 'does not adjust closing transactions' do
         subject.generate_transaction_for!(lot)
-        expect(transaction2.adjustments).to be_empty
+        expect(close_transaction.adjustments).to be_empty
       end
 
       it 'dies when lot has transactions after split date' do
         # I don't see a good way to handle this automatically
         # (What does it mean to split a stock before a bunch of booked sales?)
-        subject.date = transaction2.date
+        subject.date = close_transaction.date
         expect {
           subject.generate_transaction_for!(lot)
         }.to raise_error
