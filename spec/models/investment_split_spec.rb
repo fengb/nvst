@@ -55,6 +55,13 @@ describe InvestmentSplit do
       expect(new_value).to eq(old_value)
     end
 
+    it 'only runs once' do
+      subject.generate_transaction_for!(lot)
+      subject.generate_transaction_for!(lot)
+
+      expect(transaction.adjustments.reload.size).to eq(1)
+    end
+
     context 'with closing transactions' do
       let!(:close_transaction) do
         FactoryGirl.create(:transaction, lot: lot,
