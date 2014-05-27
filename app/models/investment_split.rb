@@ -19,10 +19,10 @@ class InvestmentSplit < ActiveRecord::Base
   end
 
   def generate_transaction_for!(lot)
-    adjustment = Adjustment.new(date: self.date,
-                                numerator: self.before,
-                                denominator: self.after,
-                                reason: 'split')
+    adjustment = TransactionAdjustment.new(date: self.date,
+                                           numerator: self.before,
+                                           denominator: self.after,
+                                           reason: 'split')
     if lot.transactions.where('date >= ?', adjustment.date).exists?
       raise 'Attempting to split but encountered future transactions'
     end

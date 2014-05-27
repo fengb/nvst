@@ -8,7 +8,7 @@ class Transaction < ActiveRecord::Base
 
   delegate :investment, to: :lot
 
-  has_and_belongs_to_many :adjustments
+  has_and_belongs_to_many :adjustments, class_name: 'TransactionAdjustment'
 
   scope :tracked, ->{joins(lot: :investment).where("investments.category != 'cash'")}
   scope :opening, ->{where(is_opening: true)}

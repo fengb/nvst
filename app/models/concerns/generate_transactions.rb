@@ -25,9 +25,9 @@ module GenerateTransactions
       end
 
       if data[:adjustment] && data[:adjustment] != 1
-        adjustment = Adjustment.new(date:   data[:date],
-                                    ratio:  data[:adjustment],
-                                    reason: 'fee')
+        adjustment = TransactionAdjustment.new(date:   data[:date],
+                                               ratio:  data[:adjustment],
+                                               reason: 'fee')
       end
 
       shared_data = data.slice(:date, :price)
