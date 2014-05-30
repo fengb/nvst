@@ -37,24 +37,8 @@ class Lot < ActiveRecord::Base
     transactions.opening.first
   end
 
-  def open_price
-    opening_transaction.price
-  end
-
-  def adjusted_open_price(on: Date.today)
-    opening_transaction.adjusted_price(on: on)
-  end
-
-  def open_date
-    opening_transaction.date
-  end
-
-  def open_tax_date
-    opening_transaction.tax_date
-  end
-
-  def open_adjustments
-    opening_transaction.adjustments
+  def opening(attr, *args)
+    opening_transaction.send(attr, *args)
   end
 
   def outstanding_shares
@@ -74,10 +58,10 @@ class Lot < ActiveRecord::Base
   end
 
   def unrealized_gain
-    (current_price - adjusted_open_price) * outstanding_shares
+    (current_price - opening(:adjusted_price)) * outstanding_shares
   end
 
   def unrealized_gain_percent
-    unrealized_gain / (outstanding_shares * adjusted_open_price)
+    unrealized_gain / (outstanding_shares * opening(:adjusted_price))
   end
 end

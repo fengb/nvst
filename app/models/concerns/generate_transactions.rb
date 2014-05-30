@@ -21,7 +21,7 @@ module GenerateTransactions
       if corresponding = Lot.corresponding(data)
         data = data.slice(:date, :tax_date, :price, :shares)
                    .merge(lot:         corresponding,
-                          adjustments: corresponding.open_adjustments)
+                          adjustments: corresponding.opening(:adjustments))
 
         return [Transaction.create!(data)]
       end
@@ -67,12 +67,12 @@ module GenerateTransactions
       class << self
         def fifo(investment, direction)
           Lot.open(direction: direction).where(investment: investment)
-                                        .sort_by{|l| [l.open_date, l.id]}
+                                        .sort_by{|l| [l.opening(:date), l.id]}
         end
 
         def highest_cost_first(investment, direction)
           Lot.open(direction: direction).where(investment: investment)
-                                        .sort_by{|l| [-l.open_price, l.open_date, l.id]}
+                                        .sort_by{|l| [-l.opening(:price), l.opening(:date), l.id]}
         end
       end
     end

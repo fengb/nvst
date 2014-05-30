@@ -13,7 +13,7 @@
     - @schedule_d.close_transactions.each do |transaction|
       %tr
         %th= transaction.investment.symbol
-        %td= transaction.lot.open_date.to_formatted_s
+        %td= transaction.lot.opening(:date).to_formatted_s
         %td= transaction.date.to_formatted_s
         %td= -transaction.shares
         %td= number_to_currency transaction.value

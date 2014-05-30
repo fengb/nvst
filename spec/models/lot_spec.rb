@@ -5,8 +5,8 @@ describe Lot do
     let(:lot)    { FactoryGirl.create(:lot) }
     let(:shares) { lot.transactions[0].shares }
     let(:data)   { {investment: lot.investment,
-                    date:       lot.open_date,
-                    price:      lot.open_price,
+                    date:       lot.opening(:date),
+                    price:      lot.opening(:price),
                     shares:     shares } }
 
     it 'finds existing when all data matches' do
@@ -32,7 +32,7 @@ describe Lot do
 
     context 'open lot' do
       it 'excludes lots opened at later date' do
-        expect(Lot.open(during: lot.open_date - 1)).to eq([])
+        expect(Lot.open(during: lot.opening(:date) - 1)).to eq([])
       end
 
       it 'includes all outstanding lots' do
@@ -40,18 +40,18 @@ describe Lot do
       end
 
       it 'includes lots opened on date' do
-        expect(Lot.open(during: lot.open_date)).to eq([lot])
+        expect(Lot.open(during: lot.opening(:date))).to eq([lot])
       end
 
       it 'includes lots opened before date' do
-        expect(Lot.open(during: lot.open_date + 10000)).to eq([lot])
+        expect(Lot.open(during: lot.opening(:date) + 10000)).to eq([lot])
       end
 
       it 'includes not-fully-closed lots' do
         FactoryGirl.create(:transaction, lot: lot,
-                                         date: lot.open_date + 1,
+                                         date: lot.opening(:date) + 1,
                                          shares: -0.5)
-        expect(Lot.open(during: lot.open_date + 10)).to eq([lot])
+        expect(Lot.open(during: lot.opening(:date) + 10)).to eq([lot])
       end
 
       it 'includes lots in the same direction' do
@@ -81,17 +81,17 @@ describe Lot do
 
   context 'gains' do
     subject { FactoryGirl.create(:lot) }
-    let!(:open_transaction) do
+    let!(:opening_transaction) do
       FactoryGirl.create(:transaction, price:  100,
                                        shares: 100)
     end
-    let!(:close_transaction) do
-      FactoryGirl.create(:transaction, lot:    open_transaction.lot,
+    let!(:closing_transaction) do
+      FactoryGirl.create(:transaction, lot:    opening_transaction.lot,
                                        date:   Date.today,
                                        price:  110,
                                        shares: -90)
     end
-    subject { open_transaction.lot }
+    subject { opening_transaction.lot }
 
     it 'has realized gain of (110-100)*90 = 900' do
       expect(subject.realized_gain).to eq(900)

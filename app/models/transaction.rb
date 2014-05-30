@@ -24,7 +24,7 @@ class Transaction < ActiveRecord::Base
   end
 
   def cost_basis
-    -shares * lot.open_price
+    -shares * lot.opening(:price)
   end
 
   def realized_gain
