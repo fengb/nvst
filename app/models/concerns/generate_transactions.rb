@@ -16,8 +16,10 @@ module GenerateTransactions
 
   class << self
     def transact!(data)
+      data[:tax_date] ||= data[:date]
+
       if corresponding = Lot.corresponding(data)
-        data = data.slice(:date, :price, :shares)
+        data = data.slice(:date, :tax_date, :price, :shares)
                    .merge(lot:         corresponding,
                           adjustments: corresponding.open_adjustments)
 
@@ -30,8 +32,9 @@ module GenerateTransactions
                                                reason: 'fee')
       end
 
-      shared_data = data.slice(:date, :price)
+      shared_data = data.slice(:date, :tax_date, :price)
       shared_data[:adjustments] = [adjustment].compact
+
       investment = data[:investment]
       remaining_shares = data[:shares]
 

@@ -6,6 +6,11 @@ class Transaction < ActiveRecord::Base
 
   validates :lot, presence: true
 
+  validates :date,     presence: true
+  validates :tax_date, presence: true
+  validates :shares,   presence: true
+  validates :price,    presence: true
+
   delegate :investment, to: :lot
 
   has_and_belongs_to_many :adjustments, class_name: 'TransactionAdjustment'

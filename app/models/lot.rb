@@ -33,20 +33,28 @@ class Lot < ActiveRecord::Base
     end
   end
 
+  def opening_transaction
+    transactions.opening.first
+  end
+
   def open_price
-    transactions.opening.first.price
+    opening_transaction.price
   end
 
   def adjusted_open_price(on: Date.today)
-    transactions.opening.first.adjusted_price(on: on)
+    opening_transaction.adjusted_price(on: on)
   end
 
   def open_date
-    transactions.opening.first.date
+    opening_transaction.date
+  end
+
+  def open_tax_date
+    opening_transaction.tax_date
   end
 
   def open_adjustments
-    transactions.opening.first.adjustments
+    opening_transaction.adjustments
   end
 
   def outstanding_shares

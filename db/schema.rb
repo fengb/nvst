@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140527222809) do
+ActiveRecord::Schema.define(version: 20140530125739) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -94,6 +94,7 @@ ActiveRecord::Schema.define(version: 20140527222809) do
     t.decimal "shares",     precision: 15, scale: 4
     t.decimal "price",      precision: 12, scale: 4
     t.boolean "is_opening",                          default: false
+    t.date    "tax_date"
     t.index ["lot_id"], :name => "fk__transactions_lot_id"
     t.foreign_key ["lot_id"], "lots", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_transactions_lot_id"
   end

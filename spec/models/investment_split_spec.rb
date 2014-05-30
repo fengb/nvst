@@ -38,6 +38,7 @@ describe InvestmentSplit do
       new_transaction = subject.generate_transaction_for!(lot)
       expect_data(new_transaction, investment:     lot.investment,
                                    date:           subject.date,
+                                   tax_date:       transaction.date,
                                    adjusted_price: transaction.adjusted_price)
     end
 

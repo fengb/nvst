@@ -1,6 +1,7 @@
 FactoryGirl.define do
   factory :transaction do
     date       { Date.today - rand(100..300) }
+    tax_date   { date }
     shares     { rand(100.0..1000.0).to_d.round(2) }
     price      { rand(10.0..100.0).to_d.round(2) }
 

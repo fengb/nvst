@@ -45,6 +45,7 @@ class InvestmentSplit < ActiveRecord::Base
       Transaction.create!(lot:         Lot.new(investment: lot.investment),
                           is_opening:  true,
                           date:        self.date,
+                          tax_date:    lot.open_tax_date,
                           price:       lot.open_price,
                           shares:      new_outstanding_shares - lot.outstanding_shares,
                           adjustments: lot.open_adjustments)

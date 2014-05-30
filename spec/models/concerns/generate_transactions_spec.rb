@@ -49,11 +49,11 @@ describe GenerateTransactions do
 
     def create_transaction!(options)
       if options[:lot]
-        Transaction.create!(options.merge lot: options[:lot])
+        FactoryGirl.create(:transaction, options.merge(lot: options[:lot]))
       else
         lot = Lot.new(investment: options.delete(:investment))
-        Transaction.create!(options.merge lot: lot,
-                                          is_opening: true)
+        FactoryGirl.create(:transaction, options.merge(lot: lot,
+                                                       is_opening: true))
       end
     end
 
