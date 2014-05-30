@@ -5,12 +5,18 @@ class InvestmentSplit < ActiveRecord::Base
 
   default_scope ->{order(:date)}
 
-  def adjustment
+  def price_adjustment
     Rational(before) / after
   end
 
-  def adjust_up_to_date
+  def price_adjust_up_to_date
     date - 1
+  end
+
+  def generate_transactions!
+    Lot.where(investment: investment).open(during: date).map do |lot|
+      self.generate_transaction_for!(lot)
+    end
   end
 
   def transaction_adjustment!
@@ -24,12 +30,6 @@ class InvestmentSplit < ActiveRecord::Base
     end
   end
 
-  def generate_transactions!
-    Lot.where(investment: investment).open(during: date).map do |lot|
-      self.generate_transaction_for!(lot)
-    end
-  end
-
   def generate_transaction_for!(lot)
     if lot.transactions.where('date >= ?', self.date).exists?
       raise 'Attempting to split but encountered future transactions'
@@ -40,12 +40,13 @@ class InvestmentSplit < ActiveRecord::Base
         transaction.adjustments << transaction_adjustment! unless transaction.adjustments.include?(transaction_adjustment!)
       end
 
-      total_shares = lot.outstanding_shares / self.adjustment
+      shares_adjustment = 1 / price_adjustment
+      new_outstanding_shares = lot.outstanding_shares * shares_adjustment
       Transaction.create!(lot:         Lot.new(investment: lot.investment),
                           is_opening:  true,
                           date:        self.date,
                           price:       lot.open_price,
-                          shares:      total_shares - lot.outstanding_shares,
+                          shares:      new_outstanding_shares - lot.outstanding_shares,
                           adjustments: lot.open_adjustments)
     end
   end
