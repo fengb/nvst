@@ -47,28 +47,20 @@ describe GenerateTransactions do
                         shares:     BigDecimal(rand(100..200)),
                         price:      BigDecimal(1)} }
 
-    def expect_all(obj, data, data_extra={})
-      data.merge(data_extra).each do |method, val|
-        expect(obj.send(method)).to eq(val)
-      end
-    end
-
     def create_transaction!(options)
       if options[:lot]
-        Transaction.create!(options.merge lot: options[:lot])
+        FactoryGirl.create(:transaction, options.merge(lot: options[:lot]))
       else
         lot = Lot.new(investment: options.delete(:investment))
-        trans = Transaction.create!(options.merge lot: lot)
-        lot.update!(open_date: trans.date,
-                    open_price: trans.price)
-        trans
+        FactoryGirl.create(:transaction, options.merge(lot: lot,
+                                                       is_opening: true))
       end
     end
 
     it 'creates new lot with single transaction when none exists' do
       transactions = GenerateTransactions.transact!(data)
       expect(transactions.size).to eq(1)
-      expect_all(transactions[0], data)
+      expect_data(transactions[0], data)
     end
 
     context 'corresponding lot' do
@@ -84,8 +76,7 @@ describe GenerateTransactions do
       it 'reuses the lot' do
         transactions = GenerateTransactions.transact!(data)
         expect(transactions.size).to eq(1)
-        expect_all(transactions[0], data)
-        expect(transactions[0].lot).to eq(existing.lot)
+        expect_data(transactions[0], data, lot: existing.lot)
       end
     end
 
@@ -101,7 +92,7 @@ describe GenerateTransactions do
         existing.update(shares: 10)
         transactions = GenerateTransactions.transact!(data)
         expect(transactions.size).to eq(1)
-        expect_all(transactions[0], data)
+        expect_data(transactions[0], data)
         expect(transactions[0].lot).to_not eq(existing.lot)
       end
 
@@ -113,7 +104,7 @@ describe GenerateTransactions do
 
         transactions = GenerateTransactions.transact!(data)
         expect(transactions.size).to eq(1)
-        expect_all(transactions[0], data)
+        expect_data(transactions[0], data)
         expect(transactions[0].lot).to_not eq(existing.lot)
       end
 
@@ -122,7 +113,7 @@ describe GenerateTransactions do
 
         transactions = GenerateTransactions.transact!(data)
         expect(transactions.size).to eq(1)
-        expect_all(transactions[0], data, lot: existing.lot)
+        expect_data(transactions[0], data, lot: existing.lot)
       end
 
       it 'fills when outstanding amount == new amount' do
@@ -130,20 +121,20 @@ describe GenerateTransactions do
 
         transactions = GenerateTransactions.transact!(data)
         expect(transactions.size).to eq(1)
-        expect_all(transactions[0], data, lot: existing.lot)
+        expect_data(transactions[0], data, lot: existing.lot)
       end
 
       it 'fills up and creates new lot with remainder' do
         transactions = GenerateTransactions.transact!(data)
         expect(transactions.size).to eq(2)
-        expect_all(transactions[0], lot: existing.lot,
-                                    date: data[:date],
-                                    shares: -existing.shares,
-                                    price: 1)
+        expect_data(transactions[0], lot: existing.lot,
+                                     date: data[:date],
+                                     shares: -existing.shares,
+                                     price: 1)
         expect(transactions[1].lot).to_not eq(existing.lot)
-        expect_all(transactions[1], date: data[:date],
-                                    shares: data[:shares] + existing.shares,
-                                    price: 1)
+        expect_data(transactions[1], date: data[:date],
+                                     shares: data[:shares] + existing.shares,
+                                     price: 1)
       end
     end
 
@@ -162,13 +153,13 @@ describe GenerateTransactions do
       it 'fills up first based on highest price' do
         transactions = GenerateTransactions.transact!(data)
         expect(transactions.size).to eq(2)
-        expect_all(transactions[0], lot: existing[0].lot,
-                                    date: data[:date],
-                                    shares: -existing[0].shares,
+        expect_data(transactions[0], lot: existing[0].lot,
+                                     date: data[:date],
+                                     shares: -existing[0].shares,
                                     price: data[:price])
-        expect_all(transactions[1], lot: existing[1].lot,
-                                    date: data[:date],
-                                    shares: data[:shares] + existing[0].shares,
+        expect_data(transactions[1], lot: existing[1].lot,
+                                     date: data[:date],
+                                     shares: data[:shares] + existing[0].shares,
                                     price: data[:price])
       end
 
@@ -177,19 +168,60 @@ describe GenerateTransactions do
 
         transactions = GenerateTransactions.transact!(data)
         expect(transactions.size).to eq(3)
-        expect_all(transactions[0], lot: existing[0].lot,
-                                    date: data[:date],
-                                    shares: -existing[0].shares,
-                                    price: data[:price])
-        expect_all(transactions[1], lot: existing[1].lot,
-                                    date: data[:date],
-                                    shares: -existing[1].shares,
-                                    price: data[:price])
+        expect_data(transactions[0], lot: existing[0].lot,
+                                     date: data[:date],
+                                     shares: -existing[0].shares,
+                                     price: data[:price])
+        expect_data(transactions[1], lot: existing[1].lot,
+                                     date: data[:date],
+                                     shares: -existing[1].shares,
+                                     price: data[:price])
         expect(transactions[2].lot).to_not eq(existing[0].lot)
         expect(transactions[2].lot).to_not eq(existing[1].lot)
-        expect_all(transactions[2], date: data[:date],
-                                    shares: data[:shares] + existing.sum(&:shares),
-                                    price: data[:price])
+        expect_data(transactions[2], date: data[:date],
+                                     shares: data[:shares] + existing.sum(&:shares),
+                                     price: data[:price])
+      end
+    end
+
+    describe 'adjustments' do
+      it 'ignores adjustment if == nil' do
+        data[:adjustment] = nil
+        transactions = GenerateTransactions.transact!(data)
+        expect(transactions[0].adjustments).to be_blank
+      end
+
+      it 'ignores adjustment if == 1' do
+        data[:adjustment] = 1
+        transactions = GenerateTransactions.transact!(data)
+        expect(transactions[0].adjustments).to be_blank
+      end
+
+      it 'creates an adjustment for the transaction date' do
+        data[:adjustment] = 0.5
+        transactions = GenerateTransactions.transact!(data)
+        expect(transactions[0].adjustments.size).to eq(1)
+        expect_data(transactions[0].adjustments[0], date: data[:date],
+                                                    ratio: data[:adjustment])
+      end
+
+      context 'transaction waterfall' do
+        before do
+          data[:adjustment] = 2
+          create_transaction!(investment: investment,
+                              date: data[:date] - 1,
+                              shares: -10,
+                              price: data[:price])
+        end
+
+        it 'uses the same adjustment for multiple transactions' do
+          transactions = GenerateTransactions.transact!(data)
+
+          expect(transactions.size).to be > 1
+          transactions.each do |transaction|
+            expect(transaction.adjustments).to eq([transactions[0].adjustments[0]])
+          end
+        end
       end
     end
   end

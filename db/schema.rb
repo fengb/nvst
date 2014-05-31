@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140216212751) do
+ActiveRecord::Schema.define(version: 20140530125739) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -84,8 +84,6 @@ ActiveRecord::Schema.define(version: 20140216212751) do
 
   create_table "lots", force: true do |t|
     t.integer "investment_id"
-    t.date    "open_date"
-    t.decimal "open_price",    precision: 18, scale: 10
     t.index ["investment_id"], :name => "fk__lots_investment_id"
     t.foreign_key ["investment_id"], "investments", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_lots_investment_id"
   end
@@ -93,8 +91,10 @@ ActiveRecord::Schema.define(version: 20140216212751) do
   create_table "transactions", force: true do |t|
     t.integer "lot_id"
     t.date    "date"
-    t.decimal "shares", precision: 15, scale: 4
-    t.decimal "price",  precision: 18, scale: 10
+    t.decimal "shares",     precision: 15, scale: 4
+    t.decimal "price",      precision: 12, scale: 4
+    t.boolean "is_opening",                          default: false
+    t.date    "tax_date"
     t.index ["lot_id"], :name => "fk__transactions_lot_id"
     t.foreign_key ["lot_id"], "lots", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_transactions_lot_id"
   end
@@ -187,14 +187,24 @@ ActiveRecord::Schema.define(version: 20140216212751) do
     t.foreign_key ["investment_id"], "investments", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_investment_historical_prices_investment_id"
   end
 
+  create_table "transaction_adjustments", force: true do |t|
+    t.date    "date"
+    t.integer "numerator"
+    t.integer "denominator"
+    t.string  "reason"
+  end
+
   create_table "investment_splits", force: true do |t|
     t.integer "investment_id"
     t.date    "date"
     t.integer "before"
     t.integer "after"
+    t.integer "transaction_adjustment_id"
     t.index ["date"], :name => "index_investment_splits_on_date"
     t.index ["investment_id"], :name => "fk__investment_splits_investment_id"
+    t.index ["transaction_adjustment_id"], :name => "fk__investment_splits_transaction_adjustment_id"
     t.foreign_key ["investment_id"], "investments", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_investment_splits_investment_id"
+    t.foreign_key ["transaction_adjustment_id"], "transaction_adjustments", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_investment_splits_transaction_adjustment_id"
   end
 
   create_table "rails_admin_histories", force: true do |t|
@@ -232,6 +242,15 @@ ActiveRecord::Schema.define(version: 20140216212751) do
     t.index ["transaction_id"], :name => "index_trades_transactions_on_transaction_id", :unique => true
     t.foreign_key ["trade_id"], "trades", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_trades_transactions_trade_id"
     t.foreign_key ["transaction_id"], "transactions", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_trades_transactions_transaction_id"
+  end
+
+  create_table "transaction_adjustments_transactions", force: true do |t|
+    t.integer "transaction_id"
+    t.integer "transaction_adjustment_id"
+    t.index ["transaction_adjustment_id"], :name => "fk__transaction_adjustments_transactions_adjustment_id"
+    t.index ["transaction_id"], :name => "fk__transaction_adjustments_transactions_transaction_id"
+    t.foreign_key ["transaction_adjustment_id"], "transaction_adjustments", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_transaction_adjustments_transactions_adjustment_id"
+    t.foreign_key ["transaction_id"], "transactions", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_transaction_adjustments_transactions_transaction_id"
   end
 
 end

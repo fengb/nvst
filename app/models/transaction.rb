@@ -6,29 +6,40 @@ class Transaction < ActiveRecord::Base
 
   validates :lot, presence: true
 
+  validates :date,     presence: true
+  validates :tax_date, presence: true
+  validates :shares,   presence: true
+  validates :price,    presence: true
+
   delegate :investment, to: :lot
 
+  has_and_belongs_to_many :adjustments, class_name: 'TransactionAdjustment'
+
   scope :tracked, ->{joins(lot: :investment).where("investments.category != 'cash'")}
-  scope :open,    ->{joins(:lot).where('lots.open_date = transactions.date AND lots.open_price = transactions.price')}
-  scope :close,   ->{joins(:lot).where('lots.open_date != transactions.date OR lots.open_price != transactions.price')}
+  scope :opening, ->{where(is_opening: true)}
+  scope :closing, ->{where(is_opening: false)}
 
   def value
-    -shares * price
+    -shares * adjusted_price
   end
 
   def cost_basis
-    -shares * lot.open_price
+    -shares * lot.opening(:price)
   end
 
   def realized_gain
     value - cost_basis
   end
 
-  def open?
-    date == lot.open_date && price == lot.open_price
+  def opening?
+    is_opening?
   end
 
-  def close?
-    date == lot.open_date && price == lot.open_price
+  def closing?
+    !is_opening?
+  end
+
+  def adjusted_price(on: Date.today)
+    price * adjustments.ratio(on: on)
   end
 end

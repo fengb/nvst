@@ -1,37 +1,44 @@
 # Generated
 class Lot < ActiveRecord::Base
   belongs_to :investment
-  has_many   :transactions, ->{order('date')} do
-    def open
-      select(&:open?)
-    end
-  end
+  has_many   :transactions, ->{order('date')}
 
   validates :investment, presence: true
 
-  scope :outstanding, ->(direction=nil){
+  scope :open, ->(during: Date.today, direction: nil){
     op = case direction.to_s
            when '+' then '>'
            when '-' then '<'
            else          '!='
          end
-    joins("LEFT JOIN (SELECT lot_id
-                           , SUM(shares) AS outstanding_shares
-                        FROM transactions
-                       GROUP BY lot_id) t
-                  ON t.lot_id=lots.id"
-    ).where("t.outstanding_shares #{op} 0")
+    outstanding_sql = sanitize_sql(['SELECT lot_id
+                                          , SUM(shares) AS outstanding_shares
+                                       FROM transactions
+                                      WHERE date <= ?
+                                      GROUP BY lot_id',
+                                    during.to_date])
+    joins("LEFT JOIN (#{outstanding_sql}) t ON t.lot_id=lots.id")
+    .where("t.outstanding_shares #{op} 0", during)
   }
 
   def self.corresponding(options)
-    lot = Lot.find_by(investment: options[:investment],
-                      open_date:  options[:date],
-                      open_price: options[:price])
-    if lot && options[:shares].angle == lot.transactions.first.shares.angle
-      lot
+    transaction = Transaction.includes(:lot).find_by(lots: {investment_id: options[:investment]},
+                                                     date: options[:date],
+                                                     price: options[:price])
+    if transaction && transaction.shares.angle == options[:shares].angle &&
+                      transaction.adjustments[0].try(:ratio) == options[:adjustment]
+      transaction.lot
     else
       nil
     end
+  end
+
+  def opening_transaction
+    transactions.opening.first
+  end
+
+  def opening(attr, *args)
+    opening_transaction.send(attr, *args)
   end
 
   def outstanding_shares
@@ -51,10 +58,10 @@ class Lot < ActiveRecord::Base
   end
 
   def unrealized_gain
-    (current_price - open_price) * outstanding_shares
+    (current_price - opening(:adjusted_price)) * outstanding_shares
   end
 
   def unrealized_gain_percent
-    unrealized_gain / (outstanding_shares * open_price)
+    unrealized_gain / (outstanding_shares * opening(:adjusted_price))
   end
 end

@@ -16,16 +16,30 @@ module GenerateTransactions
 
   class << self
     def transact!(data)
+      data[:tax_date] ||= data[:date]
+
       if corresponding = Lot.corresponding(data)
-        return [corresponding.transactions.create!(data.except(:investment))]
+        data = data.slice(:date, :tax_date, :price, :shares)
+                   .merge(lot:         corresponding,
+                          adjustments: corresponding.opening(:adjustments))
+
+        return [Transaction.create!(data)]
       end
 
-      shared_data = data.slice(:date, :price)
+      if data[:adjustment] && data[:adjustment] != 1
+        adjustment = TransactionAdjustment.new(date:   data[:date],
+                                               ratio:  data[:adjustment],
+                                               reason: 'fee')
+      end
+
+      shared_data = data.slice(:date, :tax_date, :price)
+      shared_data[:adjustments] = [adjustment].compact
+
       investment = data[:investment]
       remaining_shares = data[:shares]
 
       transactions = []
-      outstanding_lots(investment, remaining_shares).each do |lot|
+      open_lots(investment, remaining_shares).each do |lot|
         if lot.outstanding_shares.abs >= remaining_shares.abs
           transactions << lot.transactions.create!(shared_data.merge shares: remaining_shares)
           return transactions
@@ -36,21 +50,31 @@ module GenerateTransactions
       end
 
       # Shares remaining with no lot
-      lot = Lot.new(investment: investment,
-                    open_date:  data[:date],
-                    open_price: data[:price])
+      lot = Lot.new(investment:  investment)
       transactions << Transaction.create!(shared_data.merge lot: lot,
-                                                            shares: remaining_shares)
+                                                            shares: remaining_shares,
+                                                            is_opening: true)
       transactions
     end
 
-    def outstanding_lots(investment, new_shares)
+    def open_lots(investment, new_shares)
       # Buy shares fill -outstanding, sell shares fill +outstanding
       direction = new_shares > 0 ? '-' : '+'
+      LotStrategies.highest_cost_first(investment, direction)
+    end
 
-      # FIFO:         Lot.outstanding(direction).where(investment: investment).order('open_date, id')
-      # Highest cost: Lot.outstanding(direction).where(investment: investment).order('open_price DESC, open_date, id')
-      Lot.outstanding(direction).where(investment: investment).order('open_price DESC, open_date, id')
+    class LotStrategies
+      class << self
+        def fifo(investment, direction)
+          Lot.open(direction: direction).where(investment: investment)
+                                        .sort_by{|l| [l.opening(:date), l.id]}
+        end
+
+        def highest_cost_first(investment, direction)
+          Lot.open(direction: direction).where(investment: investment)
+                                        .sort_by{|l| [-l.opening(:price), l.opening(:date), l.id]}
+        end
+      end
     end
   end
 end

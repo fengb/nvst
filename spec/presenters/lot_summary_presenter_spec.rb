@@ -8,7 +8,7 @@ describe LotSummaryPresenter do
         double(key: 'uno'),
         double(key: 'uno'),
       ])
-      expect(l.send(:unique_by, :key)).to eq('uno')
+      expect(l.send(:unique_by, &:key)).to eq('uno')
     end
 
     it 'returns nil when the fields are not unique' do
@@ -16,7 +16,7 @@ describe LotSummaryPresenter do
         double(key: 'uno'),
         double(key: 'dos'),
       ])
-      expect(l.send(:unique_by, :key)).to be(nil)
+      expect(l.send(:unique_by, &:key)).to be(nil)
     end
   end
 
@@ -26,7 +26,7 @@ describe LotSummaryPresenter do
         double(key: 12),
         double(key: 34),
       ])
-      expect(l.send(:sum_by, :key)).to eq(46)
+      expect(l.send(:sum_by, &:key)).to eq(46)
     end
   end
 end

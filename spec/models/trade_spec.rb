@@ -13,9 +13,21 @@ describe Trade do
     end
   end
 
+  describe '#adjust_sell?' do
+    it 'is true when buy_investment is cash' do
+      subject.stub(buy_investment: double(cash?: true))
+      expect(subject.adjust_sell?).to be(true)
+    end
+
+    it 'is false when buy_investment is not cash' do
+      subject.stub(buy_investment: double(cash?: false))
+      expect(subject.adjust_sell?).to be(false)
+    end
+  end
+
   context 'fee calculations' do
     subject do
-      Trade.new.tap do |t|
+      Trade.new do |t|
         t.stub(raw_sell_value: 150,
                raw_buy_value: 145)
       end
@@ -27,27 +39,45 @@ describe Trade do
       end
     end
 
-    describe '#sell_value' do
-      it 'is raw_sell_value if buy_investment is not cash' do
-        subject.stub(buy_investment: double(cash?: false))
-        expect(subject.sell_value).to eq(subject.raw_sell_value)
+    context 'adjust_sell?' do
+      before { subject.stub(adjust_sell?: true) }
+
+      specify '#sell_value == #raw_buy_value' do
+        expect(subject.sell_value).to eq(subject.raw_buy_value)
       end
 
-      it 'is raw_sell_value - fee if buy_investment is cash' do
-        subject.stub(buy_investment: double(cash?: true))
-        expect(subject.sell_value).to eq(subject.raw_sell_value - subject.fee)
+      specify '#buy_value == #raw_buy_value' do
+        expect(subject.buy_value).to eq(subject.raw_buy_value)
+      end
+
+      specify '#sell_adjustment == (raw_sell_value - fee) / raw_sell_value' do
+        mathed = Rational(subject.raw_sell_value - subject.fee, subject.raw_sell_value)
+        expect(subject.sell_adjustment).to eq(mathed)
+      end
+
+      specify '#buy_adjustment == 1' do
+        expect(subject.buy_adjustment).to eq(1)
       end
     end
 
-    describe '#buy_value' do
-      it 'is raw_buy_value + fee if buy_investment is not cash' do
-        subject.stub(buy_investment: double(cash?: false))
-        expect(subject.buy_value).to eq(subject.raw_buy_value + subject.fee)
+    context '!adjust_sell?' do
+      before { subject.stub(adjust_sell?: false) }
+
+      specify '#sell_value == #raw_sell_value' do
+        expect(subject.sell_value).to eq(subject.raw_sell_value)
       end
 
-      it 'is raw_buy_value if buy_investment is cash' do
-        subject.stub(buy_investment: double(cash?: true))
-        expect(subject.buy_value).to eq(subject.raw_buy_value)
+      specify '#buy_value == #raw_sell_value' do
+        expect(subject.buy_value).to eq(subject.raw_sell_value)
+      end
+
+      specify '#sell_adjustment == 1' do
+        expect(subject.sell_adjustment).to eq(1)
+      end
+
+      specify '#buy_adjustment == (raw_buy_value + fee) / raw_buy_value' do
+        mathed = Rational(subject.raw_buy_value + subject.fee, subject.raw_buy_value)
+        expect(subject.buy_adjustment).to eq(mathed)
       end
     end
 

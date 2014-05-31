@@ -2,7 +2,7 @@ require 'spec_helper'
 
 
 describe InvestmentDividend do
-  describe 'adjustment_to_past' do
+  describe '#price_adjustment' do
     it 'compensates for expected drop in price' do
       # Date       Price   Dividend  Adjusted Price
       # Today       1.00       0.25            1.00
@@ -10,7 +10,7 @@ describe InvestmentDividend do
       dividend = InvestmentDividend.new
       past_price = BigDecimal('1.25')
       dividend.stub(percent: BigDecimal('0.25') / past_price)
-      expect(dividend.adjustment * past_price).to eq(1)
+      expect(dividend.price_adjustment * past_price).to eq(1)
     end
   end
 

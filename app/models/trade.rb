@@ -17,8 +17,12 @@ class Trade < ActiveRecord::Base
     raw_sell_value - raw_buy_value
   end
 
+  def adjust_sell?
+    buy_investment.cash?
+  end
+
   def sell_value
-    if buy_investment.cash?
+    if adjust_sell?
       raw_buy_value
     else
       raw_sell_value
@@ -26,29 +30,31 @@ class Trade < ActiveRecord::Base
   end
 
   def buy_value
-    if buy_investment.cash?
+    if adjust_sell?
       raw_buy_value
     else
       raw_sell_value
     end
   end
 
-  def sell_price_fee_adjusted
-    sell_value / sell_shares
+  def sell_adjustment
+    sell_value.to_r / raw_sell_value.to_r
   end
 
-  def buy_price_fee_adjusted
-    buy_value / buy_shares
+  def buy_adjustment
+    buy_value.to_r / raw_buy_value.to_r
   end
 
   def raw_transactions_data
     [{investment: sell_investment,
       date:       date,
       shares:     -sell_shares,
-      price:      sell_price_fee_adjusted},
+      price:      sell_price,
+      adjustment: sell_adjustment},
      {investment: buy_investment,
       date:       date,
       shares:     buy_shares,
-      price:      buy_price_fee_adjusted}]
+      price:      buy_price,
+      adjustment: buy_adjustment}]
   end
 end

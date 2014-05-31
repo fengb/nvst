@@ -1,10 +1,12 @@
+require 'spec_helper'
+
 describe Lot do
   describe '.corresponding' do
     let(:lot)    { FactoryGirl.create(:lot) }
     let(:shares) { lot.transactions[0].shares }
     let(:data)   { {investment: lot.investment,
-                    date:       lot.open_date,
-                    price:      lot.open_price,
+                    date:       lot.opening(:date),
+                    price:      lot.opening(:price),
                     shares:     shares } }
 
     it 'finds existing when all data matches' do
@@ -18,20 +20,78 @@ describe Lot do
     it 'does not find existing when shares have opposite sign' do
       expect(Lot.corresponding(data.merge shares: -shares)).to be(nil)
     end
+
+    it 'does not find existing when adjustment does not match' do
+      expect(Lot.corresponding(data.merge adjustment: 1)).to be(nil)
+    end
+  end
+
+  describe '.open' do
+    let!(:transaction1) { FactoryGirl.create(:transaction, shares: 1) }
+    let!(:lot)          { transaction1.lot }
+
+    context 'open lot' do
+      it 'excludes lots opened at later date' do
+        expect(Lot.open(during: lot.opening(:date) - 1)).to eq([])
+      end
+
+      it 'includes all outstanding lots' do
+        expect(Lot.open).to eq([lot])
+      end
+
+      it 'includes lots opened on date' do
+        expect(Lot.open(during: lot.opening(:date))).to eq([lot])
+      end
+
+      it 'includes lots opened before date' do
+        expect(Lot.open(during: lot.opening(:date) + 10000)).to eq([lot])
+      end
+
+      it 'includes not-fully-closed lots' do
+        FactoryGirl.create(:transaction, lot: lot,
+                                         date: lot.opening(:date) + 1,
+                                         shares: -0.5)
+        expect(Lot.open(during: lot.opening(:date) + 10)).to eq([lot])
+      end
+
+      it 'includes lots in the same direction' do
+        expect(Lot.open(direction: '+')).to eq([lot])
+      end
+
+      it 'excludes lots in the opposite direction' do
+        expect(Lot.open(direction: '-')).to eq([])
+      end
+    end
+
+    context 'closed lots' do
+      let(:close_date)    { Date.today - 10 }
+      let!(:transaction2) { FactoryGirl.create(:transaction, lot: lot,
+                                                             shares: -1,
+                                                             date: close_date) }
+
+      it 'excludes closed lots' do
+        expect(Lot.open).to eq([])
+      end
+
+      it 'includes lots closed later' do
+        expect(Lot.open(during: close_date - 1)).to eq([lot])
+      end
+    end
   end
 
   context 'gains' do
-    subject { FactoryGirl.build(:lot, open_price: 100) }
-    let!(:transactions) do
-      [ FactoryGirl.create(:transaction, lot:    subject,
-                                         price:  subject.open_price,
-                                         shares: 100),
-        FactoryGirl.create(:transaction, lot:    subject,
-                                         date:   Date.today,
-                                         price:  110,
-                                         shares: -90)
-      ]
+    subject { FactoryGirl.create(:lot) }
+    let!(:opening_transaction) do
+      FactoryGirl.create(:transaction, price:  100,
+                                       shares: 100)
     end
+    let!(:closing_transaction) do
+      FactoryGirl.create(:transaction, lot:    opening_transaction.lot,
+                                       date:   Date.today,
+                                       price:  110,
+                                       shares: -90)
+    end
+    subject { opening_transaction.lot }
 
     it 'has realized gain of (110-100)*90 = 900' do
       expect(subject.realized_gain).to eq(900)

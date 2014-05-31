@@ -1,8 +1,7 @@
 FactoryGirl.define do
   factory :contribution do
     date   { Date.today - rand(100) }
-    amount { rand(10000..100000) }
-    units  { rand(1000..100000) }
+    amount { rand(10000.0..100000.0).to_d.round(2) }
 
     ignore do
       generate_transactions true
