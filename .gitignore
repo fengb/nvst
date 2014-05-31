@@ -1,7 +1,6 @@
 .DS_Store
 
 /.bundle
-/config/application.yml
 /coverage
 /log/*.log
 /tmp
