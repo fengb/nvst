@@ -1,7 +1,8 @@
 source 'https://rubygems.org'
 
 gem 'rails'
-gem 'figaro', git: 'git://github.com/laserlemon/figaro.git'
+gem 'dotenv-deployment'
+gem 'dotenv-rails'
 gem 'unicorn'
 
 # Third Party
