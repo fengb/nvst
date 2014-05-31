@@ -4,7 +4,7 @@ require 'spec_helper'
 describe PortfolioPresenter do
   describe '#value_at' do
     subject do
-      PortfolioPresenter.new(transactions: [
+      PortfolioPresenter.new(activities: [
         double(investment: 'FOO', date: '2013-01-02', shares: 100),
         double(investment: 'FOO', date: '2013-01-03', shares: 100),
         double(investment: 'BAR', date: '2013-01-04', shares: 100)

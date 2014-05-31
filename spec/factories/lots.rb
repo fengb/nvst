@@ -3,8 +3,8 @@ FactoryGirl.define do
     investment
 
     after(:create) do |lot, evaluator|
-      if lot.transactions.count == 0
-        FactoryGirl.create(:transaction, lot: lot, is_opening: true)
+      if lot.activities.count == 0
+        FactoryGirl.create(:activity, lot: lot, is_opening: true)
       end
     end
   end

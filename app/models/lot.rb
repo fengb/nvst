@@ -1,7 +1,7 @@
 # Generated
 class Lot < ActiveRecord::Base
   belongs_to :investment
-  has_many   :transactions, ->{order('date')}
+  has_many   :activities, ->{order('date')}
 
   validates :investment, presence: true
 
@@ -13,7 +13,7 @@ class Lot < ActiveRecord::Base
          end
     outstanding_sql = sanitize_sql(['SELECT lot_id
                                           , SUM(shares) AS outstanding_shares
-                                       FROM transactions
+                                       FROM activities
                                       WHERE date <= ?
                                       GROUP BY lot_id',
                                     during.to_date])
@@ -22,27 +22,27 @@ class Lot < ActiveRecord::Base
   }
 
   def self.corresponding(options)
-    transaction = Transaction.includes(:lot).find_by(lots: {investment_id: options[:investment]},
-                                                     date: options[:date],
-                                                     price: options[:price])
-    if transaction && transaction.shares.angle == options[:shares].angle &&
-                      transaction.adjustments[0].try(:ratio) == options[:adjustment]
-      transaction.lot
+    activity = Activity.includes(:lot).find_by(lots: {investment_id: options[:investment]},
+                                               date: options[:date],
+                                               price: options[:price])
+    if activity && activity.shares.angle == options[:shares].angle &&
+                   activity.adjustments[0].try(:ratio) == options[:adjustment]
+      activity.lot
     else
       nil
     end
   end
 
-  def opening_transaction
-    transactions.opening.first
+  def opening_activity
+    activities.opening.first
   end
 
   def opening(attr, *args)
-    opening_transaction.send(attr, *args)
+    opening_activity.send(attr, *args)
   end
 
   def outstanding_shares
-    transactions.sum('shares')
+    activities.sum('shares')
   end
 
   def current_price
@@ -54,7 +54,7 @@ class Lot < ActiveRecord::Base
   end
 
   def realized_gain
-    transactions.to_a.sum(&:realized_gain)
+    activities.to_a.sum(&:realized_gain)
   end
 
   def unrealized_gain

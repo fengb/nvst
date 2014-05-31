@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Lot do
   describe '.corresponding' do
     let(:lot)    { FactoryGirl.create(:lot) }
-    let(:shares) { lot.transactions[0].shares }
+    let(:shares) { lot.activities[0].shares }
     let(:data)   { {investment: lot.investment,
                     date:       lot.opening(:date),
                     price:      lot.opening(:price),
@@ -27,8 +27,8 @@ describe Lot do
   end
 
   describe '.open' do
-    let!(:transaction1) { FactoryGirl.create(:transaction, shares: 1) }
-    let!(:lot)          { transaction1.lot }
+    let!(:activity1) { FactoryGirl.create(:activity, shares: 1) }
+    let!(:lot)          { activity1.lot }
 
     context 'open lot' do
       it 'excludes lots opened at later date' do
@@ -48,7 +48,7 @@ describe Lot do
       end
 
       it 'includes not-fully-closed lots' do
-        FactoryGirl.create(:transaction, lot: lot,
+        FactoryGirl.create(:activity, lot: lot,
                                          date: lot.opening(:date) + 1,
                                          shares: -0.5)
         expect(Lot.open(during: lot.opening(:date) + 10)).to eq([lot])
@@ -65,7 +65,7 @@ describe Lot do
 
     context 'closed lots' do
       let(:close_date)    { Date.today - 10 }
-      let!(:transaction2) { FactoryGirl.create(:transaction, lot: lot,
+      let!(:activity2) { FactoryGirl.create(:activity, lot: lot,
                                                              shares: -1,
                                                              date: close_date) }
 
@@ -81,17 +81,17 @@ describe Lot do
 
   context 'gains' do
     subject { FactoryGirl.create(:lot) }
-    let!(:opening_transaction) do
-      FactoryGirl.create(:transaction, price:  100,
+    let!(:opening_activity) do
+      FactoryGirl.create(:activity, price:  100,
                                        shares: 100)
     end
-    let!(:closing_transaction) do
-      FactoryGirl.create(:transaction, lot:    opening_transaction.lot,
+    let!(:closing_activity) do
+      FactoryGirl.create(:activity, lot:    opening_activity.lot,
                                        date:   Date.today,
                                        price:  110,
                                        shares: -90)
     end
-    subject { opening_transaction.lot }
+    subject { opening_activity.lot }
 
     it 'has realized gain of (110-100)*90 = 900' do
       expect(subject.realized_gain).to eq(900)

@@ -1,11 +1,10 @@
 # Generated
-class Transaction < ActiveRecord::Base
+class Activity < ActiveRecord::Base
   include Scopes::Year
 
   belongs_to :lot
 
-  validates :lot, presence: true
-
+  validates :lot,      presence: true
   validates :date,     presence: true
   validates :tax_date, presence: true
   validates :shares,   presence: true
@@ -13,7 +12,7 @@ class Transaction < ActiveRecord::Base
 
   delegate :investment, to: :lot
 
-  has_and_belongs_to_many :adjustments, class_name: 'TransactionAdjustment'
+  has_and_belongs_to_many :adjustments, class_name: 'ActivityAdjustment'
 
   scope :tracked, ->{joins(lot: :investment).where("investments.category != 'cash'")}
   scope :opening, ->{where(is_opening: true)}

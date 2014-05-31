@@ -2,7 +2,7 @@ class LotSummaryPresenter
   attr_reader :lots
 
   def self.all
-    lots = Lot.open.includes(:transactions).sort_by{|l| l.opening(:date)}
+    lots = Lot.open.includes(:activities).sort_by{|l| l.opening(:date)}
     lots.group_by(&:investment).map{|inv, lots| self.new(lots)}
   end
 

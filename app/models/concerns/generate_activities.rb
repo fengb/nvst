@@ -1,21 +1,21 @@
-module GenerateTransactions
+module GenerateActivities
   extend ModelsIncluded
 
-  def generate_transactions!
-    return if transactions.count > 0
+  def generate_activities!
+    return if activities.count > 0
 
     ActiveRecord::Base.transaction do
-      raw_transactions_data.each do |data|
-        transactions = GenerateTransactions.transact!(data)
-        self.transactions.concat(transactions)
+      raw_activities_data.each do |data|
+        activities = GenerateActivities.execute!(data)
+        self.activities.concat(activities)
       end
     end
 
-    self.transactions
+    self.activities
   end
 
   class << self
-    def transact!(data)
+    def execute!(data)
       data[:tax_date] ||= data[:date]
 
       if corresponding = Lot.corresponding(data)
@@ -23,13 +23,13 @@ module GenerateTransactions
                    .merge(lot:         corresponding,
                           adjustments: corresponding.opening(:adjustments))
 
-        return [Transaction.create!(data)]
+        return [Activity.create!(data)]
       end
 
       if data[:adjustment] && data[:adjustment] != 1
-        adjustment = TransactionAdjustment.new(date:   data[:date],
-                                               ratio:  data[:adjustment],
-                                               reason: 'fee')
+        adjustment = ActivityAdjustment.new(date:   data[:date],
+                                            ratio:  data[:adjustment],
+                                            reason: 'fee')
       end
 
       shared_data = data.slice(:date, :tax_date, :price)
@@ -38,23 +38,23 @@ module GenerateTransactions
       investment = data[:investment]
       remaining_shares = data[:shares]
 
-      transactions = []
+      activities = []
       open_lots(investment, remaining_shares).each do |lot|
         if lot.outstanding_shares.abs >= remaining_shares.abs
-          transactions << lot.transactions.create!(shared_data.merge shares: remaining_shares)
-          return transactions
+          activities << lot.activities.create!(shared_data.merge shares: remaining_shares)
+          return activities
         else
           remaining_shares += lot.outstanding_shares
-          transactions << lot.transactions.create!(shared_data.merge shares: -lot.outstanding_shares)
+          activities << lot.activities.create!(shared_data.merge shares: -lot.outstanding_shares)
         end
       end
 
       # Shares remaining with no lot
       lot = Lot.new(investment:  investment)
-      transactions << Transaction.create!(shared_data.merge lot: lot,
-                                                            shares: remaining_shares,
-                                                            is_opening: true)
-      transactions
+      activities << Activity.create!(shared_data.merge lot: lot,
+                                                       shares: remaining_shares,
+                                                       is_opening: true)
+      activities
     end
 
     def open_lots(investment, new_shares)

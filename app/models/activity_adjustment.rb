@@ -1,8 +1,8 @@
 # Generated
-class TransactionAdjustment < ActiveRecord::Base
+class ActivityAdjustment < ActiveRecord::Base
   extend Enumerize
 
-  has_and_belongs_to_many :transactions
+  has_and_belongs_to_many :activities
 
   enumerize :reason, in: %w[fee split]
 

@@ -1,9 +1,9 @@
 class Trade < ActiveRecord::Base
-  include GenerateTransactions
+  include GenerateActivities
 
   belongs_to :sell_investment, class_name: 'Investment'
   belongs_to :buy_investment,  class_name: 'Investment'
-  has_and_belongs_to_many :transactions
+  has_and_belongs_to_many :activities
 
   def raw_sell_value
     sell_shares * sell_price
@@ -45,7 +45,7 @@ class Trade < ActiveRecord::Base
     buy_value.to_r / raw_buy_value.to_r
   end
 
-  def raw_transactions_data
+  def raw_activities_data
     [{investment: sell_investment,
       date:       date,
       shares:     -sell_shares,
