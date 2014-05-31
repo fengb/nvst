@@ -48,22 +48,22 @@ describe GenerateActivities do
                         price:      BigDecimal(1)} }
 
     def create_activity!(options)
-      if options[:lot]
-        FactoryGirl.create(:activity, options.merge(lot: options[:lot]))
+      if options[:position]
+        FactoryGirl.create(:activity, options.merge(position: options[:position]))
       else
-        lot = Lot.new(investment: options.delete(:investment))
-        FactoryGirl.create(:activity, options.merge(lot: lot,
+        position = Position.new(investment: options.delete(:investment))
+        FactoryGirl.create(:activity, options.merge(position: position,
                                                     is_opening: true))
       end
     end
 
-    it 'creates new lot with single activity when none exists' do
+    it 'creates new position with single activity when none exists' do
       activities = GenerateActivities.execute!(data)
       expect(activities.size).to eq(1)
       expect_data(activities[0], data)
     end
 
-    context 'corresponding lot' do
+    context 'corresponding position' do
       let(:existing) do
         create_activity!(investment: investment,
                          date: data[:date],
@@ -71,16 +71,16 @@ describe GenerateActivities do
                          price: data[:price])
       end
 
-      before { Lot.stub(corresponding: existing.lot) }
+      before { Position.stub(corresponding: existing.position) }
 
-      it 'reuses the lot' do
+      it 'reuses the position' do
         activities = GenerateActivities.execute!(data)
         expect(activities.size).to eq(1)
-        expect_data(activities[0], data, lot: existing.lot)
+        expect_data(activities[0], data, position: existing.position)
       end
     end
 
-    context 'existing lot with different open data' do
+    context 'existing position with different open data' do
       let!(:existing) do
         create_activity!(investment: investment,
                          date: Date.today - 2000,
@@ -88,16 +88,16 @@ describe GenerateActivities do
                          price: 5)
       end
 
-      it 'ignores lots it cannot fill' do
+      it 'ignores positions it cannot fill' do
         existing.update(shares: 10)
         activities = GenerateActivities.execute!(data)
         expect(activities.size).to eq(1)
         expect_data(activities[0], data)
-        expect(activities[0].lot).to_not eq(existing.lot)
+        expect(activities[0].position).to_not eq(existing.position)
       end
 
-      it 'ignores filled lots' do
-        create_activity!(lot: existing.lot,
+      it 'ignores filled positions' do
+        create_activity!(position: existing.position,
                          date: Date.today - 1999,
                          shares: 10,
                          price: 4)
@@ -105,7 +105,7 @@ describe GenerateActivities do
         activities = GenerateActivities.execute!(data)
         expect(activities.size).to eq(1)
         expect_data(activities[0], data)
-        expect(activities[0].lot).to_not eq(existing.lot)
+        expect(activities[0].position).to_not eq(existing.position)
       end
 
       it 'fills when outstanding amount > new amount' do
@@ -113,7 +113,7 @@ describe GenerateActivities do
 
         activities = GenerateActivities.execute!(data)
         expect(activities.size).to eq(1)
-        expect_data(activities[0], data, lot: existing.lot)
+        expect_data(activities[0], data, position: existing.position)
       end
 
       it 'fills when outstanding amount == new amount' do
@@ -121,24 +121,24 @@ describe GenerateActivities do
 
         activities = GenerateActivities.execute!(data)
         expect(activities.size).to eq(1)
-        expect_data(activities[0], data, lot: existing.lot)
+        expect_data(activities[0], data, position: existing.position)
       end
 
-      it 'fills up and creates new lot with remainder' do
+      it 'fills up and creates new position with remainder' do
         activities = GenerateActivities.execute!(data)
         expect(activities.size).to eq(2)
-        expect_data(activities[0], lot: existing.lot,
+        expect_data(activities[0], position: existing.position,
                                    date: data[:date],
                                    shares: -existing.shares,
                                    price: 1)
-        expect(activities[1].lot).to_not eq(existing.lot)
+        expect(activities[1].position).to_not eq(existing.position)
         expect_data(activities[1], date: data[:date],
                                    shares: data[:shares] + existing.shares,
                                    price: 1)
       end
     end
 
-    context 'existing lots' do
+    context 'existing positions' do
       let!(:existing) {[
         create_activity!(investment: investment,
                          date: Date.today - 2000,
@@ -153,31 +153,31 @@ describe GenerateActivities do
       it 'fills up first based on highest price' do
         activities = GenerateActivities.execute!(data)
         expect(activities.size).to eq(2)
-        expect_data(activities[0], lot: existing[0].lot,
+        expect_data(activities[0], position: existing[0].position,
                                    date: data[:date],
                                    shares: -existing[0].shares,
                                    price: data[:price])
-        expect_data(activities[1], lot: existing[1].lot,
+        expect_data(activities[1], position: existing[1].position,
                                    date: data[:date],
                                    shares: data[:shares] + existing[0].shares,
                                    price: data[:price])
       end
 
-      it 'fills up all lots before creating new lot' do
+      it 'fills up all positions before creating new position' do
         existing[1].update(shares: -20)
 
         activities = GenerateActivities.execute!(data)
         expect(activities.size).to eq(3)
-        expect_data(activities[0], lot: existing[0].lot,
+        expect_data(activities[0], position: existing[0].position,
                                    date: data[:date],
                                    shares: -existing[0].shares,
                                    price: data[:price])
-        expect_data(activities[1], lot: existing[1].lot,
+        expect_data(activities[1], position: existing[1].position,
                                    date: data[:date],
                                    shares: -existing[1].shares,
                                    price: data[:price])
-        expect(activities[2].lot).to_not eq(existing[0].lot)
-        expect(activities[2].lot).to_not eq(existing[1].lot)
+        expect(activities[2].position).to_not eq(existing[0].position)
+        expect(activities[2].position).to_not eq(existing[1].position)
         expect_data(activities[2], date: data[:date],
                                    shares: data[:shares] + existing.sum(&:shares),
                                    price: data[:price])

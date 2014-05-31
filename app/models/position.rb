@@ -1,5 +1,5 @@
 # Generated
-class Lot < ActiveRecord::Base
+class Position < ActiveRecord::Base
   belongs_to :investment
   has_many   :activities, ->{order('date')}
 
@@ -11,23 +11,23 @@ class Lot < ActiveRecord::Base
            when '-' then '<'
            else          '!='
          end
-    outstanding_sql = sanitize_sql(['SELECT lot_id
+    outstanding_sql = sanitize_sql(['SELECT position_id
                                           , SUM(shares) AS outstanding_shares
                                        FROM activities
                                       WHERE date <= ?
-                                      GROUP BY lot_id',
+                                      GROUP BY position_id',
                                     during.to_date])
-    joins("LEFT JOIN (#{outstanding_sql}) t ON t.lot_id=lots.id")
+    joins("LEFT JOIN (#{outstanding_sql}) t ON t.position_id=positions.id")
     .where("t.outstanding_shares #{op} 0", during)
   }
 
   def self.corresponding(options)
-    activity = Activity.includes(:lot).find_by(lots: {investment_id: options[:investment]},
-                                               date: options[:date],
-                                               price: options[:price])
+    activity = Activity.includes(:position).find_by(positions: {investment_id: options[:investment]},
+                                                    date: options[:date],
+                                                    price: options[:price])
     if activity && activity.shares.angle == options[:shares].angle &&
                    activity.adjustments[0].try(:ratio) == options[:adjustment]
-      activity.lot
+      activity.position
     else
       nil
     end

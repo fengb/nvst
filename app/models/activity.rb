@@ -2,19 +2,19 @@
 class Activity < ActiveRecord::Base
   include Scopes::Year
 
-  belongs_to :lot
+  belongs_to :position
 
-  validates :lot,      presence: true
+  validates :position, presence: true
   validates :date,     presence: true
   validates :tax_date, presence: true
   validates :shares,   presence: true
   validates :price,    presence: true
 
-  delegate :investment, to: :lot
+  delegate :investment, to: :position
 
   has_and_belongs_to_many :adjustments, class_name: 'ActivityAdjustment'
 
-  scope :tracked, ->{joins(lot: :investment).where("investments.category != 'cash'")}
+  scope :tracked, ->{joins(position: :investment).where("investments.category != 'cash'")}
   scope :opening, ->{where(is_opening: true)}
   scope :closing, ->{where(is_opening: false)}
 
@@ -23,7 +23,7 @@ class Activity < ActiveRecord::Base
   end
 
   def cost_basis
-    -shares * lot.opening(:price)
+    -shares * position.opening(:price)
   end
 
   def realized_gain

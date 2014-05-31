@@ -6,9 +6,9 @@ FactoryGirl.define do
     price      { rand(10.0..100.0).to_d.round(2) }
 
     after(:build) do |activity, evaluator|
-      if activity.lot.nil?
-        activity.lot = FactoryGirl.build(:lot) do |lot|
-          lot.activities << activity
+      if activity.position.nil?
+        activity.position = FactoryGirl.build(:position) do |position|
+          position.activities << activity
         end
 
         activity.is_opening = true

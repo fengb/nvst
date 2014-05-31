@@ -1,10 +1,10 @@
 require 'spec_helper'
 
 
-describe LotSummaryPresenter do
+describe PositionSummaryPresenter do
   describe '#unique_by' do
     it 'returns the unique item' do
-      l = LotSummaryPresenter.new([
+      l = PositionSummaryPresenter.new([
         double(key: 'uno'),
         double(key: 'uno'),
       ])
@@ -12,7 +12,7 @@ describe LotSummaryPresenter do
     end
 
     it 'returns nil when the fields are not unique' do
-      l = LotSummaryPresenter.new([
+      l = PositionSummaryPresenter.new([
         double(key: 'uno'),
         double(key: 'dos'),
       ])
@@ -22,7 +22,7 @@ describe LotSummaryPresenter do
 
   describe '#sum_by' do
     it 'returns the sum item' do
-      l = LotSummaryPresenter.new([
+      l = PositionSummaryPresenter.new([
         double(key: 12),
         double(key: 34),
       ])

@@ -1,5 +1,5 @@
 class Admin::PortfolioController < Admin::BaseController
   def show
-    @lot_summaries = LotSummaryPresenter.all
+    @position_summaries = PositionSummaryPresenter.all
   end
 end

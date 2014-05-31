@@ -1,13 +1,13 @@
-class LotSummaryPresenter
-  attr_reader :lots
+class PositionSummaryPresenter
+  attr_reader :positions
 
   def self.all
-    lots = Lot.open.includes(:activities).sort_by{|l| l.opening(:date)}
-    lots.group_by(&:investment).map{|inv, lots| self.new(lots)}
+    positions = Position.open.includes(:activities).sort_by{|l| l.opening(:date)}
+    positions.group_by(&:investment).map{|inv, positions| self.new(positions)}
   end
 
-  def initialize(lots)
-    @lots = lots
+  def initialize(positions)
+    @positions = positions
   end
 
   def investment
@@ -35,16 +35,16 @@ class LotSummaryPresenter
   end
 
   def unrealized_gain_percent
-    unrealized_gain / sum_by{|lot| lot.outstanding_shares * lot.opening(:adjusted_price)}
+    unrealized_gain / sum_by{|position| position.outstanding_shares * position.opening(:adjusted_price)}
   end
 
   private
   def unique_by(&block)
-    elements = @lots.map(&block).uniq
+    elements = @positions.map(&block).uniq
     elements.size == 1 ? elements[0] : nil
   end
 
   def sum_by(&block)
-    @lots.sum(&block)
+    @positions.sum(&block)
   end
 end

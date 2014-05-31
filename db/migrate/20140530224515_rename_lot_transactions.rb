@@ -1,5 +1,10 @@
 class RenameLotTransactions < ActiveRecord::Migration
   def change
+    rename_transactions!
+    rename_lots!
+  end
+
+  def rename_transactions!
     rename_table :transactions, :activities
     rename_table :transaction_adjustments, :activity_adjustments
 
@@ -16,5 +21,10 @@ class RenameLotTransactions < ActiveRecord::Migration
       rename_table "#{relation}_transactions", new_name
       rename_column new_name, :transaction_id, :activity_id
     end
+  end
+
+  def rename_lots!
+    rename_table :lots, :positions
+    rename_column :activities, :lot_id, :position_id
   end
 end

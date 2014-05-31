@@ -24,21 +24,21 @@ ActiveRecord::Schema.define(version: 20140530224515) do
     t.string   "category"
   end
 
-  create_table "lots", force: true do |t|
+  create_table "positions", force: true do |t|
     t.integer "investment_id"
-    t.index ["investment_id"], :name => "fk__lots_investment_id"
-    t.foreign_key ["investment_id"], "investments", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_lots_investment_id"
+    t.index ["investment_id"], :name => "fk__positions_investment_id"
+    t.foreign_key ["investment_id"], "investments", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_positions_investment_id"
   end
 
   create_table "activities", force: true do |t|
-    t.integer "lot_id"
+    t.integer "position_id"
     t.date    "date"
-    t.decimal "shares",     precision: 15, scale: 4
-    t.decimal "price",      precision: 12, scale: 4
-    t.boolean "is_opening",                          default: false
+    t.decimal "shares",      precision: 15, scale: 4
+    t.decimal "price",       precision: 12, scale: 4
+    t.boolean "is_opening",                           default: false
     t.date    "tax_date"
-    t.index ["lot_id"], :name => "fk__activities_lot_id"
-    t.foreign_key ["lot_id"], "lots", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_activities_lot_id"
+    t.index ["position_id"], :name => "fk__activities_lot_id"
+    t.foreign_key ["position_id"], "positions", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_activities_lot_id"
   end
 
   create_table "activity_adjustments", force: true do |t|
