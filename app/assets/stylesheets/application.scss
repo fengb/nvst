@@ -1,1 +1,11 @@
 label { display: block; }
+footer {
+  > * {
+    display: inline;
+    &:before {
+      content: '• ';
+      padding: 0 4px;
+    }
+    &:first-child:before { display: none; }
+  }
+}
