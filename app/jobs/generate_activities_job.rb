@@ -1,13 +1,13 @@
-class GenerateTransactionsJob
+class GenerateActivitiesJob
   class << self
     def perform
       objects_needing_processing.each do |o|
-        o.generate_transactions!
+        o.generate_activities!
       end
     end
 
     def all_models
-      RailsUtil.all(:models).select{|m| m.method_defined?(:generate_transactions!)}
+      RailsUtil.all(:models).select{|m| m.method_defined?(:generate_activities!)}
     end
 
     def objects_needing_processing

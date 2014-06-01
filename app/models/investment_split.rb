@@ -1,7 +1,7 @@
 # Generated
 class InvestmentSplit < ActiveRecord::Base
   belongs_to :investment
-  belongs_to :transaction_adjustment
+  belongs_to :activity_adjustment
 
   default_scope ->{order(:date)}
 
@@ -13,42 +13,42 @@ class InvestmentSplit < ActiveRecord::Base
     date - 1
   end
 
-  def generate_transactions!
-    Lot.where(investment: investment).open(during: date).map do |lot|
-      self.generate_transaction_for!(lot)
+  def generate_activities!
+    Position.where(investment: investment).open(during: date).map do |position|
+      self.generate_activity_for!(position)
     end
   end
 
-  def transaction_adjustment!
-    if self.transaction_adjustment.nil?
-      self.create_transaction_adjustment(date: self.date,
-                                         numerator: self.before,
-                                         denominator:self.after,
-                                         reason: 'split')
+  def activity_adjustment!
+    if self.activity_adjustment.nil?
+      self.create_activity_adjustment(date: self.date,
+                                      numerator: self.before,
+                                      denominator:self.after,
+                                      reason: 'split')
     else
-      self.transaction_adjustment
+      self.activity_adjustment
     end
   end
 
-  def generate_transaction_for!(lot)
-    if lot.transactions.where('date >= ?', self.date).exists?
-      raise 'Attempting to split but encountered future transactions'
+  def generate_activity_for!(position)
+    if position.activities.where('date >= ?', self.date).exists?
+      raise 'Attempting to split but encountered future activities'
     end
 
     ActiveRecord::Base.transaction do
-      lot.transactions.opening.each do |transaction|
-        transaction.adjustments << transaction_adjustment! unless transaction.adjustments.include?(transaction_adjustment!)
+      position.activities.opening.each do |activity|
+        activity.adjustments << activity_adjustment! unless activity.adjustments.include?(activity_adjustment!)
       end
 
       shares_adjustment = 1 / price_adjustment
-      new_outstanding_shares = lot.outstanding_shares * shares_adjustment
-      Transaction.create!(lot:         Lot.new(investment: lot.investment),
-                          is_opening:  true,
-                          date:        self.date,
-                          tax_date:    lot.opening(:tax_date),
-                          price:       lot.opening(:price),
-                          shares:      new_outstanding_shares - lot.outstanding_shares,
-                          adjustments: lot.opening(:adjustments))
+      new_outstanding_shares = position.outstanding_shares * shares_adjustment
+      Activity.create!(position:    Position.new(investment: position.investment),
+                       is_opening:  true,
+                       date:        self.date,
+                       tax_date:    position.opening(:tax_date),
+                       price:       position.opening(:price),
+                       shares:      new_outstanding_shares - position.outstanding_shares,
+                       adjustments: position.opening(:adjustments))
     end
   end
 end

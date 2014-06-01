@@ -31,7 +31,7 @@ module TaxDocs
     end
 
     def short_term_capital_gain
-      close_transactions.map{|t| [t.date, t.realized_gain]}
+      closing_activities.map{|t| [t.date, t.realized_gain]}
     end
 
     private
@@ -46,8 +46,8 @@ module TaxDocs
       @expenses ||= Expense.year(@year)
     end
 
-    def close_transactions
-      @close_transactions ||= Transaction.year(@year).tracked.close.order(:date).to_a
+    def closing_activities
+      @closing_activities ||= Activity.year(@year).tracked.closing.order(:date).to_a
     end
 
     def user_percent(user, date)

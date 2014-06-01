@@ -1,17 +1,17 @@
 class Contribution < ActiveRecord::Base
-  include GenerateTransactions
+  include GenerateActivities
   include GenerateOwnerships
   include Scopes::Year
 
   belongs_to :user
   has_and_belongs_to_many :ownerships
-  has_and_belongs_to_many :transactions
+  has_and_belongs_to_many :activities
 
   def self.value
     sum('amount')
   end
 
-  def raw_transactions_data
+  def raw_activities_data
     [{investment: Investment.cash,
       date:       date,
       shares:     amount,

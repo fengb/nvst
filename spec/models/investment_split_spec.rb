@@ -12,75 +12,75 @@ describe InvestmentSplit do
     end
   end
 
-  describe '#generate_transaction_for!' do
-    let!(:transaction) { FactoryGirl.create(:transaction, shares: 6) }
-    let(:lot)          { transaction.lot }
+  describe '#generate_activity_for!' do
+    let!(:activity) { FactoryGirl.create(:activity, shares: 6) }
+    let(:position)  { activity.position }
 
     subject do
-      InvestmentSplit.new(investment: lot.investment,
+      InvestmentSplit.new(investment: position.investment,
                           date: Date.today,
                           before: 1,
                           after: 2)
     end
 
-    it 'adds an adjustment to opening transactions' do
-      subject.generate_transaction_for!(lot)
-      expect(transaction.adjustments).to_not be_empty
+    it 'adds an adjustment to opening activities' do
+      subject.generate_activity_for!(position)
+      expect(activity.adjustments).to_not be_empty
     end
 
-    it 'retains opening transaction data' do
-      old_data = transaction.attributes.dup
-      subject.generate_transaction_for!(lot)
-      expect_data(transaction, old_data)
+    it 'retains opening activity data' do
+      old_data = activity.attributes.dup
+      subject.generate_activity_for!(position)
+      expect_data(activity, old_data)
     end
 
-    it 'creates a new transaction with adjusted data' do
-      new_transaction = subject.generate_transaction_for!(lot)
-      expect_data(new_transaction, investment:     lot.investment,
-                                   date:           subject.date,
-                                   tax_date:       transaction.date,
-                                   adjusted_price: transaction.adjusted_price)
+    it 'creates a new activity with adjusted data' do
+      new_activity = subject.generate_activity_for!(position)
+      expect_data(new_activity, investment:     position.investment,
+                                date:           subject.date,
+                                tax_date:       activity.date,
+                                adjusted_price: activity.adjusted_price)
     end
 
     it 'creates enough new shares' do
-      new_transaction = subject.generate_transaction_for!(lot)
-      expected_shares = transaction.shares * subject.after / subject.before
-      expect(new_transaction.shares + transaction.shares).to eq(expected_shares)
+      new_activity = subject.generate_activity_for!(position)
+      expected_shares = activity.shares * subject.after / subject.before
+      expect(new_activity.shares + activity.shares).to eq(expected_shares)
     end
 
     it 'has total new value == total old value' do
-      old_value = transaction.value
-      new_transaction = subject.generate_transaction_for!(lot)
+      old_value = activity.value
+      new_activity = subject.generate_activity_for!(position)
 
-      new_value = new_transaction.value + transaction.value
+      new_value = new_activity.value + activity.value
       expect(new_value).to eq(old_value)
     end
 
     it 'only runs once' do
-      subject.generate_transaction_for!(lot)
-      subject.generate_transaction_for!(lot)
+      subject.generate_activity_for!(position)
+      subject.generate_activity_for!(position)
 
-      expect(transaction.adjustments.reload.size).to eq(1)
+      expect(activity.adjustments.reload.size).to eq(1)
     end
 
-    context 'with closing transactions' do
-      let!(:close_transaction) do
-        FactoryGirl.create(:transaction, lot: lot,
-                                         shares: -2,
-                                         date: transaction.date + 2)
+    context 'with closing activities' do
+      let!(:close_activity) do
+        FactoryGirl.create(:activity, position: position,
+                                      shares: -2,
+                                      date: activity.date + 2)
       end
 
-      it 'does not adjust closing transactions' do
-        subject.generate_transaction_for!(lot)
-        expect(close_transaction.adjustments).to be_empty
+      it 'does not adjust closing activities' do
+        subject.generate_activity_for!(position)
+        expect(close_activity.adjustments).to be_empty
       end
 
-      it 'dies when lot has transactions after split date' do
+      it 'dies when position has activities after split date' do
         # I don't see a good way to handle this automatically
         # (What does it mean to split a stock before a bunch of booked sales?)
-        subject.date = close_transaction.date
+        subject.date = close_activity.date
         expect {
-          subject.generate_transaction_for!(lot)
+          subject.generate_activity_for!(position)
         }.to raise_error
       end
     end

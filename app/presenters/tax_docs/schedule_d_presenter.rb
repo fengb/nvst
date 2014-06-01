@@ -4,8 +4,8 @@ module TaxDocs
       @year = year
     end
 
-    def close_transactions
-      @close_transactions ||= Transaction.year(@year).tracked.close.order(:date).to_a
+    def closing_activities
+      @closing_activities ||= Activity.year(@year).tracked.closing.order(:date).to_a
     end
   end
 end

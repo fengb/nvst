@@ -4,11 +4,11 @@ FactoryGirl.define do
     amount { rand(10000.0..100000.0).to_d.round(2) }
 
     ignore do
-      generate_transactions true
+      generate_activities true
     end
 
     after(:create) do |contribution, evaluator|
-      contribution.generate_transactions! if evaluator.generate_transactions
+      contribution.generate_activities! if evaluator.generate_activities
     end
   end
 end

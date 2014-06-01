@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe Transaction do
+describe Activity do
   describe '#adjusted_price' do
-    subject { FactoryGirl.create(:transaction) }
+    subject { FactoryGirl.create(:activity) }
 
     it '== #price when no adjustments' do
       expect(subject.adjusted_price).to eq(subject.price)

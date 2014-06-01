@@ -1,9 +1,9 @@
 class Expense < ActiveRecord::Base
   extend Enumerize
-  include GenerateTransactions
+  include GenerateActivities
   include Scopes::Year
 
-  has_and_belongs_to_many :transactions
+  has_and_belongs_to_many :activities
 
   enumerize :category, in: {'salaries and wages'        => 'sal',
                             'payments'                  => 'pay',
@@ -18,7 +18,7 @@ class Expense < ActiveRecord::Base
                             'employee benefit programs' => 'ben',
                             'other'                     => 'oth'}
 
-  def raw_transactions_data
+  def raw_activities_data
     [{investment: Investment.cash,
       date:       date,
       shares:     cashflow_amount,

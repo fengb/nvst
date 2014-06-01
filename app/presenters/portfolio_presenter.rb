@@ -1,15 +1,15 @@
 class PortfolioPresenter
   def self.all
-    self.new(transactions: Transaction.includes(lot: :investment),
-             cashflows:    Contribution.all + Expense.all)
+    self.new(activities: Activity.includes(lot: :investment),
+             cashflows:  Contribution.all + Expense.all)
   end
 
-  def initialize(transactions: [],
+  def initialize(activities: [],
                  cashflows:    [])
     @price_matchers = {}
     @shares_matchers = {}
-    transactions.group_by(&:investment).each do |inv, transactions|
-      @shares_matchers[inv] = BestMatchHash.sum(transactions.map{|t| [t.date, t.shares]})
+    activities.group_by(&:investment).each do |inv, activities|
+      @shares_matchers[inv] = BestMatchHash.sum(activities.map{|t| [t.date, t.shares]})
     end
     @principal_matcher = BestMatchHash.sum(cashflows.map{|c| [c.date, c.cashflow_amount]})
     @cashflow_amounts = {}
