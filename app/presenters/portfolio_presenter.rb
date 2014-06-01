@@ -1,6 +1,6 @@
 class PortfolioPresenter
   def self.all
-    self.new(activities: Activity.includes(lot: :investment),
+    self.new(activities: Activity.includes(position: :investment),
              cashflows:  Contribution.all + Expense.all)
   end
 

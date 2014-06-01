@@ -8,10 +8,10 @@
       %th Outstanding Shares
       %th Current Value
       %th{colspan: 2} Unrealized Gain
-  - @lot_summaries.each do |summary|
+  - @position_summaries.each do |summary|
     %tbody
       %tr.summary
-        %th{rowspan: summary.lots.size+1}= summary.investment.symbol
+        %th{rowspan: summary.positions.size+1}= summary.investment.symbol
         %td= summary.opening(:date)
         %td= number_to_currency summary.opening(:adjusted_price)
         %td= number_to_currency summary.current_price
@@ -19,13 +19,13 @@
         %td= number_to_currency summary.current_value
         %td= number_to_currency summary.unrealized_gain
         %td= number_to_percentage 100*summary.unrealized_gain_percent
-      - if summary.lots.size > 1
-        - summary.lots.each do |lot|
-          %tr.lot
-            %td= lot.opening(:date)
-            %td= number_to_currency lot.opening(:adjusted_price)
-            %td= number_to_currency lot.current_price
-            %td= lot.outstanding_shares
-            %td= number_to_currency lot.current_value
-            %td= number_to_currency lot.unrealized_gain
-            %td= number_to_percentage 100*lot.unrealized_gain_percent
+      - if summary.positions.size > 1
+        - summary.positions.each do |position|
+          %tr.position
+            %td= position.opening(:date)
+            %td= number_to_currency position.opening(:adjusted_price)
+            %td= number_to_currency position.current_price
+            %td= position.outstanding_shares
+            %td= number_to_currency position.current_value
+            %td= number_to_currency position.unrealized_gain
+            %td= number_to_percentage 100*position.unrealized_gain_percent
