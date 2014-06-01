@@ -1,5 +1,18 @@
-label { display: block; }
+body {
+  font-family: Helvetica, Arial;
+  width: 960px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+main {
+  margin: 30px;
+  svg { border: 1px solid black; }
+}
+
 footer {
+  display: inline-block;
+
   > * {
     display: inline;
     &:before {

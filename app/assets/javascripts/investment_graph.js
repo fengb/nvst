@@ -11,7 +11,7 @@ var InvestmentGraph = function(target, yAxis){
   function drawData(){
     var data = []
     for(var name in savedData){
-      data = data.concat(keepN(savedData[name], 200))
+      data = data.concat(savedData[name])
     }
     return data
   }
@@ -26,9 +26,9 @@ var InvestmentGraph = function(target, yAxis){
     },
 
     render: function(){
-      var svg = dimple.newSvg(target, 590, 400)
+      var svg = dimple.newSvg(target, 960, 500)
       var chart = new dimple.chart(svg, drawData())
-      chart.setBounds(60, 30, 505, 305)
+      chart.setBounds(-1, 0, 961, 500)
       chart.addCategoryAxis('x', 'date').addOrderRule('Date')
       chart.addMeasureAxis('y', yAxis)
       chart.addSeries('name', dimple.plot.line)
