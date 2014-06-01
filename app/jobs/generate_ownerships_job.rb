@@ -6,6 +6,10 @@ class GenerateOwnershipsJob
       end
     end
 
+    def delete!
+      ActiveRecord::Base.connection.execute 'TRUNCATE ownerships RESTART IDENTITY CASCADE'
+    end
+
     private
     def objects_needing_processing
       GenerateOwnerships.models_included.map(&:all).flatten

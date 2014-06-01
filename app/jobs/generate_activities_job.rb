@@ -6,6 +6,10 @@ class GenerateActivitiesJob
       end
     end
 
+    def delete!
+      ActiveRecord::Base.connection.execute 'TRUNCATE positions RESTART IDENTITY CASCADE'
+    end
+
     def all_models
       RailsUtil.all(:models).select{|m| m.method_defined?(:generate_activities!)}
     end
