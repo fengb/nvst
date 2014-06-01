@@ -1,5 +1,7 @@
 language: ruby
 script: bundle exec rake
+bundler_args: --without=development --jobs=4
+cache: bundler
 before_script:
   - createuser -U postgres -s nvst
   - createdb -U nvst nvst_test
