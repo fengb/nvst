@@ -9,7 +9,6 @@ class UserGrowthPresenter
       @user = user
       @year = year
       @portfolio = PortfolioPresenter.all
-      @contributions = user.contributions.year(@year).order(:date)
       @ownership = OwnershipPresenter.all
     end
 
@@ -37,11 +36,26 @@ class UserGrowthPresenter
 
     private
     def benchmark_shares_matcher
-      @benchmark_shares_matcher ||= BestMatchHash.sum(@contributions.map{|c| [c.date, c.amount / benchmark_price_matcher[c.date]]})
+      @benchmark_shares_matcher ||= begin
+        shares_raw = []
+        starting_principal = gross_value_at(last_day_of_previous_year)
+        if starting_principal != 0
+          shares_raw << [last_day_of_previous_year, starting_principal / benchmark_price_matcher[last_day_of_previous_year]]
+        end
+        @user.contributions.year(@year).each do |contribution|
+          shares_raw << [contribution.date, contribution.amount / benchmark_price_matcher[contribution.date]]
+        end
+
+        BestMatchHash.sum(shares_raw)
+      end
+    end
+
+    def last_day_of_previous_year
+      last_day_of_previous_year = Date.new(@year - 1, 12, 31)
     end
 
     def benchmark_price_matcher
-      @benchmark_price_matcher ||= Investment.benchmark.price_matcher(@contributions.first.date)
+      @benchmark_price_matcher ||= Investment.benchmark.price_matcher(last_day_of_previous_year)
     end
   end
 
