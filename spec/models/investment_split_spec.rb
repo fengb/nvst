@@ -34,11 +34,12 @@ describe InvestmentSplit do
       expect_data(activity, old_data)
     end
 
-    it 'creates a new activity with adjusted data' do
+    it 'creates a new activity with existing data' do
       new_activity = subject.generate_activity_for!(position)
       expect_data(new_activity, investment:     position.investment,
                                 date:           subject.date,
                                 tax_date:       activity.date,
+                                position:       activity.position,
                                 adjusted_price: activity.adjusted_price)
     end
 

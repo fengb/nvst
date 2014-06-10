@@ -31,18 +31,20 @@ class InvestmentSplit < ActiveRecord::Base
   end
 
   def generate_activity_for!(position)
-    if position.activities.where('date >= ?', self.date).exists?
+    if position.activities.opening.all?{|a| a.adjustments.include?(activity_adjustment)}
+      return
+    elsif position.activities.where('date >= ?', self.date).exists?
       raise 'Attempting to split but encountered future activities'
     end
 
     ActiveRecord::Base.transaction do
       position.activities.opening.each do |activity|
-        activity.adjustments << activity_adjustment! unless activity.adjustments.include?(activity_adjustment!)
+        activity.adjustments << activity_adjustment!
       end
 
       shares_adjustment = 1 / price_adjustment
       new_outstanding_shares = position.outstanding_shares * shares_adjustment
-      Activity.create!(position:    Position.new(investment: position.investment),
+      Activity.create!(position:    position,
                        is_opening:  true,
                        date:        self.date,
                        tax_date:    position.opening(:tax_date),

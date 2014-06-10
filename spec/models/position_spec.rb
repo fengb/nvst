@@ -5,7 +5,7 @@ describe Position do
     let(:position) { FactoryGirl.create(:position) }
     let(:shares)   { position.activities[0].shares }
     let(:data)     { {investment: position.investment,
-                      date:       position.opening(:date),
+                      tax_date:   position.opening(:tax_date),
                       price:      position.opening(:price),
                       shares:     shares } }
 

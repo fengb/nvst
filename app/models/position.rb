@@ -23,8 +23,8 @@ class Position < ActiveRecord::Base
 
   def self.corresponding(options)
     activity = Activity.includes(:position).find_by(positions: {investment_id: options[:investment]},
-                                                    date: options[:date],
-                                                    price: options[:price])
+                                                    tax_date:  options[:tax_date],
+                                                    price:     options[:price])
     if activity && activity.shares.angle == options[:shares].angle &&
                    activity.adjustments[0].try(:ratio) == options[:adjustment]
       activity.position
