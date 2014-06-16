@@ -6,8 +6,10 @@ body {
 }
 
 main {
-  margin: 30px;
-  svg { border: 1px solid black; }
+  svg {
+    border: 1px solid black;
+    margin: 29px;
+  }
 }
 
 footer {
@@ -15,10 +17,9 @@ footer {
 
   > * {
     display: inline;
-    &:before {
+    &.tech:before {
       content: '• ';
       padding: 0 4px;
     }
-    &:first-child:before { display: none; }
   }
 }
