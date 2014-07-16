@@ -15,12 +15,12 @@ describe Trade do
 
   describe '#adjust_sell?' do
     it 'is true when buy_investment is cash' do
-      subject.stub(buy_investment: double(cash?: true))
+      allow(subject).to receive_messages(buy_investment: double(cash?: true))
       expect(subject.adjust_sell?).to be(true)
     end
 
     it 'is false when buy_investment is not cash' do
-      subject.stub(buy_investment: double(cash?: false))
+      allow(subject).to receive_messages(buy_investment: double(cash?: false))
       expect(subject.adjust_sell?).to be(false)
     end
   end
@@ -28,8 +28,8 @@ describe Trade do
   context 'fee calculations' do
     subject do
       Trade.new do |t|
-        t.stub(raw_sell_value: 150,
-               raw_buy_value: 145)
+        allow(t).to receive_messages(raw_sell_value: 150,
+                                     raw_buy_value: 145)
       end
     end
 
@@ -40,7 +40,9 @@ describe Trade do
     end
 
     context 'adjust_sell?' do
-      before { subject.stub(adjust_sell?: true) }
+      before do
+        allow(subject).to receive_messages(adjust_sell?: true)
+      end
 
       specify '#sell_value == #raw_buy_value' do
         expect(subject.sell_value).to eq(subject.raw_buy_value)
@@ -61,7 +63,9 @@ describe Trade do
     end
 
     context '!adjust_sell?' do
-      before { subject.stub(adjust_sell?: false) }
+      before do
+        allow(subject).to receive_messages(adjust_sell?: false)
+      end
 
       specify '#sell_value == #raw_sell_value' do
         expect(subject.sell_value).to eq(subject.raw_sell_value)

@@ -17,23 +17,23 @@ describe GenerateActivities do
       end
 
       it 'does absolutely nothing' do
-        GenerateActivities.should_not_receive(:execute!)
+        expect(GenerateActivities).to_not receive(:execute!)
         subject.generate_activities!
       end
     end
 
     it 'passes raw activity data to GenerateActivities.execute!' do
       subject.raw_activities_data = [4, 2, 5]
-      GenerateActivities.should_receive(:execute!).with(4).and_return([4])
-      GenerateActivities.should_receive(:execute!).with(2).and_return([2])
-      GenerateActivities.should_receive(:execute!).with(5).and_return([5])
+      expect(GenerateActivities).to receive(:execute!).with(4).and_return([4])
+      expect(GenerateActivities).to receive(:execute!).with(2).and_return([2])
+      expect(GenerateActivities).to receive(:execute!).with(5).and_return([5])
 
       subject.generate_activities!
     end
 
     it 'adds GenerateActivities.execute! returned values to activities' do
       subject.raw_activities_data = [:a, :z]
-      GenerateActivities.stub(execute!: [1, 2])
+      allow(GenerateActivities).to receive_messages(execute!: [1, 2])
 
       subject.generate_activities!
       expect(subject.activities).to eq([1, 2, 1, 2])
@@ -71,7 +71,9 @@ describe GenerateActivities do
                          price: data[:price])
       end
 
-      before { Position.stub(corresponding: existing.position) }
+      before do
+        allow(Position).to receive_messages(corresponding: existing.position)
+      end
 
       it 'reuses the position' do
         activities = GenerateActivities.execute!(data)

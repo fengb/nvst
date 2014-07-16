@@ -23,7 +23,7 @@ describe InvestmentHistoricalPrice do
     let(:price) { FactoryGirl.create(:investment_historical_price) }
 
     it 'adjusts number fields based on adjustment value' do
-      price.stub(adjustment: 100)
+      allow(price).to receive_messages(adjustment: 100)
       expect(price.adjusted(:close)).to eq(price.close * 100)
       expect(price.adjusted(:high)).to eq(price.high * 100)
       expect(price.adjusted(:low)).to eq(price.low * 100)

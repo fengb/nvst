@@ -33,7 +33,7 @@ describe Ownership do
       let!(:existing) { FactoryGirl.create(:ownership, units: 50) }
 
       it 'is total units / current total value * contribution amount' do
-        PortfolioPresenter.stub(all: double(value_at: 100, cashflow_at: 0))
+        allow(PortfolioPresenter).to receive_messages(all: double(value_at: 100, cashflow_at: 0))
 
         # We contributed 50 in the past and it grew to 100.
         # New contributions should have 1/2 the unit value

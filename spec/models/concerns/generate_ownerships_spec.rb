@@ -17,7 +17,7 @@ describe GenerateOwnerships do
       end
 
       it 'does absolutely nothing' do
-        subject.ownerships.should_not_receive(:create!)
+        expect(subject.ownerships).to_not receive(:create!)
         subject.generate_ownerships!
       end
     end

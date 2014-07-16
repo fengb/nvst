@@ -16,18 +16,18 @@ describe PortfolioPresenter do
     end
 
     it 'is 100 at 2013-01-02' do
-      subject.should_receive(:price_for).with('FOO', '2013-01-02').and_return(1)
+      expect(subject).to receive(:price_for).with('FOO', '2013-01-02').and_return(1)
       expect(subject.value_at('2013-01-02')).to eq(100)
     end
 
     it 'is 200 at 2013-01-03' do
-      subject.should_receive(:price_for).with('FOO', '2013-01-03').and_return(2)
+      expect(subject).to receive(:price_for).with('FOO', '2013-01-03').and_return(2)
       expect(subject.value_at('2013-01-03')).to eq(400)
     end
 
     it 'is 200 at 2013-01-04' do
-      subject.should_receive(:price_for).with('FOO', '2013-01-04').and_return(2)
-      subject.should_receive(:price_for).with('BAR', '2013-01-04').and_return(1)
+      expect(subject).to receive(:price_for).with('FOO', '2013-01-04').and_return(2)
+      expect(subject).to receive(:price_for).with('BAR', '2013-01-04').and_return(1)
       expect(subject.value_at('2013-01-04')).to eq(500)
     end
   end

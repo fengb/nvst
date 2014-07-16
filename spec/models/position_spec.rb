@@ -98,7 +98,7 @@ describe Position do
     end
 
     it 'has unrealized gain of (120-100)*(100-90) = 200' do
-      subject.stub(current_price: 120)
+      allow(subject).to receive_messages(current_price: 120)
       expect(subject.unrealized_gain).to eq(200)
     end
   end

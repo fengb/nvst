@@ -9,7 +9,7 @@ describe InvestmentDividend do
       # Yesterday   1.25                       1.00
       dividend = InvestmentDividend.new
       past_price = BigDecimal('1.25')
-      dividend.stub(percent: BigDecimal('0.25') / past_price)
+      allow(dividend).to receive_messages(percent: BigDecimal('0.25') / past_price)
       expect(dividend.price_adjustment * past_price).to eq(1)
     end
   end
@@ -17,7 +17,7 @@ describe InvestmentDividend do
   describe '#percent' do
     it 'is amount / ex_previous_price' do
       dividend = FactoryGirl.create(:investment_dividend, amount: 10.0)
-      dividend.stub(ex_previous_price: FactoryGirl.create(:investment_historical_price, close: 20.0))
+      allow(dividend).to receive_messages(ex_previous_price: FactoryGirl.create(:investment_historical_price, close: 20.0))
       expect(dividend.percent).to eq(0.5)
     end
   end
