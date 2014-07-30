@@ -21,10 +21,10 @@ class InvestmentSplit < ActiveRecord::Base
 
   def activity_adjustment!
     if self.activity_adjustment.nil?
-      self.create_activity_adjustment(date: self.date,
-                                      numerator: self.before,
-                                      denominator:self.after,
-                                      reason: 'split')
+      self.create_activity_adjustment(date:        self.date,
+                                      numerator:   self.before,
+                                      denominator: self.after,
+                                      reason:      'split')
     else
       self.activity_adjustment
     end
@@ -42,8 +42,7 @@ class InvestmentSplit < ActiveRecord::Base
         activity.adjustments << activity_adjustment!
       end
 
-      shares_adjustment = 1 / price_adjustment
-      new_outstanding_shares = position.outstanding_shares * shares_adjustment
+      new_outstanding_shares = position.outstanding_shares / price_adjustment
       Activity.create!(position:    position,
                        is_opening:  true,
                        date:        self.date,
