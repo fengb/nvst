@@ -17,10 +17,10 @@ describe InvestmentSplit do
     let(:position)  { activity.position }
 
     subject do
-      InvestmentSplit.new(investment: position.investment,
-                          date: Date.today,
-                          before: 1,
-                          after: 2)
+      InvestmentSplit.create(investment: position.investment,
+                             date: Date.today,
+                             before: 1,
+                             after: 2)
     end
 
     it 'adds an adjustment to opening activities' do
@@ -59,6 +59,7 @@ describe InvestmentSplit do
 
     it 'only runs once' do
       subject.generate_activity_for!(position)
+      subject.reload
       subject.generate_activity_for!(position)
 
       expect(activity.adjustments.reload.size).to eq(1)

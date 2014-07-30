@@ -25,9 +25,10 @@ class InvestmentSplit < ActiveRecord::Base
                                       numerator:   self.before,
                                       denominator: self.after,
                                       reason:      'split')
-    else
-      self.activity_adjustment
+      self.save!
     end
+
+    self.activity_adjustment
   end
 
   def generate_activity_for!(position)
