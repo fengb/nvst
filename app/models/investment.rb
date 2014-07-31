@@ -47,6 +47,21 @@ class Investment < ActiveRecord::Base
   end
 
   class Cash < Investment
+    def price_matcher(start_date=nil)
+      Hash.new(1)
+    end
+
+    def current_price
+      1
+    end
+
+    def year_high
+      1
+    end
+
+    def year_low
+      1
+    end
   end
 
   class Option < Investment

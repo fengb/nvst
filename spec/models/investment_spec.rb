@@ -56,4 +56,19 @@ describe Investment do
       end
     end
   end
+
+  describe Investment::Cash do
+    it 'has prices of 1' do
+      expect(subject.current_price).to eql(1)
+      expect(subject.year_high).to eql(1)
+      expect(subject.year_low).to eql(1)
+    end
+
+    it 'has super awesome price_matcher' do
+      matcher = subject.price_matcher(Date.today)
+      expect(matcher[Date.today         ]).to eql(1)
+      expect(matcher[Date.today-1000    ]).to eql(1)
+      expect(matcher[Date.today-10000000]).to eql(1)
+    end
+  end
 end
