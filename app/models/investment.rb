@@ -1,24 +1,10 @@
 class Investment < ActiveRecord::Base
-  extend Enumerize
-
   has_many :historical_prices, class_name: 'InvestmentHistoricalPrice'
   has_many :dividends,         class_name: 'InvestmentDividend'
   has_many :splits,            class_name: 'InvestmentSplit'
 
-  enumerize :category, in: %w[cash stock benchmark], default: 'stock', scope: true
-
-  scope :auto_update, ->{where('category != ?', 'cash')}
-
-  def self.cash
-    find_by(category: 'cash')
-  end
-
   def self.benchmark
-    find_by(category: 'benchmark')
-  end
-
-  def cash?
-    category.cash?
+    find_by(symbol: 'SPY')
   end
 
   def price_matcher(start_date=nil)
@@ -55,5 +41,14 @@ class Investment < ActiveRecord::Base
 
   rails_admin do
     object_label_method :symbol
+  end
+
+  class Stock < Investment
+  end
+
+  class Cash < Investment
+  end
+
+  class Option < Investment
   end
 end

@@ -19,7 +19,7 @@ class Expense < ActiveRecord::Base
                             'other'                     => 'oth'}
 
   def raw_activities_data
-    [{investment: Investment.cash,
+    [{investment: Investment::Cash.first,
       date:       date,
       shares:     cashflow_amount,
       price:      1}]

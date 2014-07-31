@@ -14,13 +14,13 @@ describe Trade do
   end
 
   describe '#adjust_sell?' do
-    it 'is true when buy_investment is cash' do
-      allow(subject).to receive_messages(buy_investment: double(cash?: true))
+    it 'is true when buy_investment is Cash' do
+      allow(subject).to receive_messages(buy_investment: double(type: 'Cash'))
       expect(subject.adjust_sell?).to be(true)
     end
 
-    it 'is false when buy_investment is not cash' do
-      allow(subject).to receive_messages(buy_investment: double(cash?: false))
+    it 'is false when buy_investment is not Cash' do
+      allow(subject).to receive_messages(buy_investment: double(type: 'Stock'))
       expect(subject.adjust_sell?).to be(false)
     end
   end
