@@ -21,18 +21,6 @@ class Position < ActiveRecord::Base
     .where("t.outstanding_shares #{op} 0", during)
   }
 
-  def self.corresponding(options)
-    activity = Activity.includes(:position).find_by(positions: {investment_id: options[:investment]},
-                                                    tax_date:  options[:tax_date],
-                                                    price:     options[:price])
-    if activity && activity.shares.angle == options[:shares].angle &&
-                   activity.adjustments[0].try(:ratio) == options[:adjustment]
-      activity.position
-    else
-      nil
-    end
-  end
-
   def opening_activity
     activities.opening.first
   end

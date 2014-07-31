@@ -18,14 +18,6 @@ module GenerateActivities
     def execute!(data)
       data[:tax_date] ||= data[:date]
 
-      if corresponding = Position.corresponding(data)
-        data = data.slice(:date, :tax_date, :price, :shares)
-                   .merge(position:    corresponding,
-                          adjustments: corresponding.opening(:adjustments))
-
-        return [Activity.create!(data)]
-      end
-
       if data[:adjustment] && data[:adjustment] != 1
         adjustment = ActivityAdjustment.new(date:   data[:date],
                                             ratio:  data[:adjustment],
