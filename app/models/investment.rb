@@ -1,24 +1,10 @@
 class Investment < ActiveRecord::Base
-  extend Enumerize
-
   has_many :historical_prices, class_name: 'InvestmentHistoricalPrice'
   has_many :dividends,         class_name: 'InvestmentDividend'
   has_many :splits,            class_name: 'InvestmentSplit'
 
-  enumerize :category, in: %w[cash stock benchmark], default: 'stock', scope: true
-
-  scope :auto_update, ->{where('category != ?', 'cash')}
-
-  def self.cash
-    find_by(category: 'cash')
-  end
-
   def self.benchmark
-    find_by(category: 'benchmark')
-  end
-
-  def cash?
-    category.cash?
+    find_by(symbol: 'SPY')
   end
 
   def price_matcher(start_date=nil)
@@ -55,5 +41,58 @@ class Investment < ActiveRecord::Base
 
   rails_admin do
     object_label_method :symbol
+  end
+
+  class Stock < Investment
+    validates :symbol, format: /\A[A-Z]{1,4}\z/
+  end
+
+  class Cash < Investment
+    validates :symbol, format: /\A[A-Z]{3}\z/
+
+    def price_matcher(start_date=nil)
+      Hash.new(1)
+    end
+
+    def current_price
+      1
+    end
+
+    def year_high
+      1
+    end
+
+    def year_low
+      1
+    end
+  end
+
+  class Option < Investment
+    SYMBOL_FORMAT = /\A([A-Z]{1,4})([0-9]{6})([CP])([0-9]{8})\z/
+    validates :symbol, format: SYMBOL_FORMAT
+
+    def underlying_symbol
+      symbol_match[1]
+    end
+
+    def expiration_date
+      Date.strptime(symbol_match[2], '%y%m%d')
+    end
+
+    def put?
+      symbol_match[3] == 'P'
+    end
+
+    def call?
+      symbol_match[3] == 'C'
+    end
+
+    def strike_price
+      Rational(symbol_match[4], 1000)
+    end
+
+    def symbol_match
+      SYMBOL_FORMAT.match(symbol)
+    end
   end
 end

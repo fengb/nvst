@@ -2,16 +2,9 @@ require 'yahoo_finance'
 
 
 class PopulateInvestmentsJob
-  class << self
-    def perform
-      Investment.includes(:historical_prices)
-                .where(category: 'cash', investment_historical_prices: {investment_id: nil}).each do |investment|
-        investment.historical_prices.create!(date: '1900-01-01', high: 1, low: 1, close: 1, adjustment: 1)
-      end
-
-      Investment.auto_update.each do |investment|
-        self.new(investment).run!
-      end
+  def self.perform
+    Investment::Stock.find_each do |investment|
+      self.new(investment).stock!
     end
   end
 
@@ -19,7 +12,7 @@ class PopulateInvestmentsJob
     @investment = investment
   end
 
-  def run!
+  def stock!
     ActiveRecord::Base.transaction do
       historical_prices!
       dividends!
