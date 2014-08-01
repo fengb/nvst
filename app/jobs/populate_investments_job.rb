@@ -29,6 +29,7 @@ class PopulateInvestmentsJob
 
   def historical_prices!
     latest_date = InvestmentHistoricalPrice.where(investment: @investment).last.try(:date) || Date.new(1900)
+    return if latest_date + 1 >= Date.today
     YahooFinance.historical_prices(@investment.symbol, start_date: latest_date + 1).reverse.each do |row|
       InvestmentHistoricalPrice.create!(investment:     @investment,
                                         date:           row.date,
