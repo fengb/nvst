@@ -1,31 +1,6 @@
 require 'spec_helper'
 
 describe Position do
-  describe '.corresponding' do
-    let(:position) { FactoryGirl.create(:position) }
-    let(:shares)   { position.activities[0].shares }
-    let(:data)     { {investment: position.investment,
-                      tax_date:   position.opening(:tax_date),
-                      price:      position.opening(:price),
-                      shares:     shares } }
-
-    it 'finds existing when all data matches' do
-      expect(Position.corresponding(data)).to eq(position)
-    end
-
-    it 'finds existing when shares have same +/- sign' do
-      expect(Position.corresponding(data.merge shares: shares / shares.abs)).to eq(position)
-    end
-
-    it 'does not find existing when shares have opposite sign' do
-      expect(Position.corresponding(data.merge shares: -shares)).to be(nil)
-    end
-
-    it 'does not find existing when adjustment does not match' do
-      expect(Position.corresponding(data.merge adjustment: 1)).to be(nil)
-    end
-  end
-
   describe '.open' do
     let!(:activity1) { FactoryGirl.create(:activity, shares: 1) }
     let!(:position)  { activity1.position }

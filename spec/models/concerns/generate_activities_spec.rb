@@ -63,25 +63,6 @@ describe GenerateActivities do
       expect_data(activities[0], data)
     end
 
-    context 'corresponding position' do
-      let(:existing) do
-        create_activity!(investment: investment,
-                         date: data[:date],
-                         shares: -10,
-                         price: data[:price])
-      end
-
-      before do
-        allow(Position).to receive_messages(corresponding: existing.position)
-      end
-
-      it 'reuses the position' do
-        activities = GenerateActivities.execute!(data)
-        expect(activities.size).to eq(1)
-        expect_data(activities[0], data, position: existing.position)
-      end
-    end
-
     context 'existing position with different open data' do
       let!(:existing) do
         create_activity!(investment: investment,

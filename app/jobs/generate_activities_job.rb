@@ -7,7 +7,11 @@ class GenerateActivitiesJob
     end
 
     def delete!
-      ActiveRecord::Base.connection.execute 'TRUNCATE positions RESTART IDENTITY CASCADE'
+      # This really doesn't belong here...
+      ActiveRecord::Base.connection.execute <<-END
+        TRUNCATE positions RESTART IDENTITY CASCADE;
+        TRUNCATE activity_adjustments RESTART IDENTITY CASCADE;
+      END
     end
 
     def all_models
