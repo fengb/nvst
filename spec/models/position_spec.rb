@@ -24,8 +24,8 @@ describe Position do
 
       it 'includes not-fully-closed positions' do
         FactoryGirl.create(:activity, position: position,
-                                         date: position.opening(:date) + 1,
-                                         shares: -0.5)
+                                      date: position.opening(:date) + 1,
+                                      shares: -0.5)
         expect(Position.open(during: position.opening(:date) + 10)).to eq([position])
       end
 
@@ -55,26 +55,60 @@ describe Position do
   end
 
   context 'gains' do
-    subject { FactoryGirl.create(:position) }
-    let!(:opening_activity) do
-      FactoryGirl.create(:activity, price:  100,
-                                    shares: 100)
-    end
-    let!(:closing_activity) do
-      FactoryGirl.create(:activity, position: opening_activity.position,
-                                    date:     Date.today,
-                                    price:    110,
-                                    shares:   -90)
-    end
-    subject { opening_activity.position }
+    context 'long position' do
+      let!(:opening_activity) do
+        FactoryGirl.create(:activity, price:  100,
+                                      shares: 100)
+      end
+      let!(:closing_activity) do
+        FactoryGirl.create(:activity, position: opening_activity.position,
+                                      date:     Date.today,
+                                      price:    110,
+                                      shares:   -90)
+      end
+      subject { opening_activity.position }
 
-    it 'has realized gain of (110-100)*90 = 900' do
-      expect(subject.realized_gain).to eq(900)
+      it 'has realized_gain of (110-100) * 90 = 900' do
+        expect(subject.realized_gain).to eq(900)
+      end
+
+      it 'has unrealized_gain of (120-100) * (100-90) = 200' do
+        allow(subject).to receive_messages(current_price: 120)
+        expect(subject.unrealized_gain).to eq(200)
+      end
+
+      it 'has unrealized_gain_percent of 20/100 = 20%' do
+        allow(subject).to receive_messages(unrealized_gain: 200)
+        expect(subject.unrealized_gain_percent).to eq('0.2'.to_d)
+      end
     end
 
-    it 'has unrealized gain of (120-100)*(100-90) = 200' do
-      allow(subject).to receive_messages(current_price: 120)
-      expect(subject.unrealized_gain).to eq(200)
+    context 'short position' do
+      let!(:opening_activity) do
+        FactoryGirl.create(:activity, price:   100,
+                                      shares: -100)
+      end
+      let!(:closing_activity) do
+        FactoryGirl.create(:activity, position: opening_activity.position,
+                                      date:     Date.today,
+                                      price:    90,
+                                      shares:   90)
+      end
+      subject { opening_activity.position }
+
+      it 'has realized_gain of (100-90) * 90 = 900' do
+        expect(subject.realized_gain).to eq(900)
+      end
+
+      it 'has unrealized_gain of (100-80) * (100-90) = 200' do
+        allow(subject).to receive_messages(current_price: 80)
+        expect(subject.unrealized_gain).to eq(200)
+      end
+
+      it 'has unrealized_gain_percent of 20/100 = 20%' do
+        allow(subject).to receive_messages(unrealized_gain: 200)
+        expect(subject.unrealized_gain_percent).to eq('0.2'.to_d)
+      end
     end
   end
 end

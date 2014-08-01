@@ -50,6 +50,6 @@ class Position < ActiveRecord::Base
   end
 
   def unrealized_gain_percent
-    unrealized_gain / (outstanding_shares * opening(:adjusted_price))
+    unrealized_gain / (outstanding_shares * opening(:adjusted_price)).abs
   end
 end
