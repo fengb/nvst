@@ -44,9 +44,12 @@ class Investment < ActiveRecord::Base
   end
 
   class Stock < Investment
+    validates :symbol, format: /\A[A-Z]{1,4}\z/
   end
 
   class Cash < Investment
+    validates :symbol, format: /\A[A-Z]{3}\z/
+
     def price_matcher(start_date=nil)
       Hash.new(1)
     end
@@ -65,5 +68,6 @@ class Investment < ActiveRecord::Base
   end
 
   class Option < Investment
+    validates :symbol, format: /\A[A-Z]{1,4}[0-9]{6}[CP][0-9]{8}\z/
   end
 end
