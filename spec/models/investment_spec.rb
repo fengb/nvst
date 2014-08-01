@@ -137,5 +137,29 @@ describe Investment do
         end
       end
     end
+
+    describe 'symbol' do
+      subject { Investment::Option.new(symbol: 'AAPL140920C00102500') }
+
+      it 'has correct underlying_symbol' do
+        expect(subject.underlying_symbol).to eq('AAPL')
+      end
+
+      it 'has correct expiration_date' do
+        expect(subject.expiration_date).to eq(Date.parse('2014-09-20'))
+      end
+
+      it 'is not put' do
+        expect(subject).to_not be_put
+      end
+
+      it 'is call' do
+        expect(subject).to be_call
+      end
+
+      it 'has correct strike_price' do
+        expect(subject.strike_price).to eq('102.5'.to_d)
+      end
+    end
   end
 end

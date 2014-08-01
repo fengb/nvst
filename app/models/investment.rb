@@ -68,6 +68,31 @@ class Investment < ActiveRecord::Base
   end
 
   class Option < Investment
-    validates :symbol, format: /\A[A-Z]{1,4}[0-9]{6}[CP][0-9]{8}\z/
+    SYMBOL_FORMAT = /\A([A-Z]{1,4})([0-9]{6})([CP])([0-9]{8})\z/
+    validates :symbol, format: SYMBOL_FORMAT
+
+    def underlying_symbol
+      symbol_match[1]
+    end
+
+    def expiration_date
+      Date.strptime(symbol_match[2], '%y%m%d')
+    end
+
+    def put?
+      symbol_match[3] == 'P'
+    end
+
+    def call?
+      symbol_match[3] == 'C'
+    end
+
+    def strike_price
+      Rational(symbol_match[4], 1000)
+    end
+
+    def symbol_match
+      SYMBOL_FORMAT.match(symbol)
+    end
   end
 end
