@@ -15,12 +15,12 @@ describe Trade do
 
   describe '#adjust_sell?' do
     it 'is true when buy_investment is Cash' do
-      allow(subject).to receive_messages(buy_investment: double(type: 'Cash'))
+      subject.buy_investment = Investment::Cash.new
       expect(subject.adjust_sell?).to be(true)
     end
 
     it 'is false when buy_investment is not Cash' do
-      allow(subject).to receive_messages(buy_investment: double(type: 'Stock'))
+      subject.buy_investment = Investment::Stock.new
       expect(subject.adjust_sell?).to be(false)
     end
   end

@@ -18,7 +18,7 @@ class Trade < ActiveRecord::Base
   end
 
   def adjust_sell?
-    buy_investment.type == 'Cash'
+    buy_investment.is_a?(Investment::Cash)
   end
 
   def sell_value
