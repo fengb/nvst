@@ -19,7 +19,7 @@
         %td= number_to_currency summary.current_value
         %td= number_to_currency summary.unrealized_gain
         %td= number_to_percentage 100*summary.unrealized_gain_percent
-      - if summary.positions.size > 1
+      - if summary.expandable?
         - summary.positions.each do |position|
           %tr.position
             %td= position.opening(:date)

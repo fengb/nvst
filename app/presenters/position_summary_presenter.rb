@@ -38,6 +38,10 @@ class PositionSummaryPresenter
     unrealized_gain / sum_by{|position| position.outstanding_shares * position.opening(:adjusted_price)}
   end
 
+  def expandable?
+    positions.size > 1 && !investment.is_a?(Investment::Cash)
+  end
+
   private
   def unique_by(&block)
     elements = @positions.map(&block).uniq
