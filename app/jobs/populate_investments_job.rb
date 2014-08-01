@@ -3,7 +3,7 @@ require 'yahoo_finance'
 
 class PopulateInvestmentsJob
   def self.perform
-    Stock.find_each do |investment|
+    Investment::Stock.find_each do |investment|
       self.new(investment).stock!
     end
   end
