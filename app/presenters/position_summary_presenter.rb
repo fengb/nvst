@@ -35,7 +35,7 @@ class PositionSummaryPresenter
   end
 
   def unrealized_gain_percent
-    unrealized_gain / sum_by{|position| position.outstanding_shares * position.opening(:adjusted_price)}
+    unrealized_gain / sum_by(&:unrealized_principal)
   end
 
   def expandable?

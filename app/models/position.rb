@@ -49,7 +49,11 @@ class Position < ActiveRecord::Base
     (current_price - opening(:adjusted_price)) * outstanding_shares
   end
 
+  def unrealized_principal
+    (outstanding_shares * opening(:adjusted_price)).abs
+  end
+
   def unrealized_gain_percent
-    unrealized_gain / (outstanding_shares * opening(:adjusted_price)).abs
+    unrealized_gain / unrealized_principal
   end
 end
