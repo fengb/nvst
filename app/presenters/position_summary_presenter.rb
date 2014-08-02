@@ -2,8 +2,8 @@ class PositionSummaryPresenter
   attr_reader :positions
 
   def self.all
-    positions = Position.open.includes(:activities).sort_by{|l| l.opening(:date)}
-    positions.group_by(&:investment).map{|inv, positions| self.new(positions)}
+    positions = Position.open.includes(:investment, :activities).order('investments.symbol')
+    positions.group_by(&:investment).map{|inv, positions| self.new(positions.sort_by{|p| p.opening(:date)})}
   end
 
   def initialize(positions)

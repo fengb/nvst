@@ -2,8 +2,8 @@
   %thead
     %tr
       %th Investment
-      %th Purchase Date
-      %th Purchase Price
+      %th Opening Date
+      %th Opening Price
       %th Current Price
       %th Outstanding Shares
       %th Current Value
@@ -13,7 +13,10 @@
       %tr.summary
         %th{rowspan: summary.positions.size+1}= summary.investment.symbol
         %td= summary.opening(:date)
-        %td= number_to_currency summary.opening(:adjusted_price)
+        %td
+          - if summary.opening(:adjusted_price)
+            = number_to_currency summary.opening(:adjusted_price)
+            %small (#{number_to_currency summary.opening(:price)})
         %td= number_to_currency summary.current_price
         %td= summary.outstanding_shares
         %td= number_to_currency summary.current_value
@@ -23,7 +26,9 @@
         - summary.positions.each do |position|
           %tr.position
             %td= position.opening(:date)
-            %td= number_to_currency position.opening(:adjusted_price)
+            %td
+              = number_to_currency position.opening(:adjusted_price)
+              %small (#{number_to_currency position.opening(:price)})
             %td= number_to_currency position.current_price
             %td= position.outstanding_shares
             %td= number_to_currency position.current_value
