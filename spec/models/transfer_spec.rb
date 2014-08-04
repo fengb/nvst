@@ -1,9 +1,9 @@
-describe Fee do
+describe Transfer do
   describe '#generate_ownerships!' do
     subject do
-      Fee.create(date:      Date.today - 5,
-                 amount:    1942.12,
-                 from_user: FactoryGirl.create(:user))
+      Transfer.create(date:      Date.today - 5,
+                      amount:    1942.12,
+                      from_user: FactoryGirl.create(:user))
     end
 
     it 'creates both from and to ownerships' do

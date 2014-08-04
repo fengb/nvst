@@ -1,4 +1,4 @@
-class Fee < ActiveRecord::Base
+class Transfer < ActiveRecord::Base
   include GenerateOwnerships
   include Scopes::Year
 
