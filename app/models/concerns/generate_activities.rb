@@ -31,7 +31,7 @@ module GenerateActivities
       remaining_shares = data[:shares]
 
       activities = []
-      open_lots(investment, remaining_shares).each do |position|
+      open_positions(investment, remaining_shares).each do |position|
         if position.outstanding_shares.abs >= remaining_shares.abs
           activities << position.activities.create!(shared_data.merge shares: remaining_shares)
           return activities
@@ -49,27 +49,28 @@ module GenerateActivities
       activities
     end
 
-    def open_lots(investment, new_shares)
+    def open_positions(investment, new_shares)
       # +shares fill short, -shares fill long
       direction = new_shares > 0 ? :short : :long
-      Strategies.default(investment, direction)
+      positions = Position.where(investment: investment).open(direction: direction)
+      FillStrategies.for(positions)
     end
 
-    class Strategies
-      class << self
-        def default(investment, direction)
-          highest_cost_first(investment, direction)
-        end
+    class FillStrategies
+      def self.for(positions)
+        self.new(positions).highest_cost_first
+      end
 
-        def fifo(investment, direction)
-          Position.open(direction: direction).where(investment: investment)
-                                        .sort_by{|l| [l.opening(:date), l.id]}
-        end
+      def initialize(positions)
+        @positions = positions
+      end
 
-        def highest_cost_first(investment, direction)
-          Position.open(direction: direction).where(investment: investment)
-                                        .sort_by{|l| [-l.opening(:price), l.opening(:date), l.id]}
-        end
+      def fifo
+        @positions.sort_by{|p| [p.opening(:date), p.id]}
+      end
+
+      def highest_cost_first
+        @positions.sort_by{|p| [-p.opening(:price), p.opening(:date)]}
       end
     end
   end
