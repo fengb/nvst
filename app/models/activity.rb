@@ -14,7 +14,7 @@ class Activity < ActiveRecord::Base
 
   has_and_belongs_to_many :adjustments, class_name: 'ActivityAdjustment'
 
-  scope :tracked, ->{joins(position: :investment).where("investments.category != 'cash'")}
+  scope :tracked, ->{joins(position: :investment).where("investments.type != 'Investment::Cash'")}
   scope :opening, ->{where(is_opening: true)}
   scope :closing, ->{where(is_opening: false)}
 
