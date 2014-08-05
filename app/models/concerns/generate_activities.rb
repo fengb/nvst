@@ -50,13 +50,17 @@ module GenerateActivities
     end
 
     def open_lots(investment, new_shares)
-      # Buy shares fill -outstanding, sell shares fill +outstanding
-      direction = new_shares > 0 ? '-' : '+'
-      PositionStrategies.highest_cost_first(investment, direction)
+      # +shares fill short, -shares fill long
+      direction = new_shares > 0 ? :short : :long
+      Strategies.default(investment, direction)
     end
 
-    class PositionStrategies
+    class Strategies
       class << self
+        def default(investment, direction)
+          highest_cost_first(investment, direction)
+        end
+
         def fifo(investment, direction)
           Position.open(direction: direction).where(investment: investment)
                                         .sort_by{|l| [l.opening(:date), l.id]}

@@ -30,11 +30,11 @@ describe Position do
       end
 
       it 'includes positions in the same direction' do
-        expect(Position.open(direction: '+')).to eq([position])
+        expect(Position.open(direction: :long)).to eq([position])
       end
 
       it 'excludes positions in the opposite direction' do
-        expect(Position.open(direction: '-')).to eq([])
+        expect(Position.open(direction: :short)).to eq([])
       end
     end
 

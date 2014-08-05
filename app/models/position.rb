@@ -7,9 +7,9 @@ class Position < ActiveRecord::Base
 
   scope :open, ->(during: Date.today, direction: nil){
     op = case direction.to_s
-           when '+' then '>'
-           when '-' then '<'
-           else          '!='
+           when 'short' then '<'
+           when 'long'  then '>'
+           else              '!='
          end
     outstanding_sql = sanitize_sql(['SELECT position_id
                                           , SUM(shares) AS outstanding_shares
@@ -23,6 +23,14 @@ class Position < ActiveRecord::Base
 
   def opening_activity
     activities.opening.first
+  end
+
+  def long?
+    opening(:shares) > 0
+  end
+
+  def short?
+    opening(:shares) < 0
   end
 
   def opening(attr, *args)
