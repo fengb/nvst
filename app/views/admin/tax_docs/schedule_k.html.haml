@@ -5,7 +5,7 @@
       %th Category
       %th Total
       - @schedule_k.users.each do |user|
-        %th= user.email
+        %th= user.username
   %tbody
     - @schedule_k.categories.each do |category|
       %tr
