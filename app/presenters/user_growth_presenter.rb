@@ -27,7 +27,7 @@ class UserGrowthPresenter
     end
 
     def booked_fee_at(date)
-      Fee.where(date: date, from_user: @user).sum(:amount)
+      Transfer.fees.where(date: date, from_user: @user).sum(:amount)
     end
 
     def value_at(date)
