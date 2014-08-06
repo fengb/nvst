@@ -31,7 +31,7 @@ module GenerateActivities
       remaining_shares = data[:shares]
 
       activities = []
-      open_positions(investment, remaining_shares).each do |position|
+      open_positions(investment, remaining_shares, data[:price]).each do |position|
         if position.outstanding_shares.abs >= remaining_shares.abs
           activities << position.activities.create!(shared_data.merge shares: remaining_shares)
           return activities
@@ -49,20 +49,29 @@ module GenerateActivities
       activities
     end
 
-    def open_positions(investment, new_shares)
+    def open_positions(investment, new_shares, new_price)
       # +shares fill short, -shares fill long
       direction = new_shares > 0 ? :short : :long
       positions = Position.where(investment: investment).open(direction: direction)
-      FillStrategies.for(positions)
+      FillStrategies.for(positions, new_price)
     end
 
     class FillStrategies
-      def self.for(positions)
-        self.new(positions).highest_cost_first
+      def self.default=(strategy)
+        @default = strategy
       end
 
-      def initialize(positions)
+      def self.default
+        @default ||= :tax_efficient_harvester
+      end
+
+      def self.for(positions, new_price, strategy=nil)
+        self.new(positions, new_price).send(strategy || default)
+      end
+
+      def initialize(positions, new_price)
         @positions = positions
+        @new_price = new_price
       end
 
       def fifo
@@ -71,6 +80,18 @@ module GenerateActivities
 
       def highest_cost_first
         @positions.sort_by{|p| [-p.opening(:price), p.opening(:date)]}
+      end
+
+      def tax_efficient_harvester
+        @positions.sort_by do |p|
+          # Magic numbers galore!
+          tax_rate = if Date.today - p.opening(:date) < 365
+                       0.28
+                     else
+                       0.15
+                     end
+          (@new_price - p.opening(:price)) * tax_rate
+        end
       end
     end
   end
