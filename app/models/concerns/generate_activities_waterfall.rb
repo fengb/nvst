@@ -1,6 +1,4 @@
 module GenerateActivitiesWaterfall
-  extend ModelsIncluded
-
   def generate_activities!
     return if activities.count > 0
 

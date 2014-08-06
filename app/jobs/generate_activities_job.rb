@@ -14,12 +14,12 @@ class GenerateActivitiesJob
       END
     end
 
-    def all_models
+    def classes_needing_processing
       RailsUtil.all(:models).select{|m| m.method_defined?(:generate_activities!)}
     end
 
     def objects_needing_processing
-      all_models.map(&:all).flatten.sort_by do |o|
+      classes_needing_processing.map(&:all).flatten.sort_by do |o|
         [o.date, priority(o), o.try(:created_at) || Date.today]
       end
     end

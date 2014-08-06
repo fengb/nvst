@@ -1,6 +1,4 @@
 module GenerateOwnerships
-  extend ModelsIncluded
-
   def generate_ownerships!
     return if ownerships.count > 0
 

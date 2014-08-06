@@ -1,9 +1,9 @@
 require 'spec_helper'
 
 describe GenerateActivitiesJob do
-  describe '.all_models' do
+  describe '.classes_needing_processing' do
     it 'includes everything we need' do
-      expect(GenerateActivitiesJob.all_models).to include(
+      expect(GenerateActivitiesJob.classes_needing_processing).to include(
         Contribution, Event, Expense, InvestmentSplit, Trade
       )
     end
@@ -11,7 +11,7 @@ describe GenerateActivitiesJob do
 
   describe '.perform' do
     it 'runs' do
-      GenerateActivitiesJob.all_models.each do |model|
+      GenerateActivitiesJob.classes_needing_processing.each do |model|
         FactoryGirl.create model
       end
 
