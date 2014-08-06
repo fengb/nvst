@@ -19,14 +19,20 @@ describe InvestmentHistoricalPrice do
     end
   end
 
+  describe '#adjustment' do
+    it 'defaults to 1' do
+      expect(subject.adjustment).to eq(1)
+    end
+  end
+
   describe '#adjusted' do
-    let(:price) { FactoryGirl.create(:investment_historical_price) }
+    let(:adjustment) { 105 }
+    subject { FactoryGirl.create(:investment_historical_price, adjustment: adjustment) }
 
     it 'adjusts number fields based on adjustment value' do
-      allow(price).to receive_messages(adjustment: 100)
-      expect(price.adjusted(:close)).to eq(price.close * 100)
-      expect(price.adjusted(:high)).to eq(price.high * 100)
-      expect(price.adjusted(:low)).to eq(price.low * 100)
+      expect(subject.adjusted(:close)).to eq(subject.close * adjustment)
+      expect(subject.adjusted(:high)).to eq(subject.high * adjustment)
+      expect(subject.adjusted(:low)).to eq(subject.low * adjustment)
     end
   end
 end
