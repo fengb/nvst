@@ -1,4 +1,4 @@
-module GenerateActivities
+module GenerateActivitiesWaterfall
   extend ModelsIncluded
 
   def generate_activities!
@@ -6,7 +6,7 @@ module GenerateActivities
 
     ActiveRecord::Base.transaction do
       raw_activities_data.each do |data|
-        activities = GenerateActivities.execute!(data)
+        activities = GenerateActivitiesWaterfall.execute!(data)
         self.activities.concat(activities)
       end
     end

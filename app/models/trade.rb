@@ -1,5 +1,5 @@
 class Trade < ActiveRecord::Base
-  include GenerateActivities
+  include GenerateActivitiesWaterfall
 
   belongs_to :sell_investment, class_name: 'Investment'
   belongs_to :buy_investment,  class_name: 'Investment'

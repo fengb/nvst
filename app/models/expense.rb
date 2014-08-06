@@ -1,6 +1,6 @@
 class Expense < ActiveRecord::Base
   extend Enumerize
-  include GenerateActivities
+  include GenerateActivitiesWaterfall
   include Scopes::Year
 
   has_and_belongs_to_many :activities

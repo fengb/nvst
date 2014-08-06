@@ -1,5 +1,5 @@
 class Contribution < ActiveRecord::Base
-  include GenerateActivities
+  include GenerateActivitiesWaterfall
   include GenerateOwnerships
   include Scopes::Year
 

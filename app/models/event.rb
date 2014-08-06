@@ -1,6 +1,6 @@
 class Event < ActiveRecord::Base
   extend Enumerize
-  include GenerateActivities
+  include GenerateActivitiesWaterfall
   include Scopes::Year
 
   belongs_to :src_investment, class_name: 'Investment'
