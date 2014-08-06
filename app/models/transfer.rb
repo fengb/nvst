@@ -6,7 +6,7 @@ class Transfer < ActiveRecord::Base
   belongs_to :to_user,   class_name: 'User'
   has_and_belongs_to_many :ownerships
 
-  scope :fees, ->{where(to_user: User.fee_collecting)}
+  scope :fees, ->{where(to_user: User.fee_collector)}
 
   def from_ownership
     ownerships.find_by('units < 0')
