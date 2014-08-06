@@ -11,9 +11,11 @@ class FillStrategies
     self.new(positions, new_price).send(strategy || default)
   end
 
-  def initialize(positions, new_price)
+  def initialize(positions, options={})
     @positions = positions
-    @new_price = new_price
+
+    @new_price = options[:new_price]
+    @new_date = options[:new_date] || Date.today
   end
 
   def fifo
@@ -27,7 +29,7 @@ class FillStrategies
   def tax_efficient_harvester
     @positions.sort_by do |p|
       # Magic numbers galore!
-      tax_rate = if Date.today - p.opening(:date) < 365
+      tax_rate = if @new_date - p.opening(:date) < 365
                    0.28
                  else
                    0.15

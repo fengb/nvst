@@ -53,7 +53,7 @@ module GenerateActivitiesWaterfall
       # +shares fill short, -shares fill long
       direction = new_shares > 0 ? :short : :long
       positions = Position.where(investment: investment).open(direction: direction)
-      FillStrategies.run(positions, new_price)
+      FillStrategies.run(positions, new_price: new_price)
     end
   end
 end
