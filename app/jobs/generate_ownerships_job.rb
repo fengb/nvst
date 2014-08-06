@@ -10,7 +10,6 @@ class GenerateOwnershipsJob
       ActiveRecord::Base.connection.execute 'TRUNCATE ownerships RESTART IDENTITY CASCADE'
     end
 
-    private
     def classes_needing_processing
       RailsUtil.all(:models).select{|m| m.method_defined?(:generate_ownerships!)}
     end
