@@ -8,7 +8,7 @@ describe PositionSummaryPresenter do
         double(key: 'uno'),
         double(key: 'uno'),
       ])
-      expect(l.send(:unique_by, &:key)).to eq('uno')
+      expect(l.send(:unique_by, :key)).to eq('uno')
     end
 
     it 'returns nil when the fields are not unique' do
@@ -16,7 +16,7 @@ describe PositionSummaryPresenter do
         double(key: 'uno'),
         double(key: 'dos'),
       ])
-      expect(l.send(:unique_by, &:key)).to be(nil)
+      expect(l.send(:unique_by, :key)).to be(nil)
     end
   end
 
@@ -26,7 +26,7 @@ describe PositionSummaryPresenter do
         double(key: 12),
         double(key: 34),
       ])
-      expect(l.send(:sum_by, &:key)).to eq(46)
+      expect(l.send(:sum_by, :key)).to eq(46)
     end
   end
 
@@ -37,13 +37,19 @@ describe PositionSummaryPresenter do
     end
     subject { PositionSummaryPresenter.new(positions) }
 
-    specify 'simple accessors work' do
-      accessor_methods = subject.public_methods(false).select do |method_name|
-        method = subject.method(method_name)
-        method.arity == 1
+    before do
+      positions.each do |position|
+        allow(position).to receive_messages(current_price: 1)
       end
+    end
 
-      accessor_methods.each do |method_name|
+    accessor_methods = PositionSummaryPresenter.public_instance_methods(false).select do |method_name|
+      method = PositionSummaryPresenter.instance_method(method_name)
+      method.arity == 0
+    end
+
+    accessor_methods.each do |method_name|
+      specify "#{method_name} works" do
         expect{subject.send(method_name)}.to_not raise_error
       end
     end

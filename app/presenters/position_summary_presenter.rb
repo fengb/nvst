@@ -11,31 +11,31 @@ class PositionSummaryPresenter
   end
 
   def investment
-    unique_by(&:investment)
+    unique_by(:investment)
   end
 
   def opening(attr, *args)
-    unique_by{|l| l.opening(attr, *args)}
+    unique_by(:opening, attr, *args)
   end
 
   def outstanding_shares
-    sum_by(&:outstanding_shares)
+    sum_by(:outstanding_shares)
   end
 
   def current_price
-    unique_by(&:current_price)
+    unique_by(:current_price)
   end
 
   def current_value
-    sum_by(&:current_value)
+    sum_by(:current_value)
   end
 
   def unrealized_gain
-    sum_by(&:unrealized_gain)
+    sum_by(:unrealized_gain)
   end
 
   def unrealized_gain_percent
-    unrealized_gain / sum_by(&:unrealized_principal)
+    unrealized_gain / sum_by(:unrealized_principal)
   end
 
   def expandable?
@@ -43,12 +43,12 @@ class PositionSummaryPresenter
   end
 
   private
-  def unique_by(&block)
-    elements = @positions.map(&block).uniq
+  def unique_by(*args)
+    elements = @positions.map{|p| p.send(*args)}.uniq
     elements.size == 1 ? elements[0] : nil
   end
 
-  def sum_by(&block)
-    @positions.sum(&block)
+  def sum_by(*args)
+    @positions.sum{|p| p.send(*args)}
   end
 end
