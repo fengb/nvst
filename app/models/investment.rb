@@ -44,7 +44,11 @@ class Investment < ActiveRecord::Base
   end
 
   class Stock < Investment
-    validates :symbol, format: /\A[A-Z]{1,4}\z/
+    validates :symbol, format: /\A[A-Z.]{1,4}[^X]?\z/
+  end
+
+  class MutualFund < Investment
+    validates :symbol, format: /\A[A-Z]{4}X\z/
   end
 
   class Cash < Investment

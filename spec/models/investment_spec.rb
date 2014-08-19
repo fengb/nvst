@@ -60,18 +60,54 @@ describe Investment do
   describe Investment::Stock do
     describe 'validations' do
       describe ':symbol' do
-        it 'is valid for uppercase up to 4 letters' do
-          subject.symbol = 'AAPL'
+        it 'is valid for uppercase up to 5 letters' do
+          subject.symbol = 'GOOGL'
           expect(subject).to be_valid
         end
 
         it 'is invalid for long symbols' do
-          subject.symbol = 'AAPLO'
+          subject.symbol = 'GOOGLL'
           expect(subject).to_not be_valid
         end
 
         it 'is invalid for lowercase' do
-          subject.symbol = 'aapl'
+          subject.symbol = 'googl'
+          expect(subject).to_not be_valid
+        end
+
+        it 'is invalid for 5 characters symbols ending in X' do
+          subject.symbol = 'VAIPX'
+          expect(subject).to_not be_valid
+        end
+
+        it 'is valid for symbols ending in X' do
+          subject.symbol = 'X'
+          expect(subject).to be_valid
+        end
+
+        it 'is valid for dot symbols' do
+          subject.symbol = 'BRK.A'
+          expect(subject).to be_valid
+        end
+      end
+    end
+  end
+
+  describe Investment::MutualFund do
+    describe 'validations' do
+      describe ':symbol' do
+        it 'is valid for uppercase 5 letters ending in X' do
+          subject.symbol = 'VAIPX'
+          expect(subject).to be_valid
+        end
+
+        it 'is invalid for letters not ending in X' do
+          subject.symbol = 'GOOGL'
+          expect(subject).to_not be_valid
+        end
+
+        it 'is invalid for not five characters' do
+          subject.symbol = 'XXXX'
           expect(subject).to_not be_valid
         end
       end
