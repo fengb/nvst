@@ -1,3 +1,10 @@
+GIT
+  remote: https://github.com/fengb/yahoo-finance.git
+  revision: d6888f6e2e6204e83a926fa00a1a3cd101f53a12
+  branch: master
+  specs:
+    yahoo-finance (0.1.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -101,7 +108,6 @@ GEM
     minitest (5.4.0)
     multi_json (1.10.1)
     nested_form (0.3.2)
-    netrc (0.7.7)
     nokogiri (1.6.3.1)
       mini_portile (= 0.6.0)
     orm_adapter (0.5.0)
@@ -151,9 +157,6 @@ GEM
     raindrops (0.13.0)
     rake (10.3.2)
     remotipart (1.2.1)
-    rest-client (1.7.2)
-      mime-types (>= 1.16, < 3.0)
-      netrc (~> 0.7)
     rspec-core (3.0.4)
       rspec-support (~> 3.0.0)
     rspec-expectations (3.0.4)
@@ -241,7 +244,6 @@ DEPENDENCIES
   quiet_assets
   rails
   rails_admin
-  rest-client
   rspec-rails
   sass-rails
   schema_plus
@@ -252,3 +254,4 @@ DEPENDENCIES
   turbolinks
   uglifier
   unicorn
+  yahoo-finance!

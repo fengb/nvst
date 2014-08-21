@@ -6,7 +6,7 @@ gem 'dotenv-rails'
 gem 'unicorn'
 
 # Third Party
-gem 'rest-client'
+gem 'yahoo-finance', git: 'https://github.com/fengb/yahoo-finance.git', branch: 'master'
 
 # Model
 gem 'pg'

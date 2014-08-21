@@ -15,38 +15,28 @@ class PopulateInvestmentsJob
   def stock!
     ActiveRecord::Base.transaction do
       historical_prices!
-      dividends!
       splits!
+      dividends!
     end
   end
 
   def historical_prices!
     latest_date = InvestmentHistoricalPrice.where(investment: @investment).last.try(:date) || Date.new(1900)
     return if latest_date + 1 >= Date.today
-    YahooFinance.historical_prices(@investment.symbol, start_date: latest_date + 1).reverse.each do |row|
-      InvestmentHistoricalPrice.create!(investment:     @investment,
-                                        date:           row.date,
-                                        high:           row.high,
-                                        low:            row.low,
-                                        close:          row.close,
-                                        adjustment:     1.0)
-    end
-  end
 
-  def dividends!
-    latest_date = InvestmentDividend.where(investment: @investment).last.try(:ex_date) || Date.new(1900)
-    YahooFinance.dividends(@investment.symbol).each do |row|
-      return if row.date <= latest_date
-
-      dividend = InvestmentDividend.create!(investment: @investment,
-                                            ex_date:    row.date,
-                                            amount:     row.amount)
-      adjust_prices_by(dividend)
+    YahooFinance.historical_quotes(@investment.symbol, start_date: latest_date + 1).reverse.each do |row|
+      InvestmentHistoricalPrice.create!(investment: @investment,
+                                        date:       row.trade_date,
+                                        high:       row.high,
+                                        low:        row.low,
+                                        close:      row.close)
     end
   end
 
   def splits!
     latest_date = InvestmentSplit.where(investment: @investment).last.try(:date) || Date.new(1900)
+    return if latest_date + 1 >= Date.today
+
     YahooFinance.splits(@investment.symbol).each do |row|
       return if row.date <= latest_date
 
@@ -55,6 +45,18 @@ class PopulateInvestmentsJob
                                       before:     row.before,
                                       after:      row.after)
       adjust_prices_by(split)
+    end
+  end
+
+  def dividends!
+    latest_date = InvestmentDividend.where(investment: @investment).last.try(:ex_date) || Date.new(1900)
+    return if latest_date + 1 >= Date.today
+
+    YahooFinance.dividends(@investment.symbol, start_date: latest_date + 1).each do |row|
+      dividend = InvestmentDividend.create!(investment: @investment,
+                                            ex_date:    row.date,
+                                            amount:     row.yield)
+      adjust_prices_by(dividend)
     end
   end
 
