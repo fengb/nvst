@@ -7,7 +7,7 @@ class GenerateOwnershipsJob
     end
 
     def delete!
-      ActiveRecord::Base.connection.execute 'TRUNCATE ownerships RESTART IDENTITY CASCADE'
+      SqlUtil.execute 'TRUNCATE ownerships RESTART IDENTITY CASCADE'
     end
 
     def classes_needing_processing

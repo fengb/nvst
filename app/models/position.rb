@@ -11,14 +11,15 @@ class Position < ActiveRecord::Base
            when 'long'  then '>'
            else              '!='
          end
-    outstanding_sql = sanitize_sql(['SELECT position_id
-                                          , SUM(shares) AS outstanding_shares
-                                       FROM activities
-                                      WHERE date <= ?
-                                      GROUP BY position_id',
-                                    during.to_date])
-    joins("LEFT JOIN (#{outstanding_sql}) t ON t.position_id=positions.id")
-    .where("t.outstanding_shares #{op} 0", during)
+    join_sql = SqlUtil.sanitize <<-SQL, during.to_date
+      LEFT JOIN(SELECT position_id
+                     , SUM(shares) AS outstanding_shares
+                  FROM activities
+                 WHERE date <= ?
+                 GROUP BY position_id) t
+             ON t.position_id=positions.id
+    SQL
+    joins(join_sql).where("t.outstanding_shares #{op} 0")
   }
 
   def opening_activity

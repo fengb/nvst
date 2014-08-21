@@ -9,7 +9,7 @@ class PopulateInvestmentsJob
   end
 
   def self.reset!
-    ActiveRecord::Base.connection.execute <<-END
+    SqlUtil.execute <<-END
       TRUNCATE investment_historical_prices RESTART IDENTITY CASCADE;
       TRUNCATE investment_splits RESTART IDENTITY CASCADE;
       TRUNCATE investment_dividends RESTART IDENTITY CASCADE;
@@ -76,12 +76,11 @@ class PopulateInvestmentsJob
   private
   def adjust_prices_by(instance)
     # instance needs to implement #investment_id, #adjust_through_date, and #adjustment
-      sql = ActiveRecord::Base.send(:sanitize_sql_array, [<<-SQL, instance.price_adjustment, instance.investment_id, instance.price_adjust_up_to_date])
-        UPDATE #{InvestmentHistoricalPrice.table_name}
-           SET adjustment = adjustment * ?
-         WHERE investment_id = ?
-           AND date <= ?
-      SQL
-      ActiveRecord::Base.connection.execute sql
+    SqlUtil.execute <<-SQL, instance.price_adjustment, instance.investment_id, instance.price_adjust_up_to_date
+      UPDATE #{InvestmentHistoricalPrice.table_name}
+         SET adjustment = adjustment * ?
+       WHERE investment_id = ?
+         AND date <= ?
+    SQL
   end
 end
