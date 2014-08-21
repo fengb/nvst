@@ -8,6 +8,14 @@ class PopulateInvestmentsJob
     end
   end
 
+  def self.reset!
+    ActiveRecord::Base.connection.execute <<-END
+      TRUNCATE investment_historical_prices RESTART IDENTITY CASCADE;
+      TRUNCATE investment_splits RESTART IDENTITY CASCADE;
+      TRUNCATE investment_dividends RESTART IDENTITY CASCADE;
+    END
+  end
+
   def initialize(investment)
     @investment = investment
   end
@@ -53,11 +61,16 @@ class PopulateInvestmentsJob
     return if latest_date + 1 >= Date.today
 
     YahooFinance.dividends(@investment.symbol, start_date: latest_date + 1).each do |row|
+      amount = row.yield.to_d * split_unadjustment(row.date)
       dividend = InvestmentDividend.create!(investment: @investment,
                                             ex_date:    row.date,
-                                            amount:     row.yield)
+                                            amount:     amount.round(2))
       adjust_prices_by(dividend)
     end
+  end
+
+  def split_unadjustment(date)
+    InvestmentSplit.where(investment: @investment).price_unadjustment(on: date)
   end
 
   private

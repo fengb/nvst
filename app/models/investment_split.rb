@@ -5,8 +5,16 @@ class InvestmentSplit < ActiveRecord::Base
 
   default_scope ->{order(:date)}
 
+  def self.price_unadjustment(on: Date.today)
+    where('date >= ?', on).map(&:shares_adjustment).inject(1, :*)
+  end
+
+  def shares_adjustment
+    1 / price_adjustment
+  end
+
   def price_adjustment
-    Rational(before) / after
+    before / after.to_r
   end
 
   def price_adjust_up_to_date
@@ -43,7 +51,7 @@ class InvestmentSplit < ActiveRecord::Base
         activity.adjustments << activity_adjustment!
       end
 
-      new_outstanding_shares = position.outstanding_shares / price_adjustment
+      new_outstanding_shares = position.outstanding_shares * shares_adjustment
       Activity.create!(position:    position,
                        is_opening:  true,
                        date:        self.date,

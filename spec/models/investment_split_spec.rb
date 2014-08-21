@@ -2,13 +2,30 @@ require 'spec_helper'
 
 
 describe InvestmentSplit do
-  describe '#price_adjustment' do
-    it 'compensates for expected drop in price' do
-      # Date       Price   Split  Adjusted Price
-      # Today       1.00     2:1            1.00
-      # Yesterday   2.00                    1.00
-      investment_split = InvestmentSplit.new(after: 2, before: 1)
-      expect(investment_split.price_adjustment * 2).to eq(1)
+  describe 'adjustments' do
+    # Date       Price   Shares
+    # Yesterday   2.00       50
+    # Today       1.00      100
+    subject { FactoryGirl.build(:investment_split, after: 2, before: 1) }
+
+    specify '#price_adjustment compensates for drop in price' do
+      expect(subject.price_adjustment * 2).to eq(1)
+    end
+
+    specify '#price_adjustment compensates for drop in price' do
+      expect(subject.shares_adjustment * 50).to eq(100)
+    end
+
+    describe '.price_unadjustment' do
+      before { subject.save }
+
+      it 'unadjusts when event happens earlier than split' do
+        expect(InvestmentSplit.price_unadjustment(on: subject.date - 1)).to eq(2)
+      end
+
+      it 'does nothing when event happens later than split' do
+        expect(InvestmentSplit.price_unadjustment(on: subject.date + 1)).to eq(1)
+      end
     end
   end
 
