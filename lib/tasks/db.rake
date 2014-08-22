@@ -1,8 +1,10 @@
 namespace :db do
+  desc 'Backup the database (options: TARGET=file, COMMIT=msg)'
   task :backup do
-    db = Nvst::Application.config.database_configuration['default']
+    target = ENV['TARGET']
+    commit = ENV['COMMIT']
 
-    target = ENV['target']
+    db = Nvst::Application.config.database_configuration['default']
 
     cmd = <<-CMD.gsub(/^ */, '').gsub(/\n+/, ' ')
       PGPASSWORD="#{db['password']}"
@@ -25,7 +27,14 @@ namespace :db do
       if target.nil?
         sh cmd
       else
-        sh "#{cmd} > #{target}"
+        sh "#{cmd} > tmp"
+        mv 'tmp', target
+      end
+    end
+
+    if commit
+      cd File.dirname(target) do
+        sh "git commit fengb_nvst.sql --message='#{commit}'"
       end
     end
   end
