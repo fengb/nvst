@@ -1,4 +1,10 @@
 namespace :db do
+  namespace :test do
+    task :prepare => :environment do
+      Rake::Task["db:seed"].invoke
+    end
+  end
+
   desc 'Backup the database (options: TARGET=file, COMMIT=msg)'
   task :backup do
     target = ENV['TARGET']
@@ -36,12 +42,6 @@ namespace :db do
       cd File.dirname(target) do
         sh "git commit fengb_nvst.sql --message='#{commit}'"
       end
-    end
-  end
-
-  namespace :test do
-    task :prepare => :environment do
-      Rake::Task["db:seed"].invoke
     end
   end
 end
