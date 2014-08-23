@@ -24,7 +24,6 @@ gem 'jbuilder'
 gem 'sass-rails'
 gem 'uglifier'
 gem 'jquery-rails'
-gem 'turbolinks'
 #Server can has node
 # gem 'therubyracer', platforms: :ruby
 # gem 'therubyrhino', platforms: :jruby

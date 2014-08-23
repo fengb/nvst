@@ -2,8 +2,7 @@
 %html
   %head
     %title FENGB-NVST
-    = stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true
-    = javascript_include_tag "application", "data-turbolinks-track" => true
+    = stylesheet_link_tag "application", media: "all"
     = csrf_meta_tags
   %body
     %h1 FENGB-NVST
@@ -11,3 +10,5 @@
     %footer
       %div{class: 'copy'} Benjamin Feng &copy; #{Date.today.year}
       %div{class: 'tech'} Powered by #{link_to 'NVST', 'https://github.com/fengb/nvst'}
+
+    = javascript_include_tag "application"
