@@ -1,4 +1,6 @@
 %div#growth-wrapper
+
+- content_for(:tail) do
   :javascript
     d3.json('/portfolio.json', function(error, data) {
       if (error) return console.warn(error);
