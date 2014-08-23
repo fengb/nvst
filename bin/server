@@ -24,7 +24,7 @@ case "$1" in
     if ! running; then
       start
     else
-      echo "$name: already running" >&2
+      echo "$name: already running"
     fi
   ;;
   restart)
@@ -36,7 +36,7 @@ case "$1" in
   ;;
   stop)
     if ! running; then
-      echo "$name: not running" >&2
+      echo "$name: not running"
     else
       kill -s QUIT "`cat "$pidfile"`"
     fi
