@@ -10,4 +10,4 @@ git pull
 bundle
 bundle exec rake db:migrate assets:precompile
 git tag `date +%Y%m%d-%H%M%S`
-restart
+server restart
