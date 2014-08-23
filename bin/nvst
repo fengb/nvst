@@ -10,7 +10,7 @@ export PATH="$NVST_ROOT/bin:$PATH"
 
 if [ "$0" = "${BASH_SOURCE[0]}" ]; then
   if [ $# -gt 0 ]; then
-    cd "$NVST_ROOT" && $@
+    cd "$NVST_ROOT" && "$@"
   else
     cd "$NVST_ROOT" && bash
   fi
