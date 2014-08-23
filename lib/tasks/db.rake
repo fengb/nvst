@@ -1,10 +1,4 @@
 namespace :db do
-  namespace :test do
-    task :prepare => :environment do
-      Rake::Task["db:seed"].invoke
-    end
-  end
-
   desc 'Backup the database (options: TARGET=file, COMMIT=msg)'
   task :backup do
     target = ENV['TARGET']
