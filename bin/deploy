@@ -3,7 +3,7 @@
 set -o errexit
 set -o pipefail
 
-. "$( dirname "${BASH_SOURCE[0]}" )"/nvst
+source "$( dirname "${BASH_SOURCE[0]}" )"/nvst
 
 cd "$NVST_ROOT"
 git pull
