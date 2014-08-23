@@ -4,6 +4,7 @@ gem 'rails'
 gem 'dotenv-deployment'
 gem 'dotenv-rails'
 gem 'unicorn'
+gem 'git'
 
 # Third Party
 gem 'yahoo-finance', git: 'https://github.com/fengb/yahoo-finance.git', branch: 'master'

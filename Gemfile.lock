@@ -77,6 +77,7 @@ GEM
     ffaker (1.25.0)
     font-awesome-rails (4.1.0.0)
       railties (>= 3.2, < 5.0)
+    git (1.2.8)
     haml (4.0.5)
       tilt
     haml-rails (0.5.3)
@@ -236,6 +237,7 @@ DEPENDENCIES
   enumerize
   factory_girl_rails
   ffaker
+  git
   haml-rails
   jbuilder
   jquery-rails

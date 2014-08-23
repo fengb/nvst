@@ -33,14 +33,18 @@ namespace :db do
       if target.nil?
         sh cmd
       else
-        sh "#{cmd} > tmp"
-        mv 'tmp', target
+        sh "#{cmd} > tmp/db-backup.sql"
+        mv 'tmp/db-backup.sql', target
       end
-    end
 
-    if commit
-      cd File.dirname(target) do
-        sh "git commit fengb_nvst.sql --message='#{commit}'"
+      if commit
+        dirname, filename = File.split(target)
+
+        git = Git.open(dirname)
+        git.add(filename)
+        if %w[M A].include?(git.status[filename].type)
+          puts git.commit(commit)
+        end
       end
     end
   end
