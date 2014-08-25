@@ -3,10 +3,13 @@
 set -o errexit
 set -o pipefail
 
+target=${1:-origin/master}
+
 source "$( dirname "${BASH_SOURCE[0]}" )"/nvst
 
 cd "$NVST_ROOT"
-git pull
+git fetch
+git checkout "$target"
 bundle
 bundle exec rake db:migrate assets:precompile
 git tag `date +%Y%m%d-%H%M%S`
