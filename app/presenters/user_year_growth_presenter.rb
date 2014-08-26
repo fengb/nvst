@@ -27,7 +27,7 @@ class UserYearGrowthPresenter
   end
 
   def gross_gains(at: end_date)
-    gross_value(at: at) - contributions(at: at).sum(&:amount)
+    gross_value(at: at) - contributions(at: at).sum(&:amount) - starting_value
   end
 
   def gross_value(at: end_date)
