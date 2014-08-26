@@ -4,7 +4,7 @@ Nvst::Application.routes.draw do
   resource :portfolio, controller: :portfolio
 
   controller :user do
-    get 'summary/:year', action: :summary
+    get 'summary', action: :summary
   end
 
   devise_for :users
@@ -27,10 +27,7 @@ Nvst::Application.routes.draw do
       end
     end
 
-    scope path: :user_summaries, controller: :user_summaries do
-      get '',               action: 'index', as: :user_summaries
-      get ':year/:user_id', action: 'show',  as: :user_summary
-    end
+    resources :user_summaries
   end
   mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
 end

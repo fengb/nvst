@@ -1,4 +1,19 @@
 class YearUserSummaryPresenter
+  def self.for_user(user)
+    years.map { |year| self.new(year, user) }
+  end
+
+  def self.for_year(year)
+    User.all.map { |user| self.new(year, user) }
+  end
+
+  def self.years
+    # FIXME
+    [2013, 2014]
+  end
+
+  attr_reader :year, :user
+
   def initialize(year, user)
     @year = year
     @user = user

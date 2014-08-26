@@ -1,14 +1,11 @@
 class Admin::UserSummariesController < Admin::BaseController
   def index
-    # FIXME: get active years
-    @years = [2013]
     @users = User.all
   end
 
   def show
-    year = params[:year]
-    user = User.find(params[:user_id])
-    @user_summary = YearUserSummaryPresenter.new(year, user)
+    user = User.find(params[:id])
+    @user_summaries = YearUserSummaryPresenter.for_user(user)
     render 'user/summary'
   end
 end
