@@ -41,7 +41,7 @@ class YearUserSummaryPresenter
 
   private
   def user_growth
-    @user_growth ||= UserGrowthPresenter.new(@user)
+    @user_growth ||= UserYearGrowthPresenter.new(@user, @year)
   end
 
   def start_date
