@@ -5,7 +5,7 @@ class Admin::UserSummariesController < Admin::BaseController
 
   def show
     user = User.find(params[:id])
-    @user_summaries = YearUserSummaryPresenter.for_user(user)
+    @user_growths = UserYearGrowthPresenter.for_user(user)
     render 'user/summary'
   end
 end

@@ -5,11 +5,15 @@
   %th Gross Gains
   %th Management Fee
   %th Ending Balance
-  - @user_summaries.each do |summary|
+  - @user_growths.each do |growth|
     %tr
-      %th= summary.year
-      %td= number_to_currency summary.starting_balance
-      %td= number_to_currency summary.contributions
-      %td= number_to_currency summary.gross_gains
-      %td= number_to_currency summary.management_fee
-      %th= number_to_currency summary.ending_balance
+      %th= growth.year
+      %td= number_to_currency growth.starting_value
+      %td= number_to_currency growth.contributions.sum(&:amount)
+      %td= number_to_currency growth.gross_gains
+      - if growth.closed?
+        %td= number_to_currency -growth.booked_fee
+        %th= number_to_currency growth.value
+      - else
+        %td.tentative= number_to_currency -growth.unbooked_fee
+        %th.tentative= number_to_currency growth.value
