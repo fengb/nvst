@@ -12,6 +12,15 @@ class User < ActiveRecord::Base
     find_by(is_fee_collector: true)
   end
 
+  # FIXME: year crap
+  scope :active_in, ->(year) { all }
+
+  def active_years
+    # FIXME
+    [2013, 2014]
+  end
+
+
   def username
     email.sub(/@.*/, '')
   end

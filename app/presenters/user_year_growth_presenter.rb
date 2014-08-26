@@ -1,15 +1,10 @@
 class UserYearGrowthPresenter
   def self.for_user(user)
-    years.map { |year| self.new(user, year) }
+    user.active_years.map { |year| self.new(user, year) }
   end
 
   def self.for_year(year)
     User.all.map { |user| self.new(user, year) }
-  end
-
-  def self.years
-    # FIXME
-    [2013, 2014]
   end
 
   attr_reader :year, :user

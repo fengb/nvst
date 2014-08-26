@@ -5,8 +5,7 @@ module TaxDocs
     end
 
     def users
-      # FIXME: return active users
-      User.all
+      User.active_in(@year)
     end
 
     def categories
