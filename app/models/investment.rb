@@ -39,8 +39,8 @@ class Investment < ActiveRecord::Base
     symbol
   end
 
-  rails_admin do
-    object_label_method :symbol
+  def to_s
+    symbol
   end
 
   class Stock < Investment

@@ -21,4 +21,12 @@ class Event < ActiveRecord::Base
       shares:     amount,
       price:      1}]
   end
+
+  def net_amount
+    amount
+  end
+
+  def description
+    "#{category} for #{src_investment}"
+  end
 end

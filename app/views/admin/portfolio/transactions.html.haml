@@ -1,0 +1,12 @@
+%table
+  %tr
+    %th Date
+    %th Net Amount
+    %th Class
+    %th Description
+  - @transactions.each do |transaction|
+    %tr
+      %td= transaction.date
+      %td= transaction.net_amount
+      %td= transaction.class
+      %td= transaction.description

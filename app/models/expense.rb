@@ -25,15 +25,15 @@ class Expense < ActiveRecord::Base
       price:      1}]
   end
 
-  def self.value
-    sum('amount')
-  end
-
   def cashflow_amount
     -amount
   end
 
-  def value
-    amount
+  def net_amount
+    -amount
+  end
+
+  def description
+    "#{category} - #{vendor} - #{memo}"
   end
 end

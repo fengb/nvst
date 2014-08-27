@@ -17,12 +17,16 @@ class Trade < ActiveRecord::Base
     raw_sell_value - raw_buy_value
   end
 
-  def adjust_sell?
+  def buy?
+    sell_investment.is_a?(Investment::Cash)
+  end
+
+  def sell?
     buy_investment.is_a?(Investment::Cash)
   end
 
   def sell_value
-    if adjust_sell?
+    if sell?
       raw_buy_value
     else
       raw_sell_value
@@ -30,7 +34,7 @@ class Trade < ActiveRecord::Base
   end
 
   def buy_value
-    if adjust_sell?
+    if sell?
       raw_buy_value
     else
       raw_sell_value
@@ -56,5 +60,25 @@ class Trade < ActiveRecord::Base
       shares:     buy_shares,
       price:      buy_price,
       adjustment: buy_adjustment}]
+  end
+
+  def net_amount
+    if buy?
+      -sell_shares
+    elsif sell?
+      buy_shares
+    else
+      raise '???'
+    end
+  end
+
+  def description
+    if buy?
+      "#{buy_shares} shares of #{buy_investment} @ #{buy_price}"
+    elsif sell?
+      "#{sell_shares} shares of #{sell_investment} @ #{sell_price}"
+    else
+      raise '???'
+    end
   end
 end

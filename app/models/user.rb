@@ -25,7 +25,7 @@ class User < ActiveRecord::Base
     email.sub(/@.*/, '')
   end
 
-  rails_admin do
-    object_label_method :username
+  def to_s
+    username
   end
 end

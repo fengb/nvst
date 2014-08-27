@@ -7,10 +7,6 @@ class Contribution < ActiveRecord::Base
   has_and_belongs_to_many :ownerships
   has_and_belongs_to_many :activities
 
-  def self.value
-    sum('amount')
-  end
-
   def raw_activities_data
     [{investment: Investment::Cash.first,
       date:       date,
@@ -28,7 +24,11 @@ class Contribution < ActiveRecord::Base
     amount
   end
 
-  def value
+  def net_amount
     amount
+  end
+
+  def description
+    "#{user}"
   end
 end

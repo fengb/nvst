@@ -11,7 +11,11 @@ Nvst::Application.routes.draw do
 
   devise_for :admin
   namespace :admin do
-    resource :portfolio, controller: :portfolio
+    resource :portfolio, controller: :portfolio do
+      member do
+        get 'transactions'
+      end
+    end
 
     resources :investments do
       member do
