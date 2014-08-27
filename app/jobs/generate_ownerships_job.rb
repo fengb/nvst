@@ -6,7 +6,7 @@ class GenerateOwnershipsJob
       end
     end
 
-    def delete!
+    def reset!
       SqlUtil.execute 'TRUNCATE ownerships RESTART IDENTITY CASCADE'
     end
 

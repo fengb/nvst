@@ -6,11 +6,11 @@ class GenerateActivitiesJob
       end
     end
 
-    def delete!
+    def reset!
       # This really doesn't belong here...
       SqlUtil.execute <<-END
         TRUNCATE positions RESTART IDENTITY CASCADE;
-        TRUNCATE activity_adjustments RESTART IDENTITY CASCADE;
+        DELETE FROM activity_adjustments;
       END
     end
 
