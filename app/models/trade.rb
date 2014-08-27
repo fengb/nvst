@@ -1,84 +1,40 @@
 class Trade < ActiveRecord::Base
   include GenerateActivitiesWaterfall
 
-  belongs_to :sell_investment, class_name: 'Investment'
-  belongs_to :buy_investment,  class_name: 'Investment'
+  belongs_to :cash,       class_name: 'Investment'
+  belongs_to :investment, class_name: 'Investment'
   has_and_belongs_to_many :activities
 
-  def raw_sell_value
-    sell_shares * sell_price
-  end
-
-  def raw_buy_value
-    buy_shares * buy_price
-  end
-
-  def fee
-    raw_sell_value - raw_buy_value
-  end
-
-  def buy?
-    sell_investment.is_a?(Investment::Cash)
-  end
-
-  def sell?
-    buy_investment.is_a?(Investment::Cash)
-  end
-
-  def sell_value
-    if sell?
-      raw_buy_value
-    else
-      raw_sell_value
-    end
-  end
-
-  def buy_value
-    if sell?
-      raw_buy_value
-    else
-      raw_sell_value
-    end
-  end
-
-  def sell_adjustment
-    sell_value.to_r / raw_sell_value.to_r
-  end
-
-  def buy_adjustment
-    buy_value.to_r / raw_buy_value.to_r
+  after_initialize do |record|
+    record.cash ||= Investment::Cash.first
   end
 
   def raw_activities_data
-    [{investment: sell_investment,
+    [{investment: cash,
       date:       date,
-      shares:     -sell_shares,
-      price:      sell_price,
-      adjustment: sell_adjustment},
-     {investment: buy_investment,
+      shares:     net_amount,
+      price:      1.0,
+      adjustment: 1},
+     {investment: investment,
       date:       date,
-      shares:     buy_shares,
-      price:      buy_price,
-      adjustment: buy_adjustment}]
+      shares:     shares,
+      price:      price,
+      adjustment: adjustment}]
   end
 
-  def net_amount
-    if buy?
-      -sell_shares
-    elsif sell?
-      buy_shares
-    else
-      raise '???'
-    end
+  def investment_value
+    shares * price
+  end
+
+  def adjustment
+    - net_amount.to_r / (shares.to_r * price.to_r)
+  end
+
+  def fee
+    investment_value + net_amount
   end
 
   def description
-    if buy?
-      "#{buy_shares} shares of #{buy_investment} @ #{buy_price}"
-    elsif sell?
-      "#{sell_shares} shares of #{sell_investment} @ #{sell_price}"
-    else
-      raise '???'
-    end
+    "#{shares} shares of #{investment} @ #{price}"
   end
 end

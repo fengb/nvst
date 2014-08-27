@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140804130401) do
+ActiveRecord::Schema.define(version: 20140827004911) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -133,18 +133,17 @@ ActiveRecord::Schema.define(version: 20140804130401) do
 
   create_table "trades", force: true do |t|
     t.date     "date"
-    t.integer  "sell_investment_id"
-    t.decimal  "sell_shares",        precision: 15, scale: 4
-    t.decimal  "sell_price",         precision: 12, scale: 4
-    t.integer  "buy_investment_id"
-    t.decimal  "buy_shares",         precision: 15, scale: 4
-    t.decimal  "buy_price",          precision: 12, scale: 4
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.index ["buy_investment_id"], :name => "fk__trades_buy_investment_id"
-    t.index ["sell_investment_id"], :name => "fk__trades_sell_investment_id"
-    t.foreign_key ["buy_investment_id"], "investments", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_trades_buy_investment_id"
-    t.foreign_key ["sell_investment_id"], "investments", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_trades_sell_investment_id"
+    t.integer  "cash_id"
+    t.decimal  "net_amount",    precision: 15, scale: 4
+    t.integer  "investment_id"
+    t.decimal  "shares",        precision: 15, scale: 4
+    t.decimal  "price",         precision: 15, scale: 4
+    t.index ["cash_id"], :name => "fk__trades_cash_id"
+    t.index ["investment_id"], :name => "fk__trades_investment_id"
+    t.foreign_key ["cash_id"], "investments", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_trades_cash_id"
+    t.foreign_key ["investment_id"], "investments", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_trades_investment_id"
   end
 
   create_table "activities_trades", force: true do |t|
