@@ -1,8 +1,6 @@
 source 'https://rubygems.org'
 
 gem 'rails'
-gem 'dotenv-deployment'
-gem 'dotenv-rails'
 gem 'unicorn'
 gem 'git'
 
@@ -29,6 +27,8 @@ gem 'jquery-rails'
 # gem 'therubyrhino', platforms: :jruby
 
 group :development, :test do
+  gem 'dotenv-deployment'
+  gem 'dotenv-rails'
   gem 'big_decimal_helper'
   gem 'rspec-rails'
   gem 'factory_girl_rails'
