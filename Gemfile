@@ -3,6 +3,7 @@ source 'https://rubygems.org'
 gem 'rails'
 gem 'unicorn'
 gem 'git'
+gem 'clockwork'
 
 # Third Party
 gem 'yahoo-finance', git: 'https://github.com/fengb/yahoo-finance.git', branch: 'master'

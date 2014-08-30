@@ -43,6 +43,9 @@ GEM
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
     builder (3.2.2)
+    clockwork (0.7.7)
+      activesupport
+      tzinfo
     coderay (1.1.0)
     coffee-rails (4.0.1)
       coffee-script (>= 2.2.0)
@@ -227,6 +230,7 @@ DEPENDENCIES
   better_errors
   big_decimal_helper
   binding_of_caller
+  clockwork
   devise
   dotenv-deployment
   dotenv-rails
