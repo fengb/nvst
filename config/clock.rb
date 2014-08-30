@@ -5,7 +5,8 @@ module Clockwork
   handler do |job_name|
     job_name = job_name.gsub /(_job)?$/, '_job'
     job_class = job_name.camelize.constantize
-    job_class.perform
+
+    Process.detach fork { job_class.perform }
   end
 
   every 1.hour, 'db_backup', at: '**:00'
