@@ -1,7 +1,7 @@
 FactoryGirl.define do
   factory :investment_historical_price do
     investment
-    date       { Date.today - rand(300) }
+    date       { Date.current - rand(300) }
     high       { rand(50.0..200.0).to_d.round(2) }
     low        { high - rand(0.0..10.0).to_d.round(2) }
     close      { rand(low..high).to_d.round(2) }

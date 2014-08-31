@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :trade do
-    date       { Date.today - rand(0..300) }
+    date       { Date.current - rand(0..300) }
     cash
     investment
     net_amount { rand(100.0..10000.0) }

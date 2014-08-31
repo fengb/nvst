@@ -15,7 +15,7 @@ class FillStrategies
     @positions = positions
 
     @new_price = options[:new_price]
-    @new_date = options[:new_date] || Date.today
+    @new_date = options[:new_date] || Date.current
   end
 
   def fifo

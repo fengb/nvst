@@ -38,7 +38,7 @@ class Activity < ActiveRecord::Base
     !is_opening?
   end
 
-  def adjusted_price(on: Date.today)
+  def adjusted_price(on: Date.current)
     price * adjustments.ratio(on: on)
   end
 end
