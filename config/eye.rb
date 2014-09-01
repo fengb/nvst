@@ -7,7 +7,7 @@ Eye.config do
   logger "#{root}/log/eye.log"
 end
 
-Eye.application 'nvst.unicorn' do
+Eye.application 'nvst' do
   working_dir root
 
   process 'unicorn' do
