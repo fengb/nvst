@@ -1,4 +1,16 @@
 GIT
+  remote: https://github.com/fengb/eye.git
+  revision: e2f2423ac9809e7d13afe9b45e38b03e92cc7268
+  branch: rubybin
+  specs:
+    eye (0.6.2)
+      celluloid (~> 0.15.0)
+      celluloid-io (~> 0.15.0)
+      sigar (~> 0.7.2)
+      state_machine
+      thor
+
+GIT
   remote: https://github.com/fengb/yahoo-finance.git
   revision: d6888f6e2e6204e83a926fa00a1a3cd101f53a12
   branch: master
@@ -74,12 +86,6 @@ GEM
       activesupport (>= 3.2)
     erubis (2.7.0)
     execjs (2.2.1)
-    eye (0.6.2)
-      celluloid (~> 0.15.0)
-      celluloid-io (~> 0.15.0)
-      sigar (~> 0.7.2)
-      state_machine
-      thor
     factory_girl (4.4.0)
       activesupport (>= 3.0.0)
     factory_girl_rails (4.4.1)
@@ -246,7 +252,7 @@ DEPENDENCIES
   dotenv-deployment
   dotenv-rails
   enumerize
-  eye
+  eye!
   factory_girl_rails
   ffaker
   git

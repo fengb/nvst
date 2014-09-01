@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 gem 'rails'
 gem 'unicorn'
 gem 'git'
-gem 'eye'
+gem 'eye', git: 'https://github.com/fengb/eye.git', branch: 'rubybin'
 gem 'dotenv-deployment'
 gem 'dotenv-rails'
 
