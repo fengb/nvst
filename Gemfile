@@ -4,6 +4,9 @@ gem 'rails'
 gem 'unicorn'
 gem 'git'
 gem 'clockwork'
+gem 'eye', git: 'https://github.com/fengb/eye.git', branch: 'rubybin'
+gem 'dotenv-deployment'
+gem 'dotenv-rails'
 
 # Third Party
 gem 'yahoo-finance', git: 'https://github.com/fengb/yahoo-finance.git', branch: 'master'
@@ -28,8 +31,6 @@ gem 'jquery-rails'
 # gem 'therubyrhino', platforms: :jruby
 
 group :development, :test do
-  gem 'dotenv-deployment'
-  gem 'dotenv-rails'
   gem 'big_decimal_helper'
   gem 'rspec-rails'
   gem 'factory_girl_rails'

@@ -17,7 +17,7 @@ describe Ownership do
   describe '.new_unit_per_amount_multiplier_at' do
     context 'no existing ownerships' do
       it 'is 1' do
-        expect(Ownership.new_unit_per_amount_multiplier_at Date.today).to eq(1)
+        expect(Ownership.new_unit_per_amount_multiplier_at Date.current).to eq(1)
       end
     end
 

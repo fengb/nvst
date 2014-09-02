@@ -6,9 +6,9 @@ describe Investment do
     subject { Investment.create! }
 
     before do
-      FactoryGirl.create(:investment_historical_price, date: Date.today-0,   investment: subject, high:  500, low: 400, close: 400)
-      FactoryGirl.create(:investment_historical_price, date: Date.today-180, investment: subject, high: 1000, low: 800, close: 900)
-      FactoryGirl.create(:investment_historical_price, date: Date.today-360, investment: subject, high:  400, low: 100, close: 200)
+      FactoryGirl.create(:investment_historical_price, date: Date.current-0,   investment: subject, high:  500, low: 400, close: 400)
+      FactoryGirl.create(:investment_historical_price, date: Date.current-180, investment: subject, high: 1000, low: 800, close: 900)
+      FactoryGirl.create(:investment_historical_price, date: Date.current-360, investment: subject, high:  400, low: 100, close: 200)
     end
 
     describe '#year_high' do
@@ -31,27 +31,27 @@ describe Investment do
 
     describe '#price_matcher' do
       it 'returns the exact close price' do
-        expect(subject.price_matcher[Date.today    ]).to eq(400)
-        expect(subject.price_matcher[Date.today-180]).to eq(900)
-        expect(subject.price_matcher[Date.today-360]).to eq(200)
+        expect(subject.price_matcher[Date.current    ]).to eq(400)
+        expect(subject.price_matcher[Date.current-180]).to eq(900)
+        expect(subject.price_matcher[Date.current-360]).to eq(200)
       end
 
       it 'returns the last used close price when match not found' do
-        expect(subject.price_matcher[Date.today-1  ]).to eq(900)
-        expect(subject.price_matcher[Date.today-181]).to eq(200)
+        expect(subject.price_matcher[Date.current-1  ]).to eq(900)
+        expect(subject.price_matcher[Date.current-181]).to eq(200)
       end
 
       context 'start date' do
         it 'cuts off at the start date' do
-          matcher = subject.price_matcher(Date.today - 180)
-          expect(matcher[Date.today-180]).to eq(900)
-          expect(matcher[Date.today-181]).to be(nil)
+          matcher = subject.price_matcher(Date.current - 180)
+          expect(matcher[Date.current-180]).to eq(900)
+          expect(matcher[Date.current-181]).to be(nil)
         end
 
         it 'cuts off at the closest available start date' do
-          matcher = subject.price_matcher(Date.today - 179)
-          expect(matcher[Date.today-180]).to eq(900)
-          expect(matcher[Date.today-181]).to be(nil)
+          matcher = subject.price_matcher(Date.current - 179)
+          expect(matcher[Date.current-180]).to eq(900)
+          expect(matcher[Date.current-181]).to be(nil)
         end
       end
     end
@@ -136,10 +136,10 @@ describe Investment do
     end
 
     it 'has super awesome price_matcher' do
-      matcher = subject.price_matcher(Date.today)
-      expect(matcher[Date.today         ]).to eql(1)
-      expect(matcher[Date.today-1000    ]).to eql(1)
-      expect(matcher[Date.today-10000000]).to eql(1)
+      matcher = subject.price_matcher(Date.current)
+      expect(matcher[Date.current         ]).to eql(1)
+      expect(matcher[Date.current-1000    ]).to eql(1)
+      expect(matcher[Date.current-10000000]).to eql(1)
     end
   end
 

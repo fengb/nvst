@@ -5,7 +5,7 @@ class Position < ActiveRecord::Base
 
   validates :investment, presence: true
 
-  scope :open, ->(during: Date.today, direction: nil){
+  scope :open, ->(during: Date.current, direction: nil){
     op = case direction.to_s
            when 'short' then '<'
            when 'long'  then '>'

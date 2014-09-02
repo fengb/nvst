@@ -43,7 +43,7 @@ describe GenerateActivitiesWaterfall do
   describe '.execute!' do
     let(:investment) { FactoryGirl.create(:investment) }
     let(:data)       { {investment: investment,
-                        date:       Date.today - rand(1000),
+                        date:       Date.current - rand(1000),
                         shares:     BigDecimal(rand(100..200)),
                         price:      BigDecimal(1)} }
 
@@ -66,7 +66,7 @@ describe GenerateActivitiesWaterfall do
     context 'existing position with different open data' do
       let!(:existing) do
         create_activity!(investment: investment,
-                         date: Date.today - 2000,
+                         date: Date.current - 2000,
                          shares: -10,
                          price: 5)
       end
@@ -81,7 +81,7 @@ describe GenerateActivitiesWaterfall do
 
       it 'ignores filled positions' do
         create_activity!(position: existing.position,
-                         date: Date.today - 1999,
+                         date: Date.current - 1999,
                          shares: 10,
                          price: 4)
 
@@ -124,11 +124,11 @@ describe GenerateActivitiesWaterfall do
     context 'existing positions' do
       let!(:existing) {[
         create_activity!(investment: investment,
-                         date: Date.today - 2000,
+                         date: Date.current - 2000,
                          shares: -10,
                          price: 4),
         create_activity!(investment: investment,
-                         date: Date.today - 2000,
+                         date: Date.current - 2000,
                          shares: -300,
                          price: 3),
       ]}

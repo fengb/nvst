@@ -3,9 +3,9 @@ require 'spec_helper'
 describe InvestmentHistoricalPrice do
   describe '.year_range' do
     let!(:prices) do
-      { 0 => FactoryGirl.create(:investment_historical_price, date: Date.today),
-        365 => FactoryGirl.create(:investment_historical_price, date: Date.today - 365),
-        366 => FactoryGirl.create(:investment_historical_price, date: Date.today - 366)
+      { 0 => FactoryGirl.create(:investment_historical_price, date: Date.current),
+        365 => FactoryGirl.create(:investment_historical_price, date: Date.current - 365),
+        366 => FactoryGirl.create(:investment_historical_price, date: Date.current - 366)
       }
     end
 

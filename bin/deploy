@@ -12,5 +12,8 @@ git fetch
 git checkout "$target"
 bundle
 bundle exec rake db:migrate assets:precompile
+
 git tag `date +%Y%m%d-%H%M%S`
-server restart
+
+bundle exec eye load config/eye.rb
+bundle exec eye restart all

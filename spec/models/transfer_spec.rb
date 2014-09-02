@@ -1,7 +1,7 @@
 describe Transfer do
   describe '#generate_ownerships!' do
     subject do
-      Transfer.create(date:      Date.today - 5,
+      Transfer.create(date:      Date.current - 5,
                       amount:    1942.12,
                       from_user: FactoryGirl.create(:user),
                       to_user:   FactoryGirl.create(:user))

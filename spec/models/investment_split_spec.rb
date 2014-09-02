@@ -35,7 +35,7 @@ describe InvestmentSplit do
 
     subject do
       InvestmentSplit.create(investment: position.investment,
-                             date: Date.today,
+                             date: Date.current,
                              before: 1,
                              after: 2)
     end

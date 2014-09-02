@@ -6,7 +6,7 @@ class ActivityAdjustment < ActiveRecord::Base
 
   enumerize :reason, in: %w[fee split]
 
-  def self.ratio(on: Date.today)
+  def self.ratio(on: Date.current)
     select{|adj| adj.date <= on}.map(&:ratio).inject(1, :*)
   end
 

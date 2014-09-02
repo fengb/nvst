@@ -1,15 +1,11 @@
-working_directory ENV['NVST_ROOT']
-stderr_path ENV['NVST_ROOT'] + "/log/unicorn.stderr.log"
-stdout_path ENV['NVST_ROOT'] + "/log/unicorn.stdout.log"
-pid ENV['NVST_ROOT'] + "/tmp/pids/unicorn.pid"
-
+pid 'tmp/pids/unicorn.pid'
 worker_processes Integer(ENV["NVST_WORKERS"] || 3)
 timeout 30
 preload_app true
 
 before_fork do |server, worker|
   # Kill obsolete server (USR2 signal)
-  old_pid = ENV['NVST_ROOT'] + "/tmp/pids/unicorn.pid.oldbin"
+  old_pid = 'tmp/pids/unicorn.pid.oldbin'
   if File.exists?(old_pid) && server.pid != old_pid
     begin
       Process.kill("QUIT", File.read(old_pid).to_i)

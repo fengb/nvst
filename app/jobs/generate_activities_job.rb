@@ -20,7 +20,7 @@ class GenerateActivitiesJob
 
     def objects_needing_processing
       classes_needing_processing.map(&:all).flatten.sort_by do |o|
-        [o.date, priority(o), o.try(:created_at) || Date.today]
+        [o.date, priority(o), o.try(:created_at) || Date.current]
       end
     end
 

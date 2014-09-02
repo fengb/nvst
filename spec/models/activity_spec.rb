@@ -9,7 +9,7 @@ describe Activity do
     end
 
     it '== #price when adjustment in the future' do
-      adjustment = subject.adjustments.create!(date: Date.today + 1, ratio: 0.5)
+      adjustment = subject.adjustments.create!(date: Date.current + 1, ratio: 0.5)
       expect(subject.adjusted_price).to eq(subject.price)
     end
 

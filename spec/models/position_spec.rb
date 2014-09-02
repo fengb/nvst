@@ -39,7 +39,7 @@ describe Position do
     end
 
     context 'closed positions' do
-      let(:close_date) { Date.today - 10 }
+      let(:close_date) { Date.current - 10 }
       let!(:activity2) { FactoryGirl.create(:activity, position: position,
                                                        shares: -1,
                                                        date: close_date) }
@@ -62,7 +62,7 @@ describe Position do
       end
       let!(:closing_activity) do
         FactoryGirl.create(:activity, position: opening_activity.position,
-                                      date:     Date.today,
+                                      date:     Date.current,
                                       price:    110,
                                       shares:   -90)
       end
@@ -90,7 +90,7 @@ describe Position do
       end
       let!(:closing_activity) do
         FactoryGirl.create(:activity, position: opening_activity.position,
-                                      date:     Date.today,
+                                      date:     Date.current,
                                       price:    90,
                                       shares:   90)
       end
