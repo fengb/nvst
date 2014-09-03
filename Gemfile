@@ -1,10 +1,12 @@
 source 'https://rubygems.org'
 
 gem 'rails'
-gem 'unicorn'
-gem 'git'
-gem 'clockwork'
-gem 'eye', git: 'https://github.com/fengb/eye.git', branch: 'rubybin'
+gem 'git', require: false
+
+# Server
+gem 'eye', require: false, git: 'https://github.com/fengb/eye.git', branch: 'rubybin'
+gem 'unicorn', require: false
+gem 'clockwork', require: false
 
 # Config
 gem 'dotenv-deployment'
