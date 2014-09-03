@@ -1,4 +1,6 @@
 pid 'tmp/pids/unicorn.pid'
+stdout_path 'log/unicorn.log'
+stderr_path 'log/unicorn.log'
 worker_processes Integer(ENV["NVST_WORKERS"] || 3)
 timeout 30
 preload_app true
