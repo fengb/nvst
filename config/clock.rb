@@ -1,12 +1,17 @@
-require_relative 'environment' # boot up Rails
 require 'clockwork'
+#require_relative 'environment' # preload Rails
 
 module Clockwork
   handler do |job_name|
-    job_name = job_name.gsub /(_job)?$/, '_job'
-    job_class = job_name.camelize.constantize
+    pid = fork do
+      require_relative 'environment'
 
-    Process.detach fork { job_class.perform }
+      job_name = job_name.gsub /(_job)?$/, '_job'
+      job_class = job_name.camelize.constantize
+      job_class.perform
+    end
+
+    Process.detach pid
   end
 
   every 1.hour, 'db_backup', at: '**:00'
