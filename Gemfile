@@ -5,6 +5,8 @@ gem 'unicorn'
 gem 'git'
 gem 'clockwork'
 gem 'eye', git: 'https://github.com/fengb/eye.git', branch: 'rubybin'
+
+# Config
 gem 'dotenv-deployment'
 gem 'dotenv-rails'
 
