@@ -13,6 +13,7 @@ end
 Eye.application 'nvst' do
   working_dir root
 
+#=begin
   process 'unicorn' do
     pid_file 'tmp/pids/unicorn.pid'
     start_command "bundle exec unicorn -Dc config/unicorn.rb -E #{env} -l #{port}"
@@ -37,6 +38,28 @@ Eye.application 'nvst' do
       check :memory, every: 30.seconds, below: 200.megabytes, times: [3, 5]
     end
   end
+#=end
+
+=begin
+  process 'puma' do
+    pid_file 'tmp/pids/puma.pid'
+    start_command "bundle exec puma -d -C config/puma.rb -e #{env} -p #{port}"
+    stop_command 'kill -QUIT {PID}'
+    restart_command 'kill -USR2 {PID}'
+
+    check :cpu, every: 30.seconds, below: 20, times: 3
+    check :memory, every: 30.seconds, below: 200.megabytes, times: [3, 5]
+
+    start_timeout 100.seconds
+    restart_grace 30.seconds
+
+    monitor_children do
+      stop_command 'kill -QUIT {PID}'
+      check :cpu, every: 30.seconds, below: 80, times: 3
+      check :memory, every: 30.seconds, below: 200.megabytes, times: [3, 5]
+    end
+  end
+=end
 
   process 'clockwork' do
     pid_file 'tmp/pids/clockwork.pid'

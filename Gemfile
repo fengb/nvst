@@ -6,6 +6,7 @@ gem 'git', require: false
 # Server
 gem 'eye', require: false, git: 'https://github.com/fengb/eye.git', branch: 'rubybin'
 gem 'unicorn', require: false
+gem 'puma', require: false
 gem 'clockwork', require: false
 
 # Config
