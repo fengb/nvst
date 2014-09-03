@@ -1,5 +1,8 @@
 root = ENV['NVST_ROOT'] || File.expand_path('../..', __FILE__)
 
+require 'dotenv'
+Dotenv.load "#{root}/.env"
+
 env =  ENV['NVST_ENV']  || 'development'
 port = ENV['NVST_PORT'] || 8080
 
