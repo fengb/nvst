@@ -1,9 +1,9 @@
 root = ENV['NVST_ROOT'] || File.expand_path('../..', __FILE__)
 
 require 'dotenv'
-Dotenv.load "#{root}/.env"
+Dotenv.overload "#{root}/.env"
 
-env =  ENV['NVST_ENV']  || 'development'
+env = ENV['NVST_ENV']  || 'development'
 port = ENV['NVST_PORT'] || 8080
 
 Eye.config do
@@ -13,8 +13,30 @@ end
 Eye.application 'nvst' do
   working_dir root
 
-#=begin
-  process 'unicorn' do
+  process 'clockwork' do
+    pid_file 'tmp/pids/clockwork.pid'
+    stdall 'log/clockwork.log'
+    start_command 'bundle exec clockwork config/clock.rb'
+    daemonize true
+
+    check :cpu, every: 30.seconds, below: 20, times: 3
+    check :memory, every: 30.seconds, below: 200.megabytes, times: [3, 5]
+
+    monitor_children do
+      check :runtime, every: 1.minute, below: 10.minutes
+    end
+  end
+
+  def process_server(name=nil, &block)
+    if name == ENV['NVST_SERVER'] && !name.nil?
+      @process_server = name
+      process(name, &block)
+    end
+
+    @process_server
+  end
+
+  process_server 'unicorn' do
     pid_file 'tmp/pids/unicorn.pid'
     start_command "bundle exec unicorn -Dc config/unicorn.rb -E #{env} -l #{port}"
     stop_command 'kill -QUIT {PID}'
@@ -38,10 +60,8 @@ Eye.application 'nvst' do
       check :memory, every: 30.seconds, below: 200.megabytes, times: [3, 5]
     end
   end
-#=end
 
-=begin
-  process 'puma' do
+  process_server 'puma' do
     pid_file 'tmp/pids/puma.pid'
     start_command "bundle exec puma -d -C config/puma.rb -e #{env} -p #{port}"
     stop_command 'kill -QUIT {PID}'
@@ -59,19 +79,9 @@ Eye.application 'nvst' do
       check :memory, every: 30.seconds, below: 200.megabytes, times: [3, 5]
     end
   end
-=end
 
-  process 'clockwork' do
-    pid_file 'tmp/pids/clockwork.pid'
-    stdall 'log/clockwork.log'
-    start_command 'bundle exec clockwork config/clock.rb'
-    daemonize true
-
-    check :cpu, every: 30.seconds, below: 20, times: 3
-    check :memory, every: 30.seconds, below: 200.megabytes, times: [3, 5]
-
-    monitor_children do
-      check :runtime, every: 1.minute, below: 10.minutes
-    end
+  if process_server.nil?
+    raise ENV.to_h.to_s
+    raise "Cannot find NVST_SERVER='#{ENV['NVST_SERVER']}'"
   end
 end
