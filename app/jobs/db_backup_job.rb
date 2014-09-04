@@ -31,6 +31,7 @@ class DbBackupJob
     if MESSAGE
       dirname, filename = File.split(TARGET)
 
+      require 'git'
       git = Git.open(dirname)
       git.add(filename)
       if %w[M A].include?(git.status[filename].type)
