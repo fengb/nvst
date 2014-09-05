@@ -2,6 +2,10 @@ require 'clockwork'
 #require_relative 'environment' # preload Rails
 
 module Clockwork
+  configure do |config|
+    config[:sleep_timeout] = 30
+  end
+
   handler do |job_name|
     pid = fork do
       require_relative 'environment'
