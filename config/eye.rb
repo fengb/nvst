@@ -16,7 +16,7 @@ Eye.application 'nvst' do
   process 'clockwork' do
     pid_file 'tmp/pids/clockwork.pid'
     stdall 'log/clockwork.log'
-    start_command 'bundle exec clockwork config/clock.rb'
+    start_command 'bundle exec clockwork config/clockwork.rb'
     daemonize true
 
     check :cpu, every: 30.seconds, below: 20, times: 3
