@@ -4,7 +4,7 @@ Nvst::Application.routes.draw do
   resource :portfolio, controller: :portfolio
 
   controller :user do
-    get 'summary', action: :summary
+    get 'summary'
   end
 
   devise_for :users
@@ -14,6 +14,13 @@ Nvst::Application.routes.draw do
     resource :portfolio, controller: :portfolio do
       member do
         get 'transactions'
+      end
+    end
+
+    resource :summaries do
+      member do
+        get 'user/:user_id', action: 'user', as: 'user'
+        get 'year/:year',    action: 'year', as: 'year'
       end
     end
 
@@ -30,8 +37,6 @@ Nvst::Application.routes.draw do
         get 'schedule_k'
       end
     end
-
-    resources :user_summaries
   end
   mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
 end
