@@ -81,7 +81,6 @@ Eye.application 'nvst' do
   end
 
   if process_server.nil?
-    raise ENV.to_h.to_s
     raise "Cannot find NVST_SERVER='#{ENV['NVST_SERVER']}'"
   end
 end
