@@ -1,7 +1,12 @@
-pid 'tmp/pids/unicorn.pid'
-stdout_path 'log/unicorn.log'
-stderr_path 'log/unicorn.log'
-worker_processes Integer(ENV["NVST_WORKERS"] || 3)
+listen Integer(ENV['NVST_PORT'] || 8080)
+worker_processes Integer(ENV['NVST_WORKERS'] || 3)
+
+if RACKUP[:daemonize]
+  pid 'tmp/pids/unicorn.pid'
+  stdout_path 'log/unicorn.log'
+  stderr_path 'log/unicorn.log'
+end
+
 timeout 30
 preload_app true
 

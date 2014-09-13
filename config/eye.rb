@@ -1,10 +1,4 @@
-root = ENV['NVST_ROOT'] || File.expand_path('../..', __FILE__)
-
-require 'dotenv'
-Dotenv.overload "#{root}/.env"
-
-env = ENV['NVST_ENV']  || 'development'
-port = ENV['NVST_PORT'] || 8080
+root = File.expand_path('../..', __FILE__)
 
 Eye.config do
   logger "#{root}/log/eye.log"
@@ -38,7 +32,8 @@ Eye.application 'nvst' do
 
   process_server 'unicorn' do
     pid_file 'tmp/pids/unicorn.pid'
-    start_command "bundle exec unicorn -Dc config/unicorn.rb -E #{env} -l #{port}"
+    stdall 'log/unicorn.log'
+    start_command "bundle exec unicorn -Dc config/unicorn.rb -E production"
     stop_command 'kill -QUIT {PID}'
 
     # stop signals:
@@ -63,7 +58,8 @@ Eye.application 'nvst' do
 
   process_server 'puma' do
     pid_file 'tmp/pids/puma.pid'
-    start_command "bundle exec puma -d -C config/puma.rb -e #{env} -p #{port}"
+    stdall 'log/puma.log'
+    start_command "bundle exec puma -d -C config/puma.rb -e production"
     stop_command 'kill -QUIT {PID}'
     restart_command 'kill -USR2 {PID}'
 
