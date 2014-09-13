@@ -3,7 +3,7 @@ require_relative 'nvst'
 Eye::Nvst.web 'unicorn' do
   pid_file 'tmp/pids/unicorn.pid'
   stdall 'log/unicorn.log'
-  start_command "bundle exec unicorn -Dc config/unicorn.rb -E production"
+  start_command 'bin/nvst bundle exec unicorn -Dc config/unicorn.rb -E production'
   stop_command 'kill -QUIT {PID}'
 
   # stop signals:

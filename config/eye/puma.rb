@@ -3,7 +3,7 @@ require_relative 'nvst'
 Eye::Nvst.web 'puma' do
   pid_file 'tmp/pids/puma.pid'
   stdall 'log/puma.log'
-  start_command "bundle exec puma -d -C config/puma.rb -e production"
+  start_command 'bin/nvst bundle exec puma -d -C config/puma.rb -e production'
   stop_command 'kill -QUIT {PID}'
   restart_command 'kill -USR2 {PID}'
 
