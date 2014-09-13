@@ -1,16 +1,4 @@
 GIT
-  remote: https://github.com/fengb/eye.git
-  revision: e2f2423ac9809e7d13afe9b45e38b03e92cc7268
-  branch: rubybin
-  specs:
-    eye (0.6.2)
-      celluloid (~> 0.15.0)
-      celluloid-io (~> 0.15.0)
-      sigar (~> 0.7.2)
-      state_machine
-      thor
-
-GIT
   remote: https://github.com/fengb/yahoo-finance.git
   revision: d6888f6e2e6204e83a926fa00a1a3cd101f53a12
   branch: master
@@ -55,11 +43,6 @@ GEM
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
     builder (3.2.2)
-    celluloid (0.15.2)
-      timers (~> 1.1.0)
-    celluloid-io (0.15.0)
-      celluloid (>= 0.15.0)
-      nio4r (>= 0.5.0)
     clockwork (0.7.7)
       activesupport
       tzinfo
@@ -129,7 +112,6 @@ GEM
     minitest (5.4.0)
     multi_json (1.10.1)
     nested_form (0.3.2)
-    nio4r (1.0.0)
     nokogiri (1.6.3.1)
       mini_portile (= 0.6.0)
     orm_adapter (0.5.0)
@@ -205,7 +187,6 @@ GEM
     schema_plus (1.5.3)
       activerecord (>= 3.2)
       valuable
-    sigar (0.7.2)
     simplecov (0.9.0)
       docile (~> 1.1.0)
       multi_json
@@ -224,12 +205,10 @@ GEM
       actionpack (>= 3.0)
       activesupport (>= 3.0)
       sprockets (~> 2.8)
-    state_machine (1.2.0)
     thor (0.19.1)
     thread_safe (0.3.4)
     tilt (1.4.1)
     timecop (0.7.1)
-    timers (1.1.0)
     treetop (1.4.15)
       polyglot
       polyglot (>= 0.3.1)
@@ -258,7 +237,6 @@ DEPENDENCIES
   dotenv-deployment
   dotenv-rails
   enumerize
-  eye!
   factory_girl_rails
   ffaker
   git

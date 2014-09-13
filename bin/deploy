@@ -17,4 +17,4 @@ bundle exec rake db:migrate assets:precompile
 git tag `date +%Y%m%d-%H%M%S`
 
 eye-load
-bundle exec eye restart nvst
+eye restart nvst

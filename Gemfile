@@ -4,14 +4,9 @@ gem 'rails'
 gem 'git', require: false
 
 # Server
-gem 'eye', require: false, git: 'https://github.com/fengb/eye.git', branch: 'rubybin'
 gem 'unicorn', require: false
 gem 'puma', require: false
 gem 'clockwork', require: false
-
-# Config
-gem 'dotenv-deployment'
-gem 'dotenv-rails'
 
 # Third Party
 gem 'yahoo-finance', git: 'https://github.com/fengb/yahoo-finance.git', branch: 'master'
@@ -36,6 +31,8 @@ gem 'jquery-rails'
 # gem 'therubyrhino', platforms: :jruby
 
 group :development, :test do
+  gem 'dotenv-deployment'
+  gem 'dotenv-rails'
   gem 'big_decimal_helper'
   gem 'rspec-rails'
   gem 'factory_girl_rails'
