@@ -4,6 +4,7 @@ set -o errexit
 set -o pipefail
 
 target=${1:-origin/master}
+server=${NVST_SERVER:?}
 
 source "$( dirname "${BASH_SOURCE[0]}" )"/nvst
 
@@ -15,5 +16,5 @@ bundle exec rake db:migrate assets:precompile
 
 git tag `date +%Y%m%d-%H%M%S`
 
-bundle exec eye load config/eye.rb
+eye-load
 bundle exec eye restart nvst
