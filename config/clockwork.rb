@@ -8,7 +8,12 @@ module Clockwork
 
   handler do |job_name|
     pid = fork do
-      require_relative 'environment'
+      # postload Rails
+      require_relative 'application'
+      Nvst::Application.configure do
+        config.eager_load = false
+        initialize!
+      end
 
       job_name = job_name.gsub /(_job)?$/, '_job'
       job_class = job_name.camelize.constantize
