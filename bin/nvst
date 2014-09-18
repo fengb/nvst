@@ -4,7 +4,8 @@ set -o errexit
 set -o pipefail
 
 export NVST_ROOT="$( cd "$( dirname "$( readlink ${BASH_SOURCE[0]} || echo ${BASH_SOURCE[0]})" )"/.. && pwd )"
-export PATH="$NVST_ROOT/bin:$PATH"
+export GEM_HOME="`ruby -e 'puts Gem.user_dir'`"
+export PATH="$NVST_ROOT/bin:$GEM_HOME/bin:$PATH"
 
 [ -e "$NVST_ROOT/.env" ] && source "$NVST_ROOT/.env"
 
