@@ -1,6 +1,7 @@
 class PortfolioController < ApplicationController
+  self.allow_forgery_protection = false
+
   def index
-    @ignore_csrf = true
   end
 
   def show
