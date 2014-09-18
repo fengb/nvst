@@ -3,8 +3,7 @@
 set -o errexit
 set -o pipefail
 
-server=${NVST_SERVER:?}
-
 source "$( dirname "${BASH_SOURCE[0]}" )"/nvst
 
-eye load config/eye/$server.eye
+server=${NVST_SERVER:?}
+eye load "config/eye/$server.eye"
