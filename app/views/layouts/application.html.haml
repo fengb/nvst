@@ -4,6 +4,7 @@
     %title FENGB-NVST
     = stylesheet_link_tag "application", media: "all"
     = csrf_meta_tags
+    = content_for(:head)
   %body
     %h1 FENGB-NVST
     %main= yield
