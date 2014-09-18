@@ -1,5 +1,6 @@
 class PortfolioController < ApplicationController
   def index
+    @ignore_csrf = true
   end
 
   def show
