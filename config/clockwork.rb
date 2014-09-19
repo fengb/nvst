@@ -15,9 +15,7 @@ module Clockwork
         initialize!
       end
 
-      job_name = job_name.gsub /(_job)?$/, '_job'
-      job_class = job_name.camelize.constantize
-      job_class.perform
+      Job.run(job_name)
     end
 
     Process.detach pid
