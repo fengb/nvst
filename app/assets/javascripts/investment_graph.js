@@ -1,4 +1,4 @@
-var InvestmentGraph = function(target, yAxis){
+var InvestmentGraph = function(target, data, options){
   var savedData = {}
 
   function keepN(array, n){
@@ -16,26 +16,35 @@ var InvestmentGraph = function(target, yAxis){
     return data
   }
 
-  var self = {
-    add: function(name, data){
-      for(var i=0; i < data.length; i++){
-        data[i].name = name
-      }
-      savedData[name] = data
-      return self
-    },
-
-    render: function(){
-      var svg = dimple.newSvg(target, 900, 500)
-      var chart = new dimple.chart(svg, drawData())
-      chart.setBounds(-1, 0, 901, 500)
-      chart.addCategoryAxis('x', 'date').addOrderRule('Date')
-      chart.addMeasureAxis('y', yAxis)
-      chart.addSeries('name', dimple.plot.line)
-      chart.draw()
-      return self
+  function add(name, data){
+    for(var i=0; i < data.length; i++){
+      data[i].name = name
     }
+    savedData[name] = data
   }
 
-  return self
+  function render(){
+    var svg = dimple.newSvg(target, 900, 500)
+    var chart = new dimple.chart(svg, drawData())
+    chart.setBounds(-1, 0, 901, 500)
+    chart.addCategoryAxis('x', options.xAxis)
+    chart.addMeasureAxis('y', options.yAxis)
+    chart.addSeries(options.series, dimple.plot.line)
+    chart.draw()
+  }
+
+  for(var key in data) {
+    add(key, data[key])
+  }
+
+  render()
 }
+
+;[].forEach.call(document.querySelectorAll('[data-graph]'), function(el){
+  var options = JSON.parse(el.dataset.graph)
+  d3.json(options.url, function(error, data) {
+    if (error) return console.warn(error);
+
+    InvestmentGraph(el, data, options)
+  })
+})
