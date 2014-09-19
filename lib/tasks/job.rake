@@ -9,11 +9,6 @@ namespace 'job' do
 
   desc 'Run nvst job'
   task :run, [:name] => :environment do |t, args|
-    if args[:name].nil?
-      Rake::Task['job:list'].invoke
-      next
-    end
-
     Job.run(args[:name])
   end
 end
