@@ -40,7 +40,8 @@ var InvestmentGraph = function(target, data, options){
   render()
 }
 
-;[].forEach.call(document.querySelectorAll('[data-graph]'), function(el){
+d3.selectAll('[data-graph]').each(function(){
+  var el = this
   var options = JSON.parse(el.dataset.graph)
   d3.json(options.url, function(error, data) {
     if (error) return console.warn(error);
