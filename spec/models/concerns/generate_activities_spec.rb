@@ -60,7 +60,7 @@ describe GenerateActivitiesWaterfall do
     it 'creates new position with single activity when none exists' do
       activities = GenerateActivitiesWaterfall.execute!(data)
       expect(activities.size).to eq(1)
-      expect_data(activities[0], data)
+      expect(activities[0]).to have_attributes(data)
     end
 
     context 'existing position with different open data' do
@@ -75,7 +75,7 @@ describe GenerateActivitiesWaterfall do
         existing.update(shares: 10)
         activities = GenerateActivitiesWaterfall.execute!(data)
         expect(activities.size).to eq(1)
-        expect_data(activities[0], data)
+        expect(activities[0]).to have_attributes(data)
         expect(activities[0].position).to_not eq(existing.position)
       end
 
@@ -87,7 +87,7 @@ describe GenerateActivitiesWaterfall do
 
         activities = GenerateActivitiesWaterfall.execute!(data)
         expect(activities.size).to eq(1)
-        expect_data(activities[0], data)
+        expect(activities[0]).to have_attributes(data)
         expect(activities[0].position).to_not eq(existing.position)
       end
 
@@ -96,7 +96,7 @@ describe GenerateActivitiesWaterfall do
 
         activities = GenerateActivitiesWaterfall.execute!(data)
         expect(activities.size).to eq(1)
-        expect_data(activities[0], data, position: existing.position)
+        expect(activities[0]).to have_attributes(data.merge position: existing.position)
       end
 
       it 'fills when outstanding amount == new amount' do
@@ -104,20 +104,20 @@ describe GenerateActivitiesWaterfall do
 
         activities = GenerateActivitiesWaterfall.execute!(data)
         expect(activities.size).to eq(1)
-        expect_data(activities[0], data, position: existing.position)
+        expect(activities[0]).to have_attributes(data.merge position: existing.position)
       end
 
       it 'fills up and creates new position with remainder' do
         activities = GenerateActivitiesWaterfall.execute!(data)
         expect(activities.size).to eq(2)
-        expect_data(activities[0], position: existing.position,
-                                   date: data[:date],
-                                   shares: -existing.shares,
-                                   price: 1)
+        expect(activities[0]).to have_attributes(position: existing.position,
+                                                 date: data[:date],
+                                                 shares: -existing.shares,
+                                                 price: 1)
         expect(activities[1].position).to_not eq(existing.position)
-        expect_data(activities[1], date: data[:date],
-                                   shares: data[:shares] + existing.shares,
-                                   price: 1)
+        expect(activities[1]).to have_attributes(date: data[:date],
+                                                 shares: data[:shares] + existing.shares,
+                                                 price: 1)
       end
     end
 
@@ -136,14 +136,14 @@ describe GenerateActivitiesWaterfall do
       it 'fills up first based on highest price' do
         activities = GenerateActivitiesWaterfall.execute!(data)
         expect(activities.size).to eq(2)
-        expect_data(activities[0], position: existing[0].position,
-                                   date: data[:date],
-                                   shares: -existing[0].shares,
-                                   price: data[:price])
-        expect_data(activities[1], position: existing[1].position,
-                                   date: data[:date],
-                                   shares: data[:shares] + existing[0].shares,
-                                   price: data[:price])
+        expect(activities[0]).to have_attributes(position: existing[0].position,
+                                                 date: data[:date],
+                                                 shares: -existing[0].shares,
+                                                 price: data[:price])
+        expect(activities[1]).to have_attributes(position: existing[1].position,
+                                                 date: data[:date],
+                                                 shares: data[:shares] + existing[0].shares,
+                                                 price: data[:price])
       end
 
       it 'fills up all positions before creating new position' do
@@ -151,19 +151,19 @@ describe GenerateActivitiesWaterfall do
 
         activities = GenerateActivitiesWaterfall.execute!(data)
         expect(activities.size).to eq(3)
-        expect_data(activities[0], position: existing[0].position,
-                                   date: data[:date],
-                                   shares: -existing[0].shares,
-                                   price: data[:price])
-        expect_data(activities[1], position: existing[1].position,
-                                   date: data[:date],
-                                   shares: -existing[1].shares,
-                                   price: data[:price])
+        expect(activities[0]).to have_attributes(position: existing[0].position,
+                                                 date: data[:date],
+                                                 shares: -existing[0].shares,
+                                                 price: data[:price])
+        expect(activities[1]).to have_attributes(position: existing[1].position,
+                                                 date: data[:date],
+                                                 shares: -existing[1].shares,
+                                                 price: data[:price])
         expect(activities[2].position).to_not eq(existing[0].position)
         expect(activities[2].position).to_not eq(existing[1].position)
-        expect_data(activities[2], date: data[:date],
-                                   shares: data[:shares] + existing.sum(&:shares),
-                                   price: data[:price])
+        expect(activities[2]).to have_attributes(date: data[:date],
+                                                 shares: data[:shares] + existing.sum(&:shares),
+                                                 price: data[:price])
       end
     end
 
@@ -184,8 +184,8 @@ describe GenerateActivitiesWaterfall do
         data[:adjustment] = 0.5
         activities = GenerateActivitiesWaterfall.execute!(data)
         expect(activities[0].adjustments.size).to eq(1)
-        expect_data(activities[0].adjustments[0], date: data[:date],
-                                                  ratio: data[:adjustment])
+        expect(activities[0].adjustments[0]).to have_attributes(date: data[:date],
+                                                                ratio: data[:adjustment])
       end
 
       context 'multiple activities' do

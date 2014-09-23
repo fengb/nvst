@@ -48,16 +48,16 @@ describe InvestmentSplit do
     it 'retains opening activity data' do
       old_data = activity.attributes.dup
       subject.generate_activity_for!(position)
-      expect_data(activity, old_data)
+      expect(activity).to have_attributes(old_data)
     end
 
     it 'creates a new activity with existing data' do
       new_activity = subject.generate_activity_for!(position)
-      expect_data(new_activity, investment:     position.investment,
-                                date:           subject.date,
-                                tax_date:       activity.date,
-                                position:       activity.position,
-                                adjusted_price: activity.adjusted_price)
+      expect(new_activity).to have_attributes(investment:     position.investment,
+                                              date:           subject.date,
+                                              tax_date:       activity.date,
+                                              position:       activity.position,
+                                              adjusted_price: activity.adjusted_price)
     end
 
     it 'creates enough new shares' do
