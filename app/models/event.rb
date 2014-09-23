@@ -6,6 +6,10 @@ class Event < ActiveRecord::Base
   belongs_to :src_investment, class_name: 'Investment'
   has_and_belongs_to_many :activities
 
+  validates :date,           presence: true
+  validates :src_investment, presence: true
+  validates :amount,         presence: true
+
   enumerize :category, in: {'interest'                   => 'int',
                             'interest - margin'          => 'inm',
                             'tax'                        => 'tax',

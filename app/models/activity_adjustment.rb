@@ -4,6 +4,10 @@ class ActivityAdjustment < ActiveRecord::Base
 
   has_and_belongs_to_many :activities
 
+  validates :date,        presence: true
+  validates :numerator,   presence: true
+  validates :denominator, presence: true
+
   enumerize :reason, in: %w[fee split]
 
   def self.ratio(on: Date.current)

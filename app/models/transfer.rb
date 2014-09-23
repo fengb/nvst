@@ -6,6 +6,11 @@ class Transfer < ActiveRecord::Base
   belongs_to :to_user,   class_name: 'User'
   has_and_belongs_to_many :ownerships
 
+  validates :date,      presence: true
+  validates :amount,    presence: true
+  validates :from_user, presence: true
+  validates :to_user,   presence: true
+
   scope :fees, ->{where(to_user: User.fee_collector)}
 
   def from_ownership

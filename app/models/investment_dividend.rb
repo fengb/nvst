@@ -2,6 +2,8 @@
 class InvestmentDividend < ActiveRecord::Base
   belongs_to :investment
 
+  validates :ex_date, presence: true, uniqueness: {scope: :investment}
+
   default_scope ->{order(:ex_date)}
 
   # FIXME: turn into a real relation

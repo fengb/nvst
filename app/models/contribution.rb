@@ -7,6 +7,10 @@ class Contribution < ActiveRecord::Base
   has_and_belongs_to_many :ownerships
   has_and_belongs_to_many :activities
 
+  validates :user,   presence: true
+  validates :date,   presence: true
+  validates :amount, presence: true
+
   def raw_activities_data
     [{investment: Investment::Cash.first,
       date:       date,

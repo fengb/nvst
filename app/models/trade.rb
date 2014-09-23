@@ -5,6 +5,13 @@ class Trade < ActiveRecord::Base
   belongs_to :investment, class_name: 'Investment'
   has_and_belongs_to_many :activities
 
+  validates :date,       presence: true
+  validates :cash,       presence: true
+  validates :net_amount, presence: true
+  validates :investment, presence: true
+  validates :shares,     presence: true
+  validates :price,      presence: true
+
   after_initialize do |record|
     record.cash ||= Investment::Cash.first
   end

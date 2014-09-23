@@ -5,6 +5,10 @@ class Expense < ActiveRecord::Base
 
   has_and_belongs_to_many :activities
 
+  validates :date,   presence: true
+  validates :amount, presence: true
+  validates :vendor, presence: true
+
   enumerize :category, in: {'salaries and wages'        => 'sal',
                             'payments'                  => 'pay',
                             'repairs and maintenance'   => 'rep',

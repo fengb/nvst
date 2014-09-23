@@ -3,6 +3,8 @@ class InvestmentSplit < ActiveRecord::Base
   belongs_to :investment
   belongs_to :activity_adjustment
 
+  validates :date, presence: true, uniqueness: {scope: :investment}
+
   default_scope ->{order(:date)}
 
   def self.price_unadjustment(on: Date.current)

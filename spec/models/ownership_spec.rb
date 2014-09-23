@@ -3,9 +3,9 @@ require 'spec_helper'
 describe Ownership do
   describe '.total_at' do
     let!(:ownerships) do
-      [ Ownership.create(date: '2013-01-01', units: 100),
-        Ownership.create(date: '2013-01-02', units: 200),
-        Ownership.create(date: '2013-01-03', units:  50)
+      [ FactoryGirl.create(:ownership, date: '2013-01-01', units: 100),
+        FactoryGirl.create(:ownership, date: '2013-01-02', units: 200),
+        FactoryGirl.create(:ownership, date: '2013-01-03', units:  50)
       ]
     end
 

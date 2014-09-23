@@ -3,7 +3,7 @@ require 'spec_helper'
 
 describe Investment do
   describe 'many prices' do
-    subject { Investment.create! }
+    subject { FactoryGirl.create :cash }
 
     before do
       FactoryGirl.create(:investment_historical_price, date: Date.current-0,   investment: subject, high:  500, low: 400, close: 400)
@@ -62,32 +62,32 @@ describe Investment do
       describe ':symbol' do
         it 'is valid for uppercase up to 5 letters' do
           subject.symbol = 'GOOGL'
-          expect(subject).to be_valid
+          expect(subject).to have_valid(:symbol)
         end
 
         it 'is invalid for long symbols' do
           subject.symbol = 'GOOGLL'
-          expect(subject).to_not be_valid
+          expect(subject).to_not have_valid(:symbol)
         end
 
         it 'is invalid for lowercase' do
           subject.symbol = 'googl'
-          expect(subject).to_not be_valid
+          expect(subject).to_not have_valid(:symbol)
         end
 
         it 'is invalid for 5 characters symbols ending in X' do
           subject.symbol = 'VAIPX'
-          expect(subject).to_not be_valid
+          expect(subject).to_not have_valid(:symbol)
         end
 
         it 'is valid for symbols ending in X' do
           subject.symbol = 'X'
-          expect(subject).to be_valid
+          expect(subject).to have_valid(:symbol)
         end
 
         it 'is valid for dot symbols' do
           subject.symbol = 'BRK.A'
-          expect(subject).to be_valid
+          expect(subject).to have_valid(:symbol)
         end
       end
     end
@@ -98,17 +98,17 @@ describe Investment do
       describe ':symbol' do
         it 'is valid for uppercase 5 letters ending in X' do
           subject.symbol = 'VAIPX'
-          expect(subject).to be_valid
+          expect(subject).to have_valid(:symbol)
         end
 
         it 'is invalid for letters not ending in X' do
           subject.symbol = 'GOOGL'
-          expect(subject).to_not be_valid
+          expect(subject).to_not have_valid(:symbol)
         end
 
         it 'is invalid for not five characters' do
           subject.symbol = 'XXXX'
-          expect(subject).to_not be_valid
+          expect(subject).to_not have_valid(:symbol)
         end
       end
     end
@@ -119,12 +119,12 @@ describe Investment do
       describe ':symbol' do
         it 'is valid for uppercase 3 letters' do
           subject.symbol = 'USD'
-          expect(subject).to be_valid
+          expect(subject).to have_valid(:symbol)
         end
 
         it 'is invalid for lowercase' do
           subject.symbol = 'AONSZ'
-          expect(subject).to_not be_valid
+          expect(subject).to_not have_valid(:symbol)
         end
       end
     end
@@ -148,28 +148,28 @@ describe Investment do
       describe ':symbol' do
         it 'is valid for standard symbology' do
           subject.symbol = 'AAPL140920C00105000'
-          expect(subject).to be_valid
+          expect(subject).to have_valid(:symbol)
 
           subject.symbol = 'A140920P00105000'
-          expect(subject).to be_valid
+          expect(subject).to have_valid(:symbol)
         end
 
         it 'is invalid for weird symbols' do
           subject.symbol = 'AAAPL140920C00105000'
-          expect(subject).to_not be_valid
+          expect(subject).to_not have_valid(:symbol)
 
           subject.symbol = 'AAAAAPL140920C00105000'
-          expect(subject).to_not be_valid
+          expect(subject).to_not have_valid(:symbol)
         end
 
         it 'is invalid for non put/call' do
           subject.symbol = 'AAPL140920Z00105000'
-          expect(subject).to_not be_valid
+          expect(subject).to_not have_valid(:symbol)
         end
 
         it 'is invalid for invalid strike' do
           subject.symbol = 'AAPL140920P00000'
-          expect(subject).to_not be_valid
+          expect(subject).to_not have_valid(:symbol)
         end
       end
     end

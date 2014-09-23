@@ -3,6 +3,9 @@ class Investment < ActiveRecord::Base
   has_many :dividends,         class_name: 'InvestmentDividend'
   has_many :splits,            class_name: 'InvestmentSplit'
 
+  validates :symbol, presence: true, uniqueness: true
+  validates :name,   presence: true
+
   def self.benchmark
     find_by(symbol: 'SPY')
   end
