@@ -22,5 +22,5 @@ module Clockwork
   end
 
   every 1.hour, 'db_backup', at: '**:00'
-  every 1.day,  'populate_investments', at: '22:00', if: ->(t) { (1..5).include? t.wday }
+  every 1.day,  'populate_investments', at: '23:00', if: ->(t) { (1..5).include? t.wday }
 end
