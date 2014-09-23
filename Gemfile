@@ -1,15 +1,15 @@
 source 'https://rubygems.org'
 
 gem 'rails'
-gem 'git', require: false
 
 # Server
 gem 'unicorn', require: false
 gem 'puma', require: false
 gem 'clockwork', require: false
 
-# Third Party
-gem 'yahoo-finance', git: 'https://github.com/fengb/yahoo-finance.git', branch: 'master'
+# Jobs
+gem 'yahoo-finance', require: false, git: 'https://github.com/fengb/yahoo-finance.git', branch: 'master'
+gem 'git', require: false
 
 # Model
 gem 'pg'
