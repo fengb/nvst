@@ -1,0 +1,122 @@
+/*! Mutiny v1.0.0dev - http://mutinyjs.com/ */
+var Mutiny = window.Mutiny = {
+  options: {
+    initOnReady: true
+  },
+
+  widgets: {},
+
+  init: function(els, namespace) {
+    namespace = namespace || 'mutiny';
+    var name;
+
+    if(!els) {
+      var queries = [];
+      for(name in Mutiny.widgets) {
+        if(Mutiny.widgets.hasOwnProperty(name)) {
+          queries.push(Mutiny.util.format('[data-{0}-{1}]', namespace, Mutiny.util.dasherize(name)));
+        }
+      }
+      els = document.querySelectorAll(queries.join(','));
+    } else if(!Mutiny.util.isArray(els)) {
+      els = [els];
+    }
+
+    var processed = Mutiny.util.format('data-{0}', namespace);
+    for(var i=0; i < els.length; i++) {
+      var el = els[i];
+      if(el.hasAttribute(processed)){
+        continue;
+      }
+
+      el.setAttribute(processed, 'processed');
+
+      for(name in Mutiny.widgets) {
+        var attr = Mutiny.util.format('data-{0}-{1}', namespace, Mutiny.util.dasherize(name));
+        if(el.hasAttribute(attr)){
+          Mutiny.util.initWidget(el, name, el.getAttribute(attr));
+        }
+      }
+    }
+  },
+
+  util: {
+    onReady: function(fn){
+      if(document.readyState === 'complete'){
+        fn();
+      } else if(document.addEventListener){
+        document.addEventListener('DOMContentLoaded', function wrapper(){
+          document.removeEventListener('DOMContentLoaded', wrapper);
+          fn();
+        });
+      } else {
+        document.attachEvent('onreadystatechange', function wrapper(){
+          document.detachEvent('onreadystatechange', wrapper);
+          fn();
+        });
+      }
+    },
+
+    dasherize: function(string){
+      string = string.replace(/[^a-z]+/ig, '-');
+      return string.replace(/(.?)([A-Z])/g, function(match, prev, cap){
+        if(prev) {
+          return prev + '-' + cap.toLowerCase();
+        } else {
+          return cap.toLowerCase();
+        }
+      });
+    },
+
+    format: function(){
+      var regexes = [];
+      for(var i=0; i < 10; i++) {
+        regexes[i] = new RegExp('\\{' + i + '\\}', 'gm');
+      }
+
+      return function() {
+        var s = arguments[0];
+        for(var i=1; i < arguments.length; i++) {
+          s = s.replace(regexes[i-1], arguments[i]);
+        }
+
+        return s;
+      };
+    }(),
+
+    isString: function(obj){
+      return !!obj.substring;
+    },
+
+    isArray: function(obj){
+      return obj.length !== undefined;
+    },
+
+    initWidget: function(instigator, widgetName, instanceOptions) {
+      var widget = Mutiny.widgets[widgetName];
+      if(widget === undefined) {
+        throw Mutiny.util.format('"Mutiny.widget.{0}" not found', widgetName);
+      }
+
+      try {
+        instanceOptions = instanceOptions ? JSON.parse(instanceOptions) : {};
+      } catch(e) {
+        e.message = Mutiny.util.format('"Mutiny.widget.{0}" cannot parse "{1}"', widgetName, instanceOptions);
+        throw e;
+      }
+
+      for(var key in widget.defaults) {
+        if(widget.defaults.hasOwnProperty(key) && !instanceOptions.hasOwnProperty(key)) {
+          instanceOptions[key] = widget.defaults[key];
+        }
+      }
+      widget.init(instigator, instanceOptions);
+    }
+  }
+};
+
+Mutiny.util.onReady(function(){
+  if(Mutiny.options.initOnReady) {
+    Mutiny.init();
+  }
+});
