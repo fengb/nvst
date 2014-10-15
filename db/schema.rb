@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140827004911) do
+ActiveRecord::Schema.define(version: 20141015113426) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -114,12 +114,15 @@ ActiveRecord::Schema.define(version: 20140827004911) do
 
   create_table "expenses", force: true do |t|
     t.date     "date"
-    t.decimal  "amount",     precision: 12, scale: 4
+    t.decimal  "amount",                   precision: 12, scale: 4
     t.string   "vendor"
     t.string   "memo"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "category"
+    t.integer  "reinvestment_for_user_id"
+    t.index ["reinvestment_for_user_id"], :name => "fk__expenses_reinvestment_for_user_id"
+    t.foreign_key ["reinvestment_for_user_id"], "users", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_expenses_reinvestment_for_user_id"
   end
 
   create_table "activities_expenses", force: true do |t|
