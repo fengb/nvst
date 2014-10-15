@@ -21,7 +21,7 @@ class Contribution < ActiveRecord::Base
   def raw_ownerships_data
     [{user: user,
       date: date,
-      units: amount * Ownership.new_unit_per_amount_multiplier_at(date)}]
+      units: ownership_units(at: date, amount: amount)}]
   end
 
   def cashflow_amount

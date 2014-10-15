@@ -24,14 +24,10 @@ class Transfer < ActiveRecord::Base
   def raw_ownerships_data
     [{user: from_user,
       date: date,
-      units: -effective_units},
+      units: -ownership_units(at: date, amount: amount)},
      {user: to_user,
       date: date,
-      units: effective_units}
+      units: ownership_units(at: date, amount: amount)}
     ]
-  end
-
-  def effective_units
-    amount * Ownership.new_unit_per_amount_multiplier_at(date)
   end
 end
