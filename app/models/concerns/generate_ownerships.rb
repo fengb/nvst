@@ -7,13 +7,16 @@ module GenerateOwnerships
     end
   end
 
-  def ownership_units(at: nil, amount: 1)
+  def ownership_units(at: nil, amount: 1, cashflow: true)
+    # Assume all unit movement are incurred at once on the same day
+    total_units = Ownership.total_at(at - 1)
+    return amount if total_units == 0
+
     # Assume all cashflows are incurred at once on the same day
     total_value = ownership_portfolio.value_at(at) - ownership_portfolio.cashflow_at(at)
-    return 1 if total_value == 0
+    total_value -= amount unless cashflow
 
-    # Assume all unit movement are incurred at once on the same day
-    Ownership.total_at(at - 1) / total_value * amount
+    total_units / total_value * amount
   end
 
   def ownership_portfolio
