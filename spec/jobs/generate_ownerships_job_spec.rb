@@ -4,7 +4,7 @@ describe GenerateOwnershipsJob do
   describe '.classes_needing_processing' do
     it 'includes everything we need' do
       expect(GenerateOwnershipsJob.classes_needing_processing).to include(
-        Contribution, Transfer
+        Contribution, Expense, Transfer
       )
     end
   end

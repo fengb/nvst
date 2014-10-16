@@ -190,6 +190,15 @@ ActiveRecord::Schema.define(version: 20141015113426) do
     t.foreign_key ["ownership_id"], "ownerships", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_contributions_ownerships_ownership_id"
   end
 
+  create_table "expenses_ownerships", force: true do |t|
+    t.integer "expense_id"
+    t.integer "ownership_id"
+    t.index ["expense_id"], :name => "fk__expenses_ownerships_expense_id"
+    t.index ["ownership_id"], :name => "fk__expenses_ownerships_ownership_id"
+    t.foreign_key ["expense_id"], "expenses", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_expenses_ownerships_expense_id"
+    t.foreign_key ["ownership_id"], "ownerships", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_expenses_ownerships_ownership_id"
+  end
+
   create_table "investment_dividends", force: true do |t|
     t.integer "investment_id"
     t.date    "ex_date"
