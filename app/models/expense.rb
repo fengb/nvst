@@ -4,7 +4,7 @@ class Expense < ActiveRecord::Base
   include GenerateOwnerships
   include Scopes::Year
 
-  belongs_to :reinvestment_for_user
+  belongs_to :reinvestment_for_user, class_name: 'User'
   has_and_belongs_to_many :activities
   has_and_belongs_to_many :ownerships
 
