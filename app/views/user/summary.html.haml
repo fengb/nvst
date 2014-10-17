@@ -2,6 +2,7 @@
   %th Year
   %th Starting Balance
   %th Contributions
+  %th Reinvestments
   %th Gross Gains
   %th Management Fee
   %th Ending Balance
@@ -10,6 +11,7 @@
       %th= growth.year
       %td= number_to_currency growth.starting_value
       %td= number_to_currency growth.contributions.sum(&:amount)
+      %td= number_to_currency growth.reinvestments.sum(&:amount)
       %td= number_to_currency growth.gross_gains
       - if growth.closed?
         %td= number_to_currency -growth.booked_fee

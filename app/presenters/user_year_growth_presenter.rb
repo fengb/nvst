@@ -21,8 +21,13 @@ class UserYearGrowthPresenter
     @contributions.select{|c| c.date <= at}
   end
 
+  def reinvestments(at: end_date)
+    @reinvestments ||= Expense.where(reinvestment_for_user: @user).year(@year).to_a
+    @reinvestments.select{|c| c.date <= at}
+  end
+
   def gross_gains(at: end_date)
-    gross_value(at: at) - contributions(at: at).sum(&:amount) - starting_value
+    gross_value(at: at) - contributions(at: at).sum(&:amount) - reinvestments(at: at).sum(&:amount) - starting_value
   end
 
   def gross_value(at: end_date)
@@ -73,6 +78,9 @@ class UserYearGrowthPresenter
       end
       contributions.each do |contribution|
         shares_raw << [contribution.date, contribution.amount / benchmark_price_matcher[contribution.date]]
+      end
+      reinvestments.each do |reinvestment|
+        shares_raw << [reinvestment.date, reinvestment.amount / benchmark_price_matcher[reinvestment.date]]
       end
 
       BestMatchHash.sum(shares_raw)

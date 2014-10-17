@@ -3,6 +3,7 @@
     %th User
     %th Starting Balance
     %th Contributions
+    %th Reinvestments
     %th Gross Gains
     %th Management Fee
     %th Ending Balance
@@ -12,6 +13,7 @@
         %th= growth.user
         %td= number_to_currency growth.starting_value
         %td= number_to_currency growth.contributions.sum(&:amount)
+        %td= number_to_currency growth.reinvestments.sum(&:amount)
         %td= number_to_currency growth.gross_gains
         - if growth.closed?
           %td= number_to_currency -growth.booked_fee
@@ -24,6 +26,7 @@
       %th
       %th= number_to_currency @growths.sum(&:starting_value)
       %th= number_to_currency @growths.map(&:contributions).flatten.sum(&:amount)
+      %th= number_to_currency @growths.map(&:reinvestments).flatten.sum(&:amount)
       %th= number_to_currency @growths.sum(&:gross_gains)
       - if @growths.all?(&:closed?)
         %td= number_to_currency -@growths.sum(&:booked_fee)
