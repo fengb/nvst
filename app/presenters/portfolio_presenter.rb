@@ -1,11 +1,11 @@
 class PortfolioPresenter
   def self.all
     self.new(activities: Activity.includes(position: :investment),
-             cashflows:  Contribution.all + Expense.all)
+             cashflows:  Contribution.all + Expense.cashflow)
   end
 
   def initialize(activities: [],
-                 cashflows:    [])
+                 cashflows:  [])
     @price_matchers = {}
     @shares_matchers = {}
     activities.group_by(&:investment).each do |inv, activities|

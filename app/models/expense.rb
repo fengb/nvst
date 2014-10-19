@@ -25,6 +25,8 @@ class Expense < ActiveRecord::Base
                             'employee benefit programs' => 'ben',
                             'other'                     => 'oth'}
 
+  scope :cashflow, -> { where('reinvestment_for_user_id IS NULL') }
+
   def raw_activities_data
     return [] if reinvestment_for_user
 
