@@ -118,7 +118,7 @@ describe Investment do
     describe 'validations' do
       describe ':symbol' do
         it 'is valid for uppercase 3 letters' do
-          subject.symbol = 'USD'
+          subject.symbol = 'CAD'
           expect(subject).to have_valid(:symbol)
         end
 
