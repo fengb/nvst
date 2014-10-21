@@ -1,19 +1,23 @@
 class UserYearGrowthPresenter
   def self.for_user(user)
-    user.active_years.map { |year| self.new(user, year) }
+    portfolio = PortfolioPresenter.all
+    ownership = OwnershipPresenter.all
+    user.active_years.map { |year| self.new(user, year, portfolio, ownership) }
   end
 
   def self.for_year(year)
-    User.all.map { |user| self.new(user, year) }
+    portfolio = PortfolioPresenter.all
+    ownership = OwnershipPresenter.all
+    User.all.map { |user| self.new(user, year, portfolio, ownership) }
   end
 
   attr_reader :year, :user
 
-  def initialize(user, year)
+  def initialize(user, year, portfolio = PortfolioPresenter.all, ownership = OwnershipPresenter.all)
     @user = user
     @year = year
-    @portfolio = PortfolioPresenter.all
-    @ownership = OwnershipPresenter.all
+    @portfolio = portfolio
+    @ownership = ownership
   end
 
   def contributions(at: end_date)

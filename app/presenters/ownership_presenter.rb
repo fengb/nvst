@@ -15,7 +15,7 @@ class OwnershipPresenter
   end
 
   def user_units(user, date)
-    @user_matchers[user] ||= BestMatchHash.sum(@ownerships.select{|o| o.user == user}.map{|o| [o.date, o.units]})
+    @user_matchers[user] ||= BestMatchHash.sum(@ownerships.select{|o| o.user_id == user.id}.map{|o| [o.date, o.units]})
     @user_matchers[user][date]
   end
 
