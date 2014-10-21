@@ -23,7 +23,11 @@ class Position < ActiveRecord::Base
   }
 
   def opening_activity
-    activities.opening.first
+    activities.find(&:opening?)
+  end
+
+  def opening(attr, *args)
+    opening_activity.send(attr, *args)
   end
 
   def long?
@@ -32,10 +36,6 @@ class Position < ActiveRecord::Base
 
   def short?
     opening(:shares) < 0
-  end
-
-  def opening(attr, *args)
-    opening_activity.send(attr, *args)
   end
 
   def outstanding_shares
