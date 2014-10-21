@@ -15,6 +15,8 @@ describe GenerateOwnershipsJob do
         FactoryGirl.create model
       end
 
+      allow(PortfolioPresenter).to receive(:all) { double(value_at: 1, cashflow_at: 0) }
+
       GenerateOwnershipsJob.perform
     end
   end
