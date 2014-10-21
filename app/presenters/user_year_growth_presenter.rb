@@ -30,21 +30,13 @@ class UserYearGrowthPresenter
     @reinvestments.select{|c| c.date <= at}
   end
 
-  def gross_gains(at: end_date)
-    gross_value(at: at) - contributions(at: at).sum(&:amount) - reinvestments(at: at).sum(&:amount) - starting_value
-  end
-
-  def gross_value(at: end_date)
-    @ownership.user_percent(@user, at) * @portfolio.value_at(at) + booked_fee(at: at)
-  end
-
   def benchmark_value(at: end_date)
     shares = benchmark_shares_matcher[at]
     return 0 if shares == 0
     shares * benchmark_price_matcher[at]
   end
 
-  def unbooked_fee(at: end_date)
+  def estimated_fee(at: end_date)
     (gross_value(at: at) - benchmark_value(at: at)) / 2
   end
 
@@ -52,17 +44,32 @@ class UserYearGrowthPresenter
     Transfer.fees.where(date: at, from_user: @user).sum(:amount)
   end
 
+  def unbooked_fee(at: end_date)
+    estimated_fee(at: end_date) - booked_fee(at: end_date)
+  end
+
   def value(at: end_date)
-    gross_value(at: at) - unbooked_fee(at: at)
+    @ownership.user_percent(@user, at) * @portfolio.value_at(at)
+  end
+
+  def gross_value(at: end_date)
+    value(at: at) + booked_fee(at: at)
+  end
+
+  def gross_gains(at: end_date)
+    gross_value(at: at) - contributions(at: at).sum(&:amount) - reinvestments(at: at).sum(&:amount) - starting_value
+  end
+
+  def tentative_value(at: end_date)
+    gross_value(at: at) - estimated_fee(at: at)
   end
 
   def starting_value
-    gross_value(at: start_date)
+    value(at: start_date)
   end
 
-  def closed?
-    # FIXME
-    booked_fee != 0
+  def tentative?(at: end_date)
+    unbooked_fee(at: at).abs > 0.01
   end
 
   private

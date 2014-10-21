@@ -15,12 +15,12 @@
         %td= number_to_currency growth.contributions.sum(&:amount)
         %td= number_to_currency growth.reinvestments.sum(&:amount)
         %td= number_to_currency growth.gross_gains
-        - if growth.closed?
+        - if growth.tentative?
+          %td.tentative= number_to_currency -growth.estimated_fee
+          %th.tentative= number_to_currency growth.tentative_value
+        - else
           %td= number_to_currency -growth.booked_fee
           %th= number_to_currency growth.value
-        - else
-          %td.tentative= number_to_currency -growth.unbooked_fee
-          %th.tentative= number_to_currency growth.value
   %tfoot
     %tr
       %th
@@ -28,9 +28,9 @@
       %th= number_to_currency @growths.map(&:contributions).flatten.sum(&:amount)
       %th= number_to_currency @growths.map(&:reinvestments).flatten.sum(&:amount)
       %th= number_to_currency @growths.sum(&:gross_gains)
-      - if @growths.all?(&:closed?)
+      - if @growths.all?(&:tentative?)
+        %th.tentative= number_to_currency -@growths.sum(&:estimated_fee)
+        %th.tentative= number_to_currency @growths.sum(&:tentative_value)
+      - else
         %td= number_to_currency -@growths.sum(&:booked_fee)
         %th= number_to_currency @growths.sum(&:value)
-      - else
-        %th.tentative= number_to_currency -@growths.sum(&:unbooked_fee)
-        %th.tentative= number_to_currency @growths.sum(&:value)
