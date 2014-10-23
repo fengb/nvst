@@ -33,11 +33,12 @@ gem 'jquery-rails'
 group :development, :test do
   gem 'dotenv-deployment'
   gem 'dotenv-rails'
-  gem 'big_decimal_helper'
   gem 'rspec-rails'
   gem 'factory_girl_rails'
   gem 'ffaker'
   gem 'pry'
+  gem 'big_decimal_helper'
+  gem 'did_you_mean'
 end
 
 group :development do
