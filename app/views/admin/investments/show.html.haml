@@ -10,9 +10,7 @@
 
   %dt Price
   %dd
-    = link_to 'table', [:prices, @investment]
-    %div#price-wrapper
-    :javascript
-      $.getJSON('#{url_for([:prices, @investment])}', function(data){
-        new InvestmentGraph('#price-wrapper', 'adjusted_close').add('#{@investment.symbol}', data)
-      })
+    = link_to 'table', prices_admin_investment_path(@investment)
+    %div#price-wrapper{'data-mutiny-graph' => {url:   prices_admin_investment_path(@investment, format: 'json'),
+                                               xAxis: 'date',
+                                               yAxis: 'adjusted_close'}.to_json}
