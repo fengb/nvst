@@ -26,4 +26,12 @@ RailsAdmin.config do |config|
     'Tax Docs'     => '/admin/tax_docs',
     'Summaries'    => '/admin/summaries',
   }
+
+  config.models_pool.each do |model|
+    config.model "#{model}" do
+      list do
+        exclude_fields :created_at, :updated_at
+      end
+    end
+  end
 end
