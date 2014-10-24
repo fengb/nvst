@@ -28,8 +28,9 @@ describe Position do
   end
 
   describe '.open' do
-    let!(:activity1) { FactoryGirl.create(:activity, shares: 1) }
-    let!(:position)  { activity1.position }
+    let!(:position) do
+      FactoryGirl.create(:position, opening_activity: {shares: 1})
+    end
 
     context 'open position' do
       it 'excludes positions opened at later date' do
@@ -74,17 +75,16 @@ describe Position do
 
   context 'gains' do
     context 'long position' do
-      let!(:opening_activity) do
-        FactoryGirl.create(:activity, price:  100,
-                                      shares: 100)
+      subject do
+        FactoryGirl.create(:position, opening_activity: {price:  100,
+                                                         shares: 100})
       end
       let!(:closing_activity) do
-        FactoryGirl.create(:activity, position: opening_activity.position,
+        FactoryGirl.create(:activity, position: subject,
                                       date:     Date.current,
                                       price:    110,
                                       shares:   -90)
       end
-      subject { opening_activity.position }
 
       it 'has realized_gain of (110-100) * 90 = 900' do
         expect(subject.realized_gain).to eq(900)
@@ -102,17 +102,16 @@ describe Position do
     end
 
     context 'short position' do
-      let!(:opening_activity) do
-        FactoryGirl.create(:activity, price:   100,
-                                      shares: -100)
+      subject do
+        FactoryGirl.create(:position, opening_activity: {price:  100,
+                                                         shares: -100})
       end
       let!(:closing_activity) do
-        FactoryGirl.create(:activity, position: opening_activity.position,
+        FactoryGirl.create(:activity, position: subject,
                                       date:     Date.current,
                                       price:    90,
                                       shares:   90)
       end
-      subject { opening_activity.position }
 
       it 'has realized_gain of (100-90) * 90 = 900' do
         expect(subject.realized_gain).to eq(900)
