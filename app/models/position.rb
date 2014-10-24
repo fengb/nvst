@@ -5,12 +5,9 @@ class Position < ActiveRecord::Base
 
   validates :investment, presence: true
 
-  scope :open, ->(during: Date.current, direction: nil){
-    op = case direction.to_s
-           when 'short' then '<'
-           when 'long'  then '>'
-           else              '!='
-         end
+  scope :long,  ->{joins(:activities).merge(Activity.opening.buy)}
+  scope :short, ->{joins(:activities).merge(Activity.opening.sell)}
+  scope :open, ->(during: Date.current) do
     join_sql = SqlUtil.sanitize <<-SQL, during.to_date
       LEFT JOIN(SELECT position_id
                      , SUM(shares) AS outstanding_shares
@@ -19,8 +16,8 @@ class Position < ActiveRecord::Base
                  GROUP BY position_id) t
              ON t.position_id=positions.id
     SQL
-    joins(join_sql).where("t.outstanding_shares #{op} 0")
-  }
+    joins(join_sql).where("t.outstanding_shares != 0")
+  end
 
   def opening_activity
     activities.find(&:opening?)
@@ -31,11 +28,11 @@ class Position < ActiveRecord::Base
   end
 
   def long?
-    opening(:shares) > 0
+    opening_activity.buy?
   end
 
   def short?
-    opening(:shares) < 0
+    opening_activity.sell?
   end
 
   def outstanding_shares

@@ -5,6 +5,10 @@ Mutiny.widgets.graph = {
       if (error) return console.warn(error);
 
       function drawData(){
+        if(data.length){
+          return data
+        }
+
         var drawData = []
         for(var name in data){
           var array = data[name]

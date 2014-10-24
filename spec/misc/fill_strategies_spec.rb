@@ -3,7 +3,7 @@ require 'spec_helper'
 
 describe FillStrategies do
   def position_for(data)
-    FactoryGirl.create(:activity, data).position
+    FactoryGirl.create(:position, opening_activity: data)
   end
 
   let(:positions) do

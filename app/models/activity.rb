@@ -17,6 +17,8 @@ class Activity < ActiveRecord::Base
   scope :tracked, ->{joins(position: :investment).where("investments.type != 'Investment::Cash'")}
   scope :opening, ->{where(is_opening: true)}
   scope :closing, ->{where(is_opening: false)}
+  scope :buy,  ->{where('shares > 0')}
+  scope :sell, ->{where('shares < 0')}
 
   def value
     -shares * adjusted_price
@@ -36,6 +38,14 @@ class Activity < ActiveRecord::Base
 
   def closing?
     !is_opening?
+  end
+
+  def buy?
+    shares > 0
+  end
+
+  def sell?
+    shares < 0
   end
 
   def adjusted_price(on: Date.current)
