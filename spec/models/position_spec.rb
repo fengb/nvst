@@ -1,6 +1,32 @@
 require 'spec_helper'
 
 describe Position do
+  context 'with opening buy activity' do
+    subject do
+      FactoryGirl.create(:position, opening_activity: {shares: 100})
+    end
+
+    it { is_expected.to be_long }
+    it { is_expected.to_not be_short }
+
+    it 'is found via Position.long' do
+      expect(Position.long).to include(subject)
+    end
+  end
+
+  context 'with opening sell activity' do
+    subject do
+      FactoryGirl.create(:position, opening_activity: {shares: -100})
+    end
+
+    it { is_expected.to be_short }
+    it { is_expected.to_not be_long }
+
+    it 'is found via Position.short' do
+      expect(Position.short).to include(subject)
+    end
+  end
+
   describe '.open' do
     let!(:activity1) { FactoryGirl.create(:activity, shares: 1) }
     let!(:position)  { activity1.position }
@@ -27,14 +53,6 @@ describe Position do
                                       date: position.opening(:date) + 1,
                                       shares: -0.5)
         expect(Position.open(during: position.opening(:date) + 10)).to eq([position])
-      end
-
-      it 'includes positions in the same direction' do
-        expect(Position.open(direction: :long)).to eq([position])
-      end
-
-      it 'excludes positions in the opposite direction' do
-        expect(Position.open(direction: :short)).to eq([])
       end
     end
 
