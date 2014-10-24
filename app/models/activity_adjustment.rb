@@ -11,7 +11,10 @@ class ActivityAdjustment < ActiveRecord::Base
   enumerize :reason, in: %w[fee split]
 
   def self.ratio(on: Date.current)
-    select{|adj| adj.date <= on}.map(&:ratio).inject(1, :*)
+    data = where('date <= ?', on).pluck(:numerator, :denominator)
+    data.inject(1) do |acc, (numerator, denominator)|
+      acc * Rational(numerator, denominator)
+    end
   end
 
   def ratio=(value)
