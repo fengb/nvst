@@ -2,7 +2,7 @@ FactoryGirl.define do
   factory :position do
     investment
 
-    ignore do
+    transient do
       opening_activity nil
     end
 
