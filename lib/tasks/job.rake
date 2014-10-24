@@ -1,7 +1,7 @@
 task :job => 'job:list'
 namespace 'job' do
   desc 'List all nvst jobs'
-  task :list do |t|
+  task :list => :environment do |t|
     Job.all.each do |name|
       puts "rake job:run[#{name}]"
     end
