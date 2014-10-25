@@ -6,9 +6,8 @@ class InvestmentDividend < ActiveRecord::Base
 
   default_scope ->{order(:ex_date)}
 
-  # FIXME: turn into a real relation
   def ex_previous_price
-    InvestmentHistoricalPrice.where('investment_id = ? AND date < ?', investment_id, ex_date).last
+    investment.historical_prices.previous_of(ex_date)
   end
 
   def percent

@@ -11,6 +11,10 @@ class InvestmentHistoricalPrice < ActiveRecord::Base
 
   scope :year_range, ->(end_date=Date.current) { where(date: (end_date - 365)..end_date) }
 
+  def self.previous_of(date)
+    where('date < ?', date).order('date DESC').first
+  end
+
   after_initialize do |record|
     record.adjustment ||= 1
   end

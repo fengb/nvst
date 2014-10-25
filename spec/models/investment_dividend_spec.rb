@@ -24,28 +24,27 @@ describe InvestmentDividend do
 
   describe '#ex_previous_price' do
     let(:match) { FactoryGirl.create(:investment_historical_price) }
+    subject { InvestmentDividend.create(investment: match.investment) }
+
     it 'is price on previous day' do
-      dividend = InvestmentDividend.create(ex_date: match.date + 1,
-                                           investment: match.investment)
-      expect(dividend.ex_previous_price).to eq(match)
+      subject.ex_date = match.date + 1
+      expect(subject.ex_previous_price).to eq(match)
     end
 
     it 'is price on latest date before today' do
-      dividend = InvestmentDividend.create(ex_date: match.date + 100,
-                                           investment: match.investment)
-      expect(dividend.ex_previous_price).to eq(match)
+      subject.ex_date = match.date + 100
+      expect(subject.ex_previous_price).to eq(match)
     end
 
     it 'does not match current date' do
-      dividend = InvestmentDividend.create(ex_date: match.date,
-                                           investment: match.investment)
-      expect(dividend.ex_previous_price).to be(nil)
+      subject.ex_date = match.date
+      expect(subject.ex_previous_price).to be(nil)
     end
 
     it 'does not match alternate investments' do
-      dividend = InvestmentDividend.create(ex_date: match.date + 1,
-                                           investment: FactoryGirl.create(:investment))
-      expect(dividend.ex_previous_price).to be(nil)
+      subject.ex_date = match.date + 1
+      subject.investment = FactoryGirl.create(:investment)
+      expect(subject.ex_previous_price).to be(nil)
     end
   end
 end
