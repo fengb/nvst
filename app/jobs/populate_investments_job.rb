@@ -4,7 +4,7 @@ require 'yahoo_finance'
 class PopulateInvestmentsJob
   def self.perform
     Investment::Stock.find_each do |investment|
-      self.new(investment).stock!
+      self.new(investment).populate!
     end
   end
 
@@ -20,53 +20,61 @@ class PopulateInvestmentsJob
     @investment = investment
   end
 
-  def stock!
+  def populate!
     ActiveRecord::Base.transaction do
-      historical_prices!
-      splits!
-      dividends!
+      populate_historical_prices!
+      populate_splits!
+      populate_dividends!
     end
   end
 
-  def historical_prices!
-    latest_date = @investment.historical_prices.maximum(:date) || Date.new(1900)
+  def populate_historical_prices!
+    latest_date = historical_prices.maximum(:date) || Date.new(1900)
     return if latest_date + 1 >= Date.current
 
-    YahooFinance.historical_quotes(@investment.symbol, start_date: latest_date + 1).reverse.each do |row|
-      InvestmentHistoricalPrice.create!(investment: @investment,
-                                        date:       row.trade_date,
-                                        high:       row.high,
-                                        low:        row.low,
-                                        close:      row.close)
+    YahooFinance.historical_quotes(@investment.symbol, start_date: latest_date + 1).each do |row|
+      historical_prices.create!(date:  row.trade_date,
+                                high:  row.high,
+                                low:   row.low,
+                                close: row.close)
     end
   end
 
-  def splits!
+  def populate_splits!
     latest_date = @investment.splits.maximum(:date) || Date.new(1900)
     return if latest_date + 1 >= Date.current
 
-    YahooFinance.splits(@investment.symbol).each do |row|
-      return if row.date <= latest_date
-
-      split = InvestmentSplit.create!(investment: @investment,
-                                      date:       row.date,
-                                      before:     row.before,
-                                      after:      row.after)
+    YahooFinance.splits(@investment.symbol, start_date: latest_date + 1).each do |row|
+      split = splits.create!(date:   row.date,
+                             before: row.before,
+                             after:  row.after)
       adjust_prices_by(split)
     end
   end
 
-  def dividends!
+  def populate_dividends!
     latest_date = @investment.dividends.maximum(:ex_date) || Date.new(1900)
     return if latest_date + 1 >= Date.current
 
     YahooFinance.dividends(@investment.symbol, start_date: latest_date + 1).each do |row|
+      # Yahoo dividends are adjusted so we need to unadjust them
       amount = row.yield.to_d * split_unadjustment(row.date)
-      dividend = InvestmentDividend.create!(investment: @investment,
-                                            ex_date:    row.date,
-                                            amount:     amount.round(2))
+      dividend = dividends.create!(ex_date: row.date,
+                                   amount:  amount.round(2))
       adjust_prices_by(dividend)
     end
+  end
+
+  def historical_prices
+    @investment.historical_prices
+  end
+
+  def dividends
+    @investment.dividends
+  end
+
+  def splits
+    @investment.splits
   end
 
   def split_unadjustment(date)
