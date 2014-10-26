@@ -11,10 +11,6 @@ class InvestmentSplit < ActiveRecord::Base
     "split #{after}:#{before}"
   end
 
-  def self.price_unadjustment(on: Date.current)
-    order('date').where('date >= ?', on).map(&:shares_adjustment).inject(1, :*)
-  end
-
   def shares_adjustment
     1 / price_adjustment
   end

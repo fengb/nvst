@@ -58,7 +58,7 @@ class PopulateInvestmentsJob
 
     YahooFinance.dividends(@investment.symbol, start_date: latest_date + 1).each do |row|
       # Yahoo dividends are adjusted so we need to unadjust them
-      amount = row.yield.to_d * split_unadjustment(row.date)
+      amount = row.yield.to_d * split_unadjustment(row.date.to_date)
       dividend = dividends.create!(ex_date: row.date,
                                    amount:  amount.round(2))
       adjust_prices_by(dividend)
@@ -78,7 +78,7 @@ class PopulateInvestmentsJob
   end
 
   def split_unadjustment(date)
-    @investment.splits.price_unadjustment(on: date)
+    splits.select{|s| s.date >= date}.map(&:shares_adjustment).inject(1, :*)
   end
 
   private

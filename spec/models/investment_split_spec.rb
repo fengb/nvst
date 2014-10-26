@@ -15,18 +15,6 @@ describe InvestmentSplit do
     specify '#price_adjustment compensates for drop in price' do
       expect(subject.shares_adjustment * 50).to eq(100)
     end
-
-    describe '.price_unadjustment' do
-      before { subject.save }
-
-      it 'unadjusts when event happens earlier than split' do
-        expect(InvestmentSplit.price_unadjustment(on: subject.date - 1)).to eq(2)
-      end
-
-      it 'does nothing when event happens later than split' do
-        expect(InvestmentSplit.price_unadjustment(on: subject.date + 1)).to eq(1)
-      end
-    end
   end
 
   describe '#generate_activity_for!' do
