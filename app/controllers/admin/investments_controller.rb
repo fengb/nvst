@@ -9,7 +9,8 @@ class Admin
       end_date = params[:end_date] ? Date.parse(params[:end_date]) : Date.current
       start_date = params[:start_date] ? Date.parse(params[:start_date]) : end_date - 365
 
-      @prices = InvestmentHistoricalPricePresenter.where(investment: @investment, date: start_date..end_date)
+      @prices = InvestmentHistoricalPrice.where(investment: @investment, date: start_date..end_date).order('date')
+      @prices = InvestmentHistoricalPricePresenter.wrap_all(@prices)
 
       respond_to do |format|
         format.html

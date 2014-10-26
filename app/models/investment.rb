@@ -13,17 +13,16 @@ class Investment < ActiveRecord::Base
   def price_matcher(start_date=nil)
     if start_date
       # start_date may not have a price entry.  We need to backtrack to find the real start date.
-      start_date = historical_prices.where('date <= ?', start_date).last.date
-      prices = historical_prices.where('date >= ?', start_date)
+      prices = historical_prices.where('date >= ?', start_date - 7)
     else
       prices = historical_prices
     end
 
-    BestMatchHash.new(prices.pluck('date', 'close'))
+    BestMatchHash.new(prices.order('date').pluck('date', 'close'))
   end
 
   def current_price
-    historical_prices.last.close
+    historical_prices.order('date DESC').first.close
   end
 
   def year_high

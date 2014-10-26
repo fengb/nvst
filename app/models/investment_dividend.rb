@@ -4,8 +4,6 @@ class InvestmentDividend < ActiveRecord::Base
 
   validates :ex_date, presence: true, uniqueness: {scope: :investment}
 
-  default_scope ->{order(:ex_date)}
-
   def to_s
     "dividend #{amount}"
   end

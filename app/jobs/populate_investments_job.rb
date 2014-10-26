@@ -29,7 +29,7 @@ class PopulateInvestmentsJob
   end
 
   def historical_prices!
-    latest_date = InvestmentHistoricalPrice.where(investment: @investment).last.try(:date) || Date.new(1900)
+    latest_date = @investment.historical_prices.maximum(:date) || Date.new(1900)
     return if latest_date + 1 >= Date.current
 
     YahooFinance.historical_quotes(@investment.symbol, start_date: latest_date + 1).reverse.each do |row|
@@ -42,7 +42,7 @@ class PopulateInvestmentsJob
   end
 
   def splits!
-    latest_date = InvestmentSplit.where(investment: @investment).last.try(:date) || Date.new(1900)
+    latest_date = @investment.splits.maximum(:date) || Date.new(1900)
     return if latest_date + 1 >= Date.current
 
     YahooFinance.splits(@investment.symbol).each do |row|
@@ -57,7 +57,7 @@ class PopulateInvestmentsJob
   end
 
   def dividends!
-    latest_date = InvestmentDividend.where(investment: @investment).last.try(:ex_date) || Date.new(1900)
+    latest_date = @investment.dividends.maximum(:ex_date) || Date.new(1900)
     return if latest_date + 1 >= Date.current
 
     YahooFinance.dividends(@investment.symbol, start_date: latest_date + 1).each do |row|
@@ -70,7 +70,7 @@ class PopulateInvestmentsJob
   end
 
   def split_unadjustment(date)
-    InvestmentSplit.where(investment: @investment).price_unadjustment(on: date)
+    @investment.splits.price_unadjustment(on: date)
   end
 
   private
