@@ -2,7 +2,8 @@
 class InvestmentDividend < ActiveRecord::Base
   belongs_to :investment
 
-  validates :ex_date, presence: true, uniqueness: {scope: :investment}
+  validates :ex_date, presence: true
+  validates :amount,  presence: true
 
   def to_s
     "dividend #{amount}"

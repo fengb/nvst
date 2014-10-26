@@ -3,7 +3,9 @@ class InvestmentSplit < ActiveRecord::Base
   belongs_to :investment
   belongs_to :activity_adjustment
 
-  validates :date, presence: true, uniqueness: {scope: :investment}
+  validates :date,   presence: true
+  validates :before, presence: true
+  validates :after,  presence: true
 
   def to_s
     "split #{after}:#{before}"

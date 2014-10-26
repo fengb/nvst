@@ -1,7 +1,7 @@
 class InvestmentHistoricalPrice < ActiveRecord::Base
   belongs_to :investment
 
-  validates :date,       presence: true, uniqueness: {scope: :investment}
+  validates :date,       presence: true
   validates :close,      presence: true
   validates :high,       presence: true
   validates :low,        presence: true

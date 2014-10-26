@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141015113426) do
+ActiveRecord::Schema.define(version: 20141026024412) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -204,6 +204,7 @@ ActiveRecord::Schema.define(version: 20141015113426) do
     t.date    "ex_date"
     t.decimal "amount",        precision: 12, scale: 4
     t.index ["ex_date"], :name => "index_investment_dividends_on_ex_date"
+    t.index ["investment_id", "ex_date"], :name => "index_investment_dividends_on_investment_id_and_ex_date", :unique => true
     t.index ["investment_id"], :name => "fk__investment_dividends_investment_id"
     t.foreign_key ["investment_id"], "investments", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_investment_dividends_investment_id"
   end
@@ -216,6 +217,7 @@ ActiveRecord::Schema.define(version: 20141015113426) do
     t.decimal "close",         precision: 12, scale: 4
     t.float   "adjustment"
     t.index ["date"], :name => "index_investment_historical_prices_on_date"
+    t.index ["investment_id", "date"], :name => "index_investment_historical_prices_on_investment_id_and_date", :unique => true
     t.index ["investment_id"], :name => "fk__investment_historical_prices_investment_id"
     t.foreign_key ["investment_id"], "investments", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_investment_historical_prices_investment_id"
   end
@@ -228,6 +230,7 @@ ActiveRecord::Schema.define(version: 20141015113426) do
     t.integer "activity_adjustment_id"
     t.index ["activity_adjustment_id"], :name => "fk__investment_splits_transaction_adjustment_id"
     t.index ["date"], :name => "index_investment_splits_on_date"
+    t.index ["investment_id", "date"], :name => "index_investment_splits_on_investment_id_and_date", :unique => true
     t.index ["investment_id"], :name => "fk__investment_splits_investment_id"
     t.foreign_key ["activity_adjustment_id"], "activity_adjustments", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_investment_splits_transaction_adjustment_id"
     t.foreign_key ["investment_id"], "investments", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_investment_splits_investment_id"
