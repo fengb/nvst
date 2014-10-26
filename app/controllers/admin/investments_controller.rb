@@ -8,7 +8,8 @@ class Admin
     def prices
       end_date = params[:end_date] ? Date.parse(params[:end_date]) : Date.current
       start_date = params[:start_date] ? Date.parse(params[:start_date]) : end_date - 365
-      @prices = @investment.historical_prices.where(date: start_date..end_date).reverse_order
+
+      @prices = InvestmentHistoricalPricePresenter.where(investment: @investment, date: start_date..end_date)
 
       respond_to do |format|
         format.html

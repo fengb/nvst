@@ -6,8 +6,16 @@ class InvestmentDividend < ActiveRecord::Base
 
   default_scope ->{order(:ex_date)}
 
+  def to_s
+    "dividend #{amount}"
+  end
+
   def ex_previous_price
     investment.historical_prices.previous_of(ex_date)
+  end
+
+  def date
+    ex_date
   end
 
   def percent
