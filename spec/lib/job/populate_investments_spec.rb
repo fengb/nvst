@@ -1,9 +1,12 @@
 require 'spec_helper'
+require 'job/populate_investments'
 
-describe PopulateInvestmentsJob do
+describe Job::PopulateInvestments do
   describe '#split_unadjustment' do
-    subject { PopulateInvestmentsJob.new(FactoryGirl.build :investment) }
+    let(:investment) { FactoryGirl.build(:investment) }
     let(:split) { FactoryGirl.build :investment_split, after: 2, before: 1 }
+    subject { Job::PopulateInvestments.new(investment) }
+
     before do
       allow(subject).to receive(:splits) { [split] }
     end
