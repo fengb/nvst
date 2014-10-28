@@ -8,13 +8,7 @@ module Clockwork
 
   handler do |job_name|
     pid = fork do
-      # postload Rails
-      require_relative 'application'
-      Nvst::Application.configure do
-        config.eager_load = false
-        initialize!
-      end
-
+      require 'job'
       Job.run(job_name)
     end
 
