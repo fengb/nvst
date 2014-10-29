@@ -8,7 +8,7 @@ module Clockwork
 
   handler do |job_name|
     pid = fork do
-      require 'job'
+      require_relative '../lib/job'
       Job.run(job_name)
     end
 

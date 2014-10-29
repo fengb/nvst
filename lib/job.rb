@@ -18,7 +18,7 @@ module Job
 
   def self.initialize_app!
     unless defined?(Nvst::Application) && Nvst::Application.initialized?
-      require 'config/application'
+      require_relative '../config/application'
       Nvst::Application.configure do
         config.eager_load = false
         initialize!
