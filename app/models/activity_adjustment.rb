@@ -12,8 +12,8 @@ class ActivityAdjustment < ActiveRecord::Base
 
   def self.ratio(on: Date.current)
     data = where('date <= ?', on).pluck(:numerator, :denominator)
-    data.inject(1) do |acc, (numerator, denominator)|
-      acc * Rational(numerator, denominator)
+    data.inject(1) do |acc, args|
+      acc * Rational(*args)
     end
   end
 
