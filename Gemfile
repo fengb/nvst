@@ -38,7 +38,7 @@ group :development, :test do
   gem 'ffaker'
   gem 'pry'
   gem 'big_decimal_helper'
-  gem 'did_you_mean'
+  gem 'did_you_mean', platforms: :mri
 end
 
 group :development do
