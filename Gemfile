@@ -42,7 +42,7 @@ group :development, :test do
 end
 
 group :development do
-  gem 'better_errors'
+  gem 'better_errors', platforms: :mri
   gem 'binding_of_caller'
   gem 'spring'
   gem 'spring-commands-rspec'
