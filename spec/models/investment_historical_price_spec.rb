@@ -26,7 +26,7 @@ describe InvestmentHistoricalPrice do
   end
 
   describe '#adjusted' do
-    let(:adjustment) { 105 }
+    let(:adjustment) { 250 }
     subject { FactoryGirl.create(:investment_historical_price, adjustment: adjustment) }
 
     it 'adjusts number fields based on adjustment value' do
