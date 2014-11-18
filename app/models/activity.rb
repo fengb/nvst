@@ -49,7 +49,6 @@ class Activity < ActiveRecord::Base
   end
 
   def adjusted_price(on: Date.current)
-    ratio = adjustments.ratio(on: on)
-    price * ratio.numerator / ratio.denominator
+    price * adjustments.ratio(on: on)
   end
 end
