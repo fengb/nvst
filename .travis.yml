@@ -1,7 +1,6 @@
 language: ruby
 script: bundle exec rake
-# Rubygems doesn't handle threading well: https://github.com/rubygems/rubygems/pull/1005
-bundler_args: --without=development #--jobs=4
+bundler_args: --without=development --jobs=4
 cache: bundler
 before_script:
   - createuser -U postgres -s nvst
