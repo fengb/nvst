@@ -54,13 +54,15 @@ module Job
     end
 
     def populate_dividends!
+      # FIXME: better source for dividend data
       latest_date = @investment.dividends.maximum(:ex_date) || Date.new(1900)
       return if latest_date + 1 >= Date.current
 
-      YahooFinance.dividends(@investment.symbol, start_date: latest_date + 1).each do |row|
+      YahooFinance.historical_quotes(@investment.symbol, period: :dividends_only, start_date: latest_date + 1).each do |row|
         # Yahoo dividends are adjusted so we need to unadjust them
-        amount = row.yield.to_d * split_unadjustment(row.date.to_date)
-        dividend = dividends.create!(ex_date: row.date,
+        date = row.dividend_pay_date.to_date
+        amount = row.dividend_yield.to_d * split_unadjustment(date)
+        dividend = dividends.create!(ex_date: date,
                                      amount:  amount.round(2))
         adjust_prices_by(dividend)
       end

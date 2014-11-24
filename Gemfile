@@ -8,7 +8,7 @@ gem 'puma', require: false
 gem 'clockwork', require: false
 
 # Jobs
-gem 'yahoo-finance', require: false, git: 'https://github.com/fengb/yahoo-finance.git', branch: 'master'
+gem 'yahoo-finance', require: false
 gem 'git', require: false
 
 # Model
