@@ -22,7 +22,7 @@ module Job
       end
 
       def objects_needing_processing
-        classes_needing_processing.map(&:all).flatten.sort_by do |o|
+        classes_needing_processing.flat_map(&:all).sort_by do |o|
           [o.date, priority(o), o.try(:created_at) || Date.current]
         end
       end

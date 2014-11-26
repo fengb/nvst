@@ -25,8 +25,8 @@
     %tr
       %th
       %th= number_to_currency @growths.sum(&:starting_value)
-      %th= number_to_currency @growths.map(&:contributions).flatten.sum(&:amount)
-      %th= number_to_currency @growths.map(&:reinvestments).flatten.sum(&:amount)
+      %th= number_to_currency @growths.flat_map(&:contributions).sum(&:amount)
+      %th= number_to_currency @growths.flat_map(&:reinvestments).sum(&:amount)
       %th= number_to_currency @growths.sum(&:gross_gains)
       - if @growths.all?(&:tentative?)
         %th.tentative= number_to_currency -@growths.sum(&:estimated_fee)
