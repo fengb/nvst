@@ -5,7 +5,7 @@ set -o pipefail
 
 source "$( dirname "${BASH_SOURCE[0]}" )"/nvst
 
-mkdir -p log tmp
+mkdir -p log tmp/pids
 gem install bundler --conservative
 bundle check || bundle install
 bin/rake db:setup

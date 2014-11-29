@@ -1,9 +1,0 @@
-#!/bin/bash
-
-set -o errexit
-set -o pipefail
-
-source "$( dirname "${BASH_SOURCE[0]}" )"/nvst
-
-server=${NVST_SERVER:?}
-eye load "config/eye/$server.eye"

@@ -1,6 +1,6 @@
 require_relative 'nvst'
 
-Eye::Nvst.web 'unicorn' do
+Eye::Nvst.process 'unicorn' do
   pid_file 'tmp/pids/unicorn.pid'
   stdall 'log/unicorn.log'
   start_command 'bin/nvst bundle exec unicorn -Dc config/unicorn.rb -E production'

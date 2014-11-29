@@ -1,5 +1,5 @@
 module Eye::Nvst
-  def self.start_with(web)
+  def self.start_with(*process_names)
     root = File.expand_path('../../..', __FILE__)
 
     Eye.config do
@@ -7,12 +7,10 @@ module Eye::Nvst
     end
 
     Eye.application 'nvst' do
-      working_dir root
+      self.working_dir root
 
-      process web, &Eye::Nvst.webs[web]
-
-      Eye::Nvst.processes.each do |name, block|
-        process name, &block
+      process_names.each do |process_name|
+        process process_name, &Eye::Nvst.processes[process_name]
       end
     end
   end
@@ -21,15 +19,7 @@ module Eye::Nvst
     processes[name] = block
   end
 
-  def self.web(name, &block)
-    webs[name] = block
-  end
-
   def self.processes
     @processes ||= {}
-  end
-
-  def self.webs
-    @webs ||= {}
   end
 end
