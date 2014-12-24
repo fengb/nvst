@@ -1,6 +1,4 @@
 class Schwab
-  DATE_FORMAT = '%m/%d/%Y'
-
   EVENTS = {
     'Qualified Dividend' => 'dividend - qualified',
     'Cash Dividend'      => 'dividend - tax-exempt',
@@ -9,46 +7,46 @@ class Schwab
   }
 
   def self.process!(csv)
-    directives = parse(csv)
+    transactions = Transaction.parse(csv)
     investments_lookup = Investment.lookup_by_symbol
     ActiveRecord::Base.transaction do
-      process_trades!(directives, investments_lookup)
-      process_events!(directives, investments_lookup)
+      process_trades!(transactions, investments_lookup)
+      process_events!(transactions, investments_lookup)
     end
   end
 
-  def self.process_trades!(directives, investments_lookup)
-    trade_directives = directives.select { |d| d[:action] == 'Buy' || d[:action] == 'Sell' }
+  def self.process_trades!(transactions, investments_lookup)
+    trade_transactions = transactions.select { |d| d[:action] == 'Buy' || d[:action] == 'Sell' }
 
-    start_date = trade_directives.last[:date]
+    start_date = trade_transactions.last.date
     trades = Trade.where('date >= ?', start_date).includes(:investment)
 
-    trade_data = trade_directives.map do |directive|
-      direction = directive[:action] == 'Buy' ? 1 : -1
+    trade_data = trade_transactions.map do |transaction|
+      direction = transaction.action == 'Buy' ? 1 : -1
       data = {
-        date:       directive[:date],
-        investment: investments_lookup[directive[:symbol]],
-        shares:     direction * directive[:quantity],
-        price:      directive[:price],
-        net_amount: directive[:amount],
+        date:       transaction.date,
+        investment: investments_lookup[transaction.symbol],
+        shares:     direction * transaction.quantity,
+        price:      transaction.price,
+        net_amount: transaction.amount,
       }
     end
 
     Trade.create! missing(trades, trade_data)
   end
 
-  def self.process_events!(directives, investments_lookup)
-    event_directives = directives.select { |d| EVENTS.has_key?(d[:action]) }
+  def self.process_events!(transactions, investments_lookup)
+    event_transactions = transactions.select { |d| EVENTS.has_key?(d[:action]) }
 
-    start_date = event_directives.last[:date]
+    start_date = event_transactions.last.date
     events = Event.where('date >= ?', start_date).includes(:src_investment)
 
-    event_data = event_directives.map do |directive|
+    event_data = event_transactions.map do |transaction|
       data = {
-        date:           directive[:date],
-        src_investment: directive[:symbol] ? investments_lookup[directive[:symbol]] : Investment::Cash.default,
-        amount:         directive[:amount],
-        category:       EVENTS[directive[:action]],
+        date:           transaction.date,
+        src_investment: transaction.symbol ? investments_lookup[transaction.symbol] : Investment::Cash.default,
+        amount:         transaction.amount,
+        category:       EVENTS[transaction.action],
       }
     end
 
@@ -65,40 +63,84 @@ class Schwab
     end
   end
 
-  def self.parse(csv)
-    [].tap do |array|
-      CSV.parse(csv) do |row|
-        next if row[0] !~ /^[0-9]/
+  class Transaction
+    attr_reader :raw
 
-        array << hash = {
-          date:        parse_string(row[0]),
-          action:      parse_string(row[1]),
-          symbol:      parse_string(row[2]),
-          description: parse_string(row[3]),
-          quantity:    parse_number(row[4]),
-          price:       parse_number(row[5]),
-          fees:        parse_number(row[6]),
-          amount:      parse_number(row[7])
-        }
+    def self.parse(csv)
+      [].tap do |array|
+        CSV.parse(csv) do |row|
+          next if row[0] !~ /^[0-9]/
 
-        if hash[:date] =~ /as of/
-          date, as_of = hash[:date].split('as of')
-          hash[:date] = Date.strptime(date.strip, DATE_FORMAT)
-          hash[:as_of] = Date.strptime(as_of.strip, DATE_FORMAT)
-        else
-          hash[:date] = Date.strptime(hash[:date], DATE_FORMAT)
+          array << Transaction.new(row)
         end
       end
     end
-  end
 
-  def self.parse_string(snippet)
-    snippet = snippet.strip
-    snippet.empty? ? nil : snippet
-  end
+    def initialize(row)
+      @raw = {
+        date:        row[0],
+        action:      row[1],
+        symbol:      row[2],
+        description: row[3],
+        quantity:    row[4],
+        price:       row[5],
+        fees:        row[6],
+        amount:      row[7],
+      }
+    end
 
-  def self.parse_number(snippet)
-    snippet = parse_string(snippet)
-    snippet && BigDecimal(snippet.sub('$', ''))
+    def date
+      @date ||= as_date(raw[:date])
+    end
+
+    def as_of
+      @as_of ||= as_date(raw[:date].split('as of')[1])
+    end
+
+    def action
+      @action ||= as_string(raw[:action])
+    end
+
+    def symbol
+      @symbol ||= as_string(raw[:symbol])
+    end
+
+    def description
+      @description ||= as_string(raw[:description])
+    end
+
+    def quantity
+      @quantity ||= as_number(raw[:quantity])
+    end
+
+    def price
+      @price ||= as_number(raw[:price])
+    end
+
+    def fees
+      @fees ||= as_number(raw[:fees])
+    end
+
+    def amount
+      @amount ||= as_number(raw[:amount])
+    end
+
+    private
+
+    def as_date(snippet)
+      return if snippet.nil?
+      snippet = as_string(snippet)
+      Date.strptime(snippet, '%m/%d/%Y')
+    end
+
+    def as_string(snippet)
+      snippet = snippet.strip
+      snippet.empty? ? nil : snippet
+    end
+
+    def as_number(snippet)
+      snippet = as_string(snippet)
+      snippet && BigDecimal(snippet.sub('$', ''))
+    end
   end
 end
