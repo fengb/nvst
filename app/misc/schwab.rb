@@ -1,6 +1,50 @@
 class Schwab
   DATE_FORMAT = '%m/%d/%Y'
 
+  EVENTS = {
+    'Qualified Dividend' => 'dividend - qualified',
+    'Cash Dividend'      => 'dividend - tax-exempt',
+    'Bank Interest'      => 'interest',
+    'Margin Interest'    => 'interest - margin',
+  }
+
+  def self.process!(string)
+    directives = parse(string)
+    investments_lookup = Investment.lookup_by_symbol
+    process_trades!(directives, investments_lookup)
+    #process_events!(directives, investments_lookup)
+  end
+
+  def self.process_trades!(directives, investments_lookup)
+    trade_directives = directives.select { |d| d[:action] == 'Buy' || d[:action] == 'Sell' }
+
+    start_date = trade_directives.last[:date]
+    trades = Trade.where('date >= ?', start_date).includes(:investment)
+
+    trade_data = trade_directives.map do |directive|
+      direction = directive[:action] == 'Buy' ? 1 : -1
+      data = {
+        date:       directive[:date],
+        investment: investments_lookup[directive[:symbol]],
+        shares:     direction * directive[:quantity],
+        price:      directive[:price],
+        net_amount: directive[:amount]
+      }
+    end
+
+    missing(trades, trade_data)
+  end
+
+  def self.missing(elements, searches)
+    searches.select do |search|
+      keys = search.keys
+      match = elements.find do |element|
+        search.values_at(*keys) == keys.map{|k| element.send(k)}
+      end
+      match.nil?
+    end
+  end
+
   def self.parse(string)
     [].tap do |array|
       CSV.parse(string) do |row|
