@@ -1,7 +1,34 @@
 require 'spec_helper'
 
 
-describe Investment do
+RSpec.describe Investment, type: :model do
+  describe '.lookup_by_symbol' do
+    let!(:investments) do
+      [ FactoryGirl.create(:cash, symbol: 'USD'),
+        FactoryGirl.create(:cash, symbol: 'CAD'),
+      ]
+    end
+
+    it 'uses symbols as keys' do
+      lookup = Investment.lookup_by_symbol
+      expect(lookup).to include(
+        'USD' => investments[0],
+        'CAD' => investments[1],
+      )
+    end
+
+    it 'uses past_symbols as keys' do
+      investments[0].update!(past_symbols: ['AUD', 'GBP'])
+      lookup = Investment.lookup_by_symbol
+      expect(lookup).to include(
+        'USD' => investments[0],
+        'AUD' => investments[0],
+        'GBP' => investments[0],
+        'CAD' => investments[1],
+      )
+    end
+  end
+
   describe 'many prices' do
     subject { FactoryGirl.create :cash }
 

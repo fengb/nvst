@@ -13,6 +13,9 @@ class Investment < ActiveRecord::Base
   def self.lookup_by_symbol
     all.each_with_object({}) do |investment, lookup|
       lookup[investment.symbol] = investment
+      investment.past_symbols.each do |symbol|
+        lookup[symbol] = investment
+      end
     end
   end
 
