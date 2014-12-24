@@ -8,11 +8,13 @@ class Schwab
     'Margin Interest'    => 'interest - margin',
   }
 
-  def self.process!(string)
-    directives = parse(string)
+  def self.process!(csv)
+    directives = parse(csv)
     investments_lookup = Investment.lookup_by_symbol
-    process_trades!(directives, investments_lookup)
-    process_events!(directives, investments_lookup)
+    ActiveRecord::Base.transaction do
+      process_trades!(directives, investments_lookup)
+      process_events!(directives, investments_lookup)
+    end
   end
 
   def self.process_trades!(directives, investments_lookup)
@@ -32,7 +34,7 @@ class Schwab
       }
     end
 
-    missing(trades, trade_data)
+    Trade.create! missing(trades, trade_data)
   end
 
   def self.process_events!(directives, investments_lookup)
@@ -50,7 +52,7 @@ class Schwab
       }
     end
 
-    missing(events, event_data)
+    Event.create! missing(events, event_data)
   end
 
   def self.missing(elements, searches)
@@ -63,9 +65,9 @@ class Schwab
     end
   end
 
-  def self.parse(string)
+  def self.parse(csv)
     [].tap do |array|
-      CSV.parse(string) do |row|
+      CSV.parse(csv) do |row|
         next if row[0] !~ /^[0-9]/
 
         array << hash = {
