@@ -13,6 +13,6 @@
 
 //= require lib/d3
 //= require lib/dimple
-//= require lib/mutiny-core
+//= require mutiny/src/core
 
 //= require_tree .

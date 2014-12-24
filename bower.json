@@ -1,3 +1,6 @@
 {
-  "name": "nvst"
+  "name": "nvst",
+  "dependencies": {
+    "mutiny": "~1.0.1"
+  }
 }

@@ -1,4 +1,3 @@
-/*! Mutiny v1.0.0dev - http://mutinyjs.com/ */
 var Mutiny = window.Mutiny = {
   options: {
     initOnReady: true
@@ -42,18 +41,28 @@ var Mutiny = window.Mutiny = {
 
   util: {
     onReady: function(fn){
+      var onLoad;
+
       if(document.readyState === 'complete'){
         fn();
       } else if(document.addEventListener){
-        document.addEventListener('DOMContentLoaded', function wrapper(){
-          document.removeEventListener('DOMContentLoaded', wrapper);
+        onLoad = function(){
+          document.removeEventListener('DOMContentLoaded', onLoad);
+          window.removeEventListener('load', onLoad);
           fn();
-        });
+        };
+
+        document.addEventListener('DOMContentLoaded', onLoad);
+        window.addEventListener('load', onLoad);
       } else {
-        document.attachEvent('onreadystatechange', function wrapper(){
-          document.detachEvent('onreadystatechange', wrapper);
+        onLoad = function(){
+          document.detachEvent('onreadystatechange', onLoad);
+          window.detachEvent('onload', onLoad);
           fn();
-        });
+        };
+
+        document.attachEvent('onreadystatechange', onLoad);
+        window.attachEvent('onload', onLoad);
       }
     },
 
@@ -70,17 +79,17 @@ var Mutiny = window.Mutiny = {
 
     format: function(){
       var regexes = [];
-      for(var i=0; i < 10; i++) {
-        regexes[i] = new RegExp('\\{' + i + '\\}', 'gm');
-      }
-
-      return function() {
-        var s = arguments[0];
-        for(var i=1; i < arguments.length; i++) {
-          s = s.replace(regexes[i-1], arguments[i]);
+      return function(str){
+        for(var i=1; i < arguments.length; i++){
+          var r = i-1;
+          var regex = regexes[r];
+          if(!regex){
+            regex = regexes[r] = new RegExp('\\{' + r + '\\}', 'gm');
+          }
+          str = str.replace(regex, arguments[i]);
         }
 
-        return s;
+        return str;
       };
     }(),
 
@@ -92,17 +101,39 @@ var Mutiny = window.Mutiny = {
       return obj.length !== undefined;
     },
 
-    initWidget: function(instigator, widgetName, instanceOptions) {
+    initWidget: function(instigator, widgetName, rawInstanceOptions) {
       var widget = Mutiny.widgets[widgetName];
-      if(widget === undefined) {
+      if(!widget) {
         throw Mutiny.util.format('"Mutiny.widget.{0}" not found', widgetName);
       }
 
-      try {
-        instanceOptions = instanceOptions ? JSON.parse(instanceOptions) : {};
-      } catch(e) {
-        e.message = Mutiny.util.format('"Mutiny.widget.{0}" cannot parse "{1}"', widgetName, instanceOptions);
-        throw e;
+      var instanceOptions = {};
+
+      if(!rawInstanceOptions || !rawInstanceOptions.length) {
+        // Use empty object
+      } else if(rawInstanceOptions[0] === '{') {
+        try {
+          instanceOptions = JSON.parse(rawInstanceOptions);
+        } catch(e) {
+          e.message = Mutiny.util.format('"Mutiny.widget.{0}" cannot parse "{1}"', widgetName, rawInstanceOptions);
+          throw e;
+        }
+      } else if(rawInstanceOptions[0] === '[') {
+        if(!widget.arrayArg) {
+          throw Mutiny.util.format('"Mutiny.widget.{0}" does not define arrayArg to parse "{1}"', widgetName, rawInstanceOptions);
+        }
+
+        try {
+          instanceOptions[widget.arrayArg] = JSON.parse(rawInstanceOptions);
+        } catch(e) {
+          e.message = Mutiny.util.format('"Mutiny.widget.{0}" cannot parse "{1}"', widgetName, rawInstanceOptions);
+          throw e;
+        }
+      } else {
+        if(!widget.stringArg) {
+          throw Mutiny.util.format('"Mutiny.widget.{0}" does not define stringArg to parse "{1}"', widgetName, rawInstanceOptions);
+        }
+        instanceOptions[widget.stringArg] = rawInstanceOptions;
       }
 
       for(var key in widget.defaults) {
