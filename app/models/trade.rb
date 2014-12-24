@@ -13,7 +13,9 @@ class Trade < ActiveRecord::Base
   validates :price,      presence: true
 
   after_initialize do |record|
-    record.cash ||= Investment::Cash.first
+    if record.cash_id.nil?
+      record.cash ||= Investment::Cash.default
+    end
   end
 
   def raw_activities_data
