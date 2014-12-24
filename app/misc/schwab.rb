@@ -12,7 +12,7 @@ class Schwab
     directives = parse(string)
     investments_lookup = Investment.lookup_by_symbol
     process_trades!(directives, investments_lookup)
-    #process_events!(directives, investments_lookup)
+    process_events!(directives, investments_lookup)
   end
 
   def self.process_trades!(directives, investments_lookup)
@@ -28,11 +28,29 @@ class Schwab
         investment: investments_lookup[directive[:symbol]],
         shares:     direction * directive[:quantity],
         price:      directive[:price],
-        net_amount: directive[:amount]
+        net_amount: directive[:amount],
       }
     end
 
     missing(trades, trade_data)
+  end
+
+  def self.process_events!(directives, investments_lookup)
+    event_directives = directives.select { |d| EVENTS.has_key?(d[:action]) }
+
+    start_date = event_directives.last[:date]
+    events = Event.where('date >= ?', start_date).includes(:src_investment)
+
+    event_data = event_directives.map do |directive|
+      data = {
+        date:           directive[:date],
+        src_investment: directive[:symbol] ? investments_lookup[directive[:symbol]] : Investment::Cash.default,
+        amount:         directive[:amount],
+        category:       EVENTS[directive[:action]],
+      }
+    end
+
+    missing(events, event_data)
   end
 
   def self.missing(elements, searches)

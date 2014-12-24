@@ -7,7 +7,7 @@ class Investment < ActiveRecord::Base
   validates :name,   presence: true
 
   def self.benchmark
-    find_by(symbol: 'SPY')
+    @benchmark ||= find_by(symbol: 'SPY')
   end
 
   def self.lookup_by_symbol
@@ -62,6 +62,10 @@ class Investment < ActiveRecord::Base
 
   class Cash < Investment
     validates :symbol, format: /\A[A-Z]{3}\z/
+
+    def self.default
+      @default ||= first
+    end
 
     def price_matcher(start_date=nil)
       Hash.new(1)
