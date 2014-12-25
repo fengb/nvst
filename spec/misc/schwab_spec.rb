@@ -1,5 +1,17 @@
 RSpec.describe Schwab do
   describe Schwab::Transaction do
+    describe '.to_occ_symbol' do
+      it 'converts calls' do
+        occ = Schwab::Transaction.to_occ_symbol('AAPL 09/20/2014 105.00 C')
+        expect(occ).to eq('AAPL140920C00105000')
+      end
+
+      it 'converts puts' do
+        occ = Schwab::Transaction.to_occ_symbol('AAPL 11/22/2014 95.00 P')
+        expect(occ).to eq('AAPL141122P00095000')
+      end
+    end
+
     describe '.parse' do
       let(:csv) do
         <<-CSV

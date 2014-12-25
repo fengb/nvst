@@ -16,7 +16,7 @@ class Schwab
   end
 
   def self.process_trades!(transactions, investments_lookup)
-    trade_transactions = transactions.select { |d| d[:action] == 'Buy' || d[:action] == 'Sell' }
+    trade_transactions = transactions.select { |t| t.action =~ /^(Buy|Sell)/ }
 
     start_date = trade_transactions.last.date
     trades = Trade.where('date >= ?', start_date).includes(:investment)
@@ -25,7 +25,7 @@ class Schwab
       direction = transaction.action == 'Buy' ? 1 : -1
       data = {
         date:       transaction.date,
-        investment: investments_lookup[transaction.symbol],
+        investment: investments_lookup[transaction.standard_symbol],
         shares:     direction * transaction.quantity,
         price:      transaction.price,
         net_amount: transaction.amount,
@@ -36,7 +36,7 @@ class Schwab
   end
 
   def self.process_events!(transactions, investments_lookup)
-    event_transactions = transactions.select { |d| EVENTS.has_key?(d[:action]) }
+    event_transactions = transactions.select { |t| EVENTS.has_key?(t.action) }
 
     start_date = event_transactions.last.date
     events = Event.where('date >= ?', start_date).includes(:src_investment)
@@ -44,7 +44,7 @@ class Schwab
     event_data = event_transactions.map do |transaction|
       data = {
         date:           transaction.date,
-        src_investment: transaction.symbol ? investments_lookup[transaction.symbol] : Investment::Cash.default,
+        src_investment: transaction.standard_symbol ? investments_lookup[transaction.standard_symbol] : Investment::Cash.default,
         amount:         transaction.amount,
         category:       EVENTS[transaction.action],
       }
@@ -65,6 +65,25 @@ class Schwab
 
   class Transaction
     attr_reader :raw
+
+    OPTIONS_SYMBOL = /([A-Z]{1,5}) ([0-9]{2})\/([0-9]{2})\/([0-9]{4}) ([.0-9]*) ([CP])/
+    def self.to_occ_symbol(schwab_symbol)
+      match = OPTIONS_SYMBOL.match(schwab_symbol)
+      underlying_symbol = match[1]
+      month = match[2]
+      day = match[3]
+      year = match[4]
+      price = match[5]
+      type = match[6]
+
+      [ underlying_symbol,
+        year[-2..-1],
+        month,
+        day,
+        type,
+        '%08d' % (price.to_f * 1000).round
+      ].join
+    end
 
     def self.parse(csv)
       [].tap do |array|
@@ -103,6 +122,18 @@ class Schwab
 
     def symbol
       @symbol ||= as_string(raw[:symbol])
+    end
+
+    def standard_symbol
+      @standard_symbol ||= begin
+        if symbol.nil?
+          nil
+        elsif OPTIONS_SYMBOL.match(symbol)
+          self.class.to_occ_symbol(symbol)
+        else
+          symbol
+        end
+      end
     end
 
     def description
