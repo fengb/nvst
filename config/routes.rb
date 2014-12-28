@@ -13,6 +13,7 @@ Nvst::Application.routes.draw do
   namespace :admin do
     resource :portfolio, controller: :portfolio do
       member do
+        get 'growth'
         get 'transactions'
       end
     end

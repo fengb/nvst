@@ -1,4 +1,4 @@
-%div#growth-wrapper{'data-mutiny-graph' => {url: growth_admin_portfolio_path(format: 'json'),
-                                            xAxis: 'date',
-                                            yAxis: 'value',
-                                            series: 'name'}.to_json}
+%div#growth-wrapper{'data-mutiny-graph' => j(url: growth_admin_portfolio_path(format: 'json'),
+                                             xAxis: 'date',
+                                             yAxis: 'value',
+                                             series: 'name')}

@@ -11,6 +11,6 @@
   %dt Price
   %dd
     = link_to 'table', prices_admin_investment_path(@investment)
-    %div#price-wrapper{'data-mutiny-graph' => {url:   prices_admin_investment_path(@investment, format: 'json'),
-                                               xAxis: 'date',
-                                               yAxis: 'adjusted_close'}.to_json}
+    %div#price-wrapper{'data-mutiny-graph' => j(url:   prices_admin_investment_path(@investment, format: 'json'),
+                                                xAxis: 'date',
+                                                yAxis: 'adjusted_close')}
