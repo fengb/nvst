@@ -5,7 +5,7 @@ describe Job::GenerateActivities do
   describe '.classes_needing_processing' do
     it 'includes everything we need' do
       expect(Job::GenerateActivities.classes_needing_processing).to include(
-        Contribution, Event, Expense, InvestmentSplit, Trade
+        Contribution, Event, Expense, Expiration, InvestmentSplit, Trade
       )
     end
   end

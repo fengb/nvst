@@ -12,6 +12,7 @@ class Schwab
     ActiveRecord::Base.transaction do
       process_trades!(transactions, investments_lookup)
       process_events!(transactions, investments_lookup)
+      process_expirations!(transactions, investments_lookup)
     end
   end
 
@@ -51,6 +52,23 @@ class Schwab
     end
 
     Event.create! missing(events, event_data)
+  end
+
+  def self.process_expirations!(transactions, investments_lookup)
+    expiration_transactions = transactions.select { |t| t.action == 'Expired' }
+
+    start_date = expiration_transactions.last.date
+    expirations = Expiration.where('date >= ?', start_date).includes(:investment)
+
+    expiration_data = expiration_transactions.map do |transaction|
+      data = {
+        investment: investments_lookup[transaction.standard_symbol],
+        date:       transaction.date,
+        shares:     transaction.quantity,
+      }
+    end
+
+    Expiration.create! missing(expirations, expiration_data)
   end
 
   def self.missing(elements, searches)

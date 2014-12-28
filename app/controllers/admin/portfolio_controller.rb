@@ -4,7 +4,7 @@ class Admin::PortfolioController < Admin::BaseController
   end
 
   def transactions
-    @transactions = [Contribution.all, Event.all, Expense.all, Trade.all].flatten
+    @transactions = [Contribution.all, Event.all, Expense.all, Expiration.all, Trade.all].flatten
     @transactions.sort_by!(&:date).reverse!
   end
 end

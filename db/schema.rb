@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141224073646) do
+ActiveRecord::Schema.define(version: 20141228031403) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -133,6 +133,25 @@ ActiveRecord::Schema.define(version: 20141224073646) do
     t.index ["expense_id"], :name => "index_activities_expenses_on_expense_id"
     t.foreign_key ["activity_id"], "activities", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_activities_expenses_transaction_id"
     t.foreign_key ["expense_id"], "expenses", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_activities_expenses_expense_id"
+  end
+
+  create_table "expirations", force: true do |t|
+    t.integer  "investment_id"
+    t.date     "date"
+    t.decimal  "shares",        precision: 15, scale: 4
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.index ["investment_id"], :name => "fk__expirations_investment_id"
+    t.foreign_key ["investment_id"], "investments", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_expirations_investment_id"
+  end
+
+  create_table "activities_expirations", force: true do |t|
+    t.integer "activity_id"
+    t.integer "expiration_id"
+    t.index ["activity_id"], :name => "fk__activities_expirations_activity_id"
+    t.index ["expiration_id"], :name => "fk__activities_expirations_expiration_id"
+    t.foreign_key ["activity_id"], "activities", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_activities_expirations_activity_id"
+    t.foreign_key ["expiration_id"], "expirations", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_activities_expirations_expiration_id"
   end
 
   create_table "trades", force: true do |t|
