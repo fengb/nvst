@@ -47,7 +47,7 @@ class PublicPortfolioPresenter
   def adjusted_principal_at(date)
     @adjustment_matcher ||= begin
       previous_adjusted = 1
-      adjustments = @portfolio.cashflows.map do |date, amount|
+      adjustments = @portfolio.cashflows.sort.map do |date, amount|
         current_principal = @portfolio.principal_at(date)
         previous_principal = current_principal - amount
         if previous_principal.zero?

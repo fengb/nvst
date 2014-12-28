@@ -6,12 +6,12 @@ describe PublicPortfolioPresenter do
   let(:normalize_to) { 1000 }
   let(:portfolio) do
     Stubs::PortfolioPresenter.new([
-      {date: '2013-02-01'.to_date, value:  2, principal:  2, cashflow:  2},
-      {date: '2013-02-02'.to_date, value:  4, principal:  2, cashflow:  0},
-      {date: '2013-02-03'.to_date, value: 14, principal: 12, cashflow: 10},
-      {date: '2013-02-04'.to_date, value: 21, principal: 12, cashflow:  0},
-      {date: '2013-02-05'.to_date, value: 24, principal: 15, cashflow:  3},
       {date: '2013-02-06'.to_date, value: 54, principal: 21, cashflow:  6},
+      {date: '2013-02-05'.to_date, value: 24, principal: 15, cashflow:  3},
+      {date: '2013-02-04'.to_date, value: 21, principal: 12, cashflow:  0},
+      {date: '2013-02-03'.to_date, value: 14, principal: 12, cashflow: 10},
+      {date: '2013-02-02'.to_date, value:  4, principal:  2, cashflow:  0},
+      {date: '2013-02-01'.to_date, value:  2, principal:  2, cashflow:  2},
     ])
   end
 
