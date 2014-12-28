@@ -23,6 +23,10 @@ class PortfolioPresenter
     @cashflow_amounts.keys.first
   end
 
+  def dates
+    (@cashflow_amounts.keys | price_matcher(investments[1]).keys).sort
+  end
+
   def value_at(date)
     investments.sum{|i| value_for(i, date)}
   end
