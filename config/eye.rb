@@ -1,2 +1,5 @@
 Eye.load './eye/*.rb'
-Eye::Nvst.start_with(*ENV.fetch('NVST_EYE').split)
+
+config_file = File.expand_path('../../.eye', __FILE__)
+configs = IO.read(config_file).split
+Eye::Bitvain.start_with(*configs)
