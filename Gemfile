@@ -13,7 +13,6 @@ gem 'git', require: false
 
 # Model
 gem 'pg'
-gem 'schema_plus'
 gem 'devise'
 gem 'rails_admin'
 gem 'enumerize'

@@ -215,9 +215,6 @@ GEM
       sprockets (>= 2.8, < 4.0)
       sprockets-rails (>= 2.0, < 4.0)
       tilt (~> 1.1)
-    schema_plus (1.8.0)
-      activerecord (>= 3.2, < 4.3)
-      valuable
     sexp_processor (4.4.4)
     simplecov (0.9.1)
       docile (~> 1.1.0)
@@ -250,7 +247,6 @@ GEM
       kgio (~> 2.6)
       rack
       raindrops (~> 0.7)
-    valuable (0.9.9)
     warden (1.2.3)
       rack (>= 1.0)
     yahoo-finance (0.2.0)
@@ -281,7 +277,6 @@ DEPENDENCIES
   rails_admin
   rspec-rails
   sass-rails
-  schema_plus
   simplecov
   spring
   spring-commands-rspec
