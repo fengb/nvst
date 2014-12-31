@@ -16,22 +16,55 @@ ActiveRecord::Schema.define(version: 20141228031403) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "investments", force: true do |t|
-    t.string   "symbol"
-    t.string   "name"
+  add_foreign_key "activities", "positions", column: nil, primary_key: "id", name: "fk_activities_lot_id", on_update: :no_action, on_delete: :no_action
+  add_foreign_key "activities_activity_adjustments", "activities", column: nil, primary_key: "id", name: "fk_activities_activity_adjustments_transaction_id", on_update: :no_action, on_delete: :no_action
+  add_foreign_key "activities_activity_adjustments", "activity_adjustments", column: nil, primary_key: "id", name: "fk_activities_activity_adjustments_adjustment_id", on_update: :no_action, on_delete: :no_action
+  add_foreign_key "activities_contributions", "activities", column: nil, primary_key: "id", name: "fk_activities_contributions_transaction_id", on_update: :no_action, on_delete: :no_action
+  add_foreign_key "activities_contributions", "contributions", column: nil, primary_key: "id", name: "fk_activities_contributions_contribution_id", on_update: :no_action, on_delete: :no_action
+  add_foreign_key "activities_events", "activities", column: nil, primary_key: "id", name: "fk_activities_events_transaction_id", on_update: :no_action, on_delete: :no_action
+  add_foreign_key "activities_events", "events", column: nil, primary_key: "id", name: "fk_activities_events_event_id", on_update: :no_action, on_delete: :no_action
+  add_foreign_key "activities_expenses", "activities", column: nil, primary_key: "id", name: "fk_activities_expenses_transaction_id", on_update: :no_action, on_delete: :no_action
+  add_foreign_key "activities_expenses", "expenses", column: nil, primary_key: "id", name: "fk_activities_expenses_expense_id", on_update: :no_action, on_delete: :no_action
+  add_foreign_key "activities_expirations", "activities", column: nil, primary_key: "id", name: "fk_activities_expirations_activity_id", on_update: :no_action, on_delete: :no_action
+  add_foreign_key "activities_expirations", "expirations", column: nil, primary_key: "id", name: "fk_activities_expirations_expiration_id", on_update: :no_action, on_delete: :no_action
+  add_foreign_key "activities_trades", "activities", column: nil, primary_key: "id", name: "fk_activities_trades_transaction_id", on_update: :no_action, on_delete: :no_action
+  add_foreign_key "activities_trades", "trades", column: nil, primary_key: "id", name: "fk_activities_trades_trade_id", on_update: :no_action, on_delete: :no_action
+  add_foreign_key "contributions", "users", column: nil, primary_key: "id", name: "fk_contributions_user_id", on_update: :no_action, on_delete: :no_action
+  add_foreign_key "contributions_ownerships", "contributions", column: nil, primary_key: "id", name: "fk_contributions_ownerships_contribution_id", on_update: :no_action, on_delete: :no_action
+  add_foreign_key "contributions_ownerships", "ownerships", column: nil, primary_key: "id", name: "fk_contributions_ownerships_ownership_id", on_update: :no_action, on_delete: :no_action
+  add_foreign_key "events", "investments", column: nil, primary_key: "id", name: "fk_events_src_investment_id", on_update: :no_action, on_delete: :no_action
+  add_foreign_key "expenses", "users", column: nil, primary_key: "id", name: "fk_expenses_reinvestment_for_user_id", on_update: :no_action, on_delete: :no_action
+  add_foreign_key "expenses_ownerships", "expenses", column: nil, primary_key: "id", name: "fk_expenses_ownerships_expense_id", on_update: :no_action, on_delete: :no_action
+  add_foreign_key "expenses_ownerships", "ownerships", column: nil, primary_key: "id", name: "fk_expenses_ownerships_ownership_id", on_update: :no_action, on_delete: :no_action
+  add_foreign_key "expirations", "investments", column: nil, primary_key: "id", name: "fk_expirations_investment_id", on_update: :no_action, on_delete: :no_action
+  add_foreign_key "investment_dividends", "investments", column: nil, primary_key: "id", name: "fk_investment_dividends_investment_id", on_update: :no_action, on_delete: :no_action
+  add_foreign_key "investment_historical_prices", "investments", column: nil, primary_key: "id", name: "fk_investment_historical_prices_investment_id", on_update: :no_action, on_delete: :no_action
+  add_foreign_key "investment_splits", "activity_adjustments", column: nil, primary_key: "id", name: "fk_investment_splits_transaction_adjustment_id", on_update: :no_action, on_delete: :no_action
+  add_foreign_key "investment_splits", "investments", column: nil, primary_key: "id", name: "fk_investment_splits_investment_id", on_update: :no_action, on_delete: :no_action
+  add_foreign_key "ownerships", "users", column: nil, primary_key: "id", name: "fk_ownerships_user_id", on_update: :no_action, on_delete: :no_action
+  add_foreign_key "ownerships_transfers", "ownerships", column: nil, primary_key: "id", name: "fk_ownerships_transfers_ownership_id", on_update: :no_action, on_delete: :no_action
+  add_foreign_key "ownerships_transfers", "transfers", column: nil, primary_key: "id", name: "fk_ownerships_transfers_transfer_id", on_update: :no_action, on_delete: :no_action
+  add_foreign_key "positions", "investments", column: nil, primary_key: "id", name: "fk_positions_investment_id", on_update: :no_action, on_delete: :no_action
+  add_foreign_key "trades", "investments", column: nil, primary_key: "id", name: "fk_trades_cash_id", on_update: :no_action, on_delete: :no_action
+  add_foreign_key "trades", "investments", column: nil, primary_key: "id", name: "fk_trades_investment_id", on_update: :no_action, on_delete: :no_action
+  add_foreign_key "transfers", "users", column: nil, primary_key: "id", name: "fk_transfers_from_user_id", on_update: :no_action, on_delete: :no_action
+  add_foreign_key "transfers", "users", column: nil, primary_key: "id", name: "fk_transfers_to_user_id", on_update: :no_action, on_delete: :no_action
+  create_table "investments", force: :cascade do |t|
+    t.string   "symbol",       limit: 255
+    t.string   "name",         limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "type"
-    t.string   "past_symbols", default: [], array: true
+    t.string   "type",         limit: 255
+    t.string   "past_symbols",             default: []
   end
 
-  create_table "positions", force: true do |t|
+  create_table "positions", force: :cascade do |t|
     t.integer "investment_id"
     t.index ["investment_id"], :name => "fk__positions_investment_id"
     t.foreign_key ["investment_id"], "investments", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_positions_investment_id"
   end
 
-  create_table "activities", force: true do |t|
+  create_table "activities", force: :cascade do |t|
     t.integer "position_id"
     t.date    "date"
     t.decimal "shares",      precision: 15, scale: 4
@@ -42,14 +75,14 @@ ActiveRecord::Schema.define(version: 20141228031403) do
     t.foreign_key ["position_id"], "positions", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_activities_lot_id"
   end
 
-  create_table "activity_adjustments", force: true do |t|
+  create_table "activity_adjustments", force: :cascade do |t|
     t.date    "date"
     t.integer "numerator"
     t.integer "denominator"
-    t.string  "reason"
+    t.string  "reason",      limit: 255
   end
 
-  create_table "activities_activity_adjustments", force: true do |t|
+  create_table "activities_activity_adjustments", force: :cascade do |t|
     t.integer "activity_id"
     t.integer "activity_adjustment_id"
     t.index ["activity_adjustment_id"], :name => "fk__transaction_adjustments_transactions_adjustment_id"
@@ -58,23 +91,23 @@ ActiveRecord::Schema.define(version: 20141228031403) do
     t.foreign_key ["activity_id"], "activities", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_activities_activity_adjustments_transaction_id"
   end
 
-  create_table "users", force: true do |t|
-    t.string   "email",                                  null: false
-    t.string   "encrypted_password",                     null: false
-    t.string   "reset_password_token"
+  create_table "users", force: :cascade do |t|
+    t.string   "email",                  limit: 255,                 null: false
+    t.string   "encrypted_password",     limit: 255,                 null: false
+    t.string   "reset_password_token",   limit: 255
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
-    t.integer  "sign_in_count",          default: 0,     null: false
+    t.integer  "sign_in_count",                      default: 0,     null: false
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
-    t.string   "current_sign_in_ip"
-    t.string   "last_sign_in_ip"
+    t.string   "current_sign_in_ip",     limit: 255
+    t.string   "last_sign_in_ip",        limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "is_fee_collector",       default: false
+    t.boolean  "is_fee_collector",                   default: false
   end
 
-  create_table "contributions", force: true do |t|
+  create_table "contributions", force: :cascade do |t|
     t.integer  "user_id"
     t.date     "date"
     t.decimal  "amount",     precision: 18, scale: 4
@@ -84,7 +117,7 @@ ActiveRecord::Schema.define(version: 20141228031403) do
     t.foreign_key ["user_id"], "users", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_contributions_user_id"
   end
 
-  create_table "activities_contributions", force: true do |t|
+  create_table "activities_contributions", force: :cascade do |t|
     t.integer "contribution_id"
     t.integer "activity_id"
     t.index ["activity_id"], :name => "index_activities_contributions_on_activity_id", :unique => true
@@ -93,18 +126,18 @@ ActiveRecord::Schema.define(version: 20141228031403) do
     t.foreign_key ["contribution_id"], "contributions", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_activities_contributions_contribution_id"
   end
 
-  create_table "events", force: true do |t|
+  create_table "events", force: :cascade do |t|
     t.integer  "src_investment_id"
     t.date     "date"
-    t.decimal  "amount",            precision: 12, scale: 4
-    t.string   "category"
+    t.decimal  "amount",                        precision: 12, scale: 4
+    t.string   "category",          limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
     t.index ["src_investment_id"], :name => "fk__events_src_investment_id"
     t.foreign_key ["src_investment_id"], "investments", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_events_src_investment_id"
   end
 
-  create_table "activities_events", force: true do |t|
+  create_table "activities_events", force: :cascade do |t|
     t.integer "event_id"
     t.integer "activity_id"
     t.index ["activity_id"], :name => "index_activities_events_on_activity_id", :unique => true
@@ -113,20 +146,20 @@ ActiveRecord::Schema.define(version: 20141228031403) do
     t.foreign_key ["event_id"], "events", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_activities_events_event_id"
   end
 
-  create_table "expenses", force: true do |t|
+  create_table "expenses", force: :cascade do |t|
     t.date     "date"
-    t.decimal  "amount",                   precision: 12, scale: 4
-    t.string   "vendor"
-    t.string   "memo"
+    t.decimal  "amount",                               precision: 12, scale: 4
+    t.string   "vendor",                   limit: 255
+    t.string   "memo",                     limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "category"
+    t.string   "category",                 limit: 255
     t.integer  "reinvestment_for_user_id"
     t.index ["reinvestment_for_user_id"], :name => "fk__expenses_reinvestment_for_user_id"
     t.foreign_key ["reinvestment_for_user_id"], "users", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_expenses_reinvestment_for_user_id"
   end
 
-  create_table "activities_expenses", force: true do |t|
+  create_table "activities_expenses", force: :cascade do |t|
     t.integer "expense_id"
     t.integer "activity_id"
     t.index ["activity_id"], :name => "index_activities_expenses_on_activity_id", :unique => true
@@ -135,7 +168,7 @@ ActiveRecord::Schema.define(version: 20141228031403) do
     t.foreign_key ["expense_id"], "expenses", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_activities_expenses_expense_id"
   end
 
-  create_table "expirations", force: true do |t|
+  create_table "expirations", force: :cascade do |t|
     t.integer  "investment_id"
     t.date     "date"
     t.decimal  "shares",        precision: 15, scale: 4
@@ -145,7 +178,7 @@ ActiveRecord::Schema.define(version: 20141228031403) do
     t.foreign_key ["investment_id"], "investments", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_expirations_investment_id"
   end
 
-  create_table "activities_expirations", force: true do |t|
+  create_table "activities_expirations", force: :cascade do |t|
     t.integer "activity_id"
     t.integer "expiration_id"
     t.index ["activity_id"], :name => "fk__activities_expirations_activity_id"
@@ -154,7 +187,7 @@ ActiveRecord::Schema.define(version: 20141228031403) do
     t.foreign_key ["expiration_id"], "expirations", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_activities_expirations_expiration_id"
   end
 
-  create_table "trades", force: true do |t|
+  create_table "trades", force: :cascade do |t|
     t.date     "date"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -169,7 +202,7 @@ ActiveRecord::Schema.define(version: 20141228031403) do
     t.foreign_key ["investment_id"], "investments", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_trades_investment_id"
   end
 
-  create_table "activities_trades", force: true do |t|
+  create_table "activities_trades", force: :cascade do |t|
     t.integer "trade_id"
     t.integer "activity_id"
     t.index ["activity_id"], :name => "index_activities_trades_on_activity_id", :unique => true
@@ -178,20 +211,20 @@ ActiveRecord::Schema.define(version: 20141228031403) do
     t.foreign_key ["trade_id"], "trades", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_activities_trades_trade_id"
   end
 
-  create_table "admins", force: true do |t|
-    t.string   "username",                        null: false
-    t.string   "encrypted_password",              null: false
+  create_table "admins", force: :cascade do |t|
+    t.string   "username",            limit: 255,             null: false
+    t.string   "encrypted_password",  limit: 255,             null: false
     t.datetime "remember_created_at"
-    t.integer  "sign_in_count",       default: 0, null: false
+    t.integer  "sign_in_count",                   default: 0, null: false
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
-    t.string   "current_sign_in_ip"
-    t.string   "last_sign_in_ip"
+    t.string   "current_sign_in_ip",  limit: 255
+    t.string   "last_sign_in_ip",     limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "ownerships", force: true do |t|
+  create_table "ownerships", force: :cascade do |t|
     t.integer  "user_id"
     t.date     "date"
     t.decimal  "units",      precision: 18, scale: 8
@@ -201,7 +234,7 @@ ActiveRecord::Schema.define(version: 20141228031403) do
     t.foreign_key ["user_id"], "users", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_ownerships_user_id"
   end
 
-  create_table "contributions_ownerships", force: true do |t|
+  create_table "contributions_ownerships", force: :cascade do |t|
     t.integer "contribution_id"
     t.integer "ownership_id"
     t.index ["contribution_id"], :name => "fk__contributions_ownerships_contribution_id"
@@ -210,7 +243,7 @@ ActiveRecord::Schema.define(version: 20141228031403) do
     t.foreign_key ["ownership_id"], "ownerships", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_contributions_ownerships_ownership_id"
   end
 
-  create_table "expenses_ownerships", force: true do |t|
+  create_table "expenses_ownerships", force: :cascade do |t|
     t.integer "expense_id"
     t.integer "ownership_id"
     t.index ["expense_id"], :name => "fk__expenses_ownerships_expense_id"
@@ -219,7 +252,7 @@ ActiveRecord::Schema.define(version: 20141228031403) do
     t.foreign_key ["ownership_id"], "ownerships", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_expenses_ownerships_ownership_id"
   end
 
-  create_table "investment_dividends", force: true do |t|
+  create_table "investment_dividends", force: :cascade do |t|
     t.integer "investment_id"
     t.date    "ex_date"
     t.decimal "amount",        precision: 12, scale: 4
@@ -229,7 +262,7 @@ ActiveRecord::Schema.define(version: 20141228031403) do
     t.foreign_key ["investment_id"], "investments", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_investment_dividends_investment_id"
   end
 
-  create_table "investment_historical_prices", force: true do |t|
+  create_table "investment_historical_prices", force: :cascade do |t|
     t.integer "investment_id"
     t.date    "date"
     t.decimal "high",          precision: 12, scale: 4
@@ -242,7 +275,7 @@ ActiveRecord::Schema.define(version: 20141228031403) do
     t.foreign_key ["investment_id"], "investments", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_investment_historical_prices_investment_id"
   end
 
-  create_table "investment_splits", force: true do |t|
+  create_table "investment_splits", force: :cascade do |t|
     t.integer "investment_id"
     t.date    "date"
     t.integer "before"
@@ -256,7 +289,7 @@ ActiveRecord::Schema.define(version: 20141228031403) do
     t.foreign_key ["investment_id"], "investments", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_investment_splits_investment_id"
   end
 
-  create_table "transfers", force: true do |t|
+  create_table "transfers", force: :cascade do |t|
     t.date     "date"
     t.decimal  "amount",       precision: 21, scale: 8
     t.integer  "from_user_id"
@@ -269,7 +302,7 @@ ActiveRecord::Schema.define(version: 20141228031403) do
     t.foreign_key ["to_user_id"], "users", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_transfers_to_user_id"
   end
 
-  create_table "ownerships_transfers", force: true do |t|
+  create_table "ownerships_transfers", force: :cascade do |t|
     t.integer "ownership_id"
     t.integer "transfer_id"
     t.index ["ownership_id"], :name => "fk__ownerships_transfers_ownership_id"
@@ -278,11 +311,11 @@ ActiveRecord::Schema.define(version: 20141228031403) do
     t.foreign_key ["transfer_id"], "transfers", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_ownerships_transfers_transfer_id"
   end
 
-  create_table "rails_admin_histories", force: true do |t|
+  create_table "rails_admin_histories", force: :cascade do |t|
     t.text     "message"
-    t.string   "username"
+    t.string   "username",   limit: 255
     t.integer  "item"
-    t.string   "table"
+    t.string   "table",      limit: 255
     t.integer  "month",      limit: 2
     t.integer  "year",       limit: 8
     t.datetime "created_at"
