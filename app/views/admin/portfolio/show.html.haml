@@ -1,3 +1,7 @@
+= form_tag admin_portfolio_path, method: :patch, multipart: true do
+  = file_field_tag 'csv'
+  %button Upload
+
 %table
   %thead
     %tr

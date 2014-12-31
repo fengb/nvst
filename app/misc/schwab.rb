@@ -9,10 +9,13 @@ class Schwab
   def self.process!(csv)
     transactions = Transaction.parse(csv)
     investments_lookup = Investment.lookup_by_symbol
-    ActiveRecord::Base.transaction do
-      process_trades!(transactions, investments_lookup)
-      process_events!(transactions, investments_lookup)
-      process_expirations!(transactions, investments_lookup)
+
+    [].tap do |created|
+      ActiveRecord::Base.transaction do
+        created.concat process_trades!(transactions, investments_lookup)
+        created.concat process_events!(transactions, investments_lookup)
+        created.concat process_expirations!(transactions, investments_lookup)
+      end
     end
   end
 
