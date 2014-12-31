@@ -13,7 +13,7 @@ git checkout "$target"
 bundle
 bundle exec rake db:migrate assets:precompile
 
-git tag `date +%Y%m%d-%H%M%S`
+git tag "v`date +%Y%m%d-%H%M%S`"
 
 eye load "config/eye.rb"
 eye restart nvst
