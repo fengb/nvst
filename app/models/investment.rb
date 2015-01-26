@@ -10,13 +10,19 @@ class Investment < ActiveRecord::Base
     @benchmark ||= find_by(symbol: 'SPY')
   end
 
-  def self.lookup_by_symbol
-    all.each_with_object({}) do |investment, lookup|
+  def self.lookup_by_symbol(&block)
+    lookup = Hash.new do |hash, key|
+      hash[key] = block.call(key)
+    end
+
+    all.each do |investment|
       lookup[investment.symbol] = investment
       investment.past_symbols.each do |symbol|
         lookup[symbol] = investment
       end
     end
+
+    lookup
   end
 
   def price_matcher(start_date=nil)

@@ -8,7 +8,7 @@ class Schwab
 
   def self.process!(csv)
     transactions = Transaction.parse(csv)
-    investments_lookup = Investment.lookup_by_symbol
+    investments_lookup = Investment.lookup_by_symbol { |sym| Investment::Stock.create!(symbol: sym, name: sym) }
 
     [].tap do |created|
       ActiveRecord::Base.transaction do
