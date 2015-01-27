@@ -33,9 +33,9 @@ RSpec.describe Investment, type: :model do
     subject { FactoryGirl.create :cash }
 
     before do
-      FactoryGirl.create(:investment_historical_price, date: Date.current-0,   investment: subject, high:  500, low: 400, close: 400)
-      FactoryGirl.create(:investment_historical_price, date: Date.current-180, investment: subject, high: 1000, low: 800, close: 900)
-      FactoryGirl.create(:investment_historical_price, date: Date.current-360, investment: subject, high:  400, low: 100, close: 200)
+      FactoryGirl.create(:investment_historical_price, date: Date.current-0,   investment: subject, high:  500, low: 400, close: 400, adjustment: 1)
+      FactoryGirl.create(:investment_historical_price, date: Date.current-180, investment: subject, high: 1000, low: 800, close: 900, adjustment: 1)
+      FactoryGirl.create(:investment_historical_price, date: Date.current-360, investment: subject, high:  400, low: 100, close: 200, adjustment: 1)
     end
 
     describe '#year_high' do
