@@ -3,7 +3,6 @@ source 'https://rubygems.org'
 gem 'rails'
 
 # Server
-gem 'unicorn', require: false
 gem 'puma', require: false
 gem 'clockwork', require: false
 
