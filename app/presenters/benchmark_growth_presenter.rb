@@ -2,13 +2,17 @@ class BenchmarkGrowthPresenter
   def initialize(investment, contributions, normalize_to: nil)
     @contributions = contributions.sort(&:date)
     @normalize_to = normalize_to
-    @price_matcher = investment.price_matcher(@contributions.first.date)
+    @price_matcher = investment.historical_prices.start_from(@contributions.first.date).matcher
     @share_matcher = BestMatchHash.sum(@contributions.map{|c| [c.date, c.amount / @price_matcher[c.date]]})
   end
 
   def dates
     # FIXME: defuglify
-    @dates ||= Investment.benchmark.price_matcher(@contributions.first.date).keys
+    @dates ||= Investment.benchmark.historical_prices.start_from(start_date).pluck('date')
+  end
+
+  def start_date
+    @contributions.first.date
   end
 
   def value_at(date)

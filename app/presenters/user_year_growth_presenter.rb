@@ -99,6 +99,6 @@ class UserYearGrowthPresenter
   end
 
   def benchmark_price_matcher
-    @benchmark_price_matcher ||= Investment.benchmark.price_matcher(start_date)
+    @benchmark_price_matcher ||= Investment.benchmark.historical_prices.start_from(start_date).matcher
   end
 end

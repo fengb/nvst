@@ -55,33 +55,6 @@ RSpec.describe Investment, type: :model do
         expect(subject.current_price).to eq(400)
       end
     end
-
-    describe '#price_matcher' do
-      it 'returns the exact close price' do
-        expect(subject.price_matcher[Date.current    ]).to eq(400)
-        expect(subject.price_matcher[Date.current-180]).to eq(900)
-        expect(subject.price_matcher[Date.current-360]).to eq(200)
-      end
-
-      it 'returns the last used close price when match not found' do
-        expect(subject.price_matcher[Date.current-1  ]).to eq(900)
-        expect(subject.price_matcher[Date.current-181]).to eq(200)
-      end
-
-      context 'start date' do
-        it 'cuts off at the start date' do
-          matcher = subject.price_matcher(Date.current - 180)
-          expect(matcher[Date.current-180]).to eq(900)
-          expect(matcher[Date.current-181]).to be(nil)
-        end
-
-        it 'cuts off at the closest available start date' do
-          matcher = subject.price_matcher(Date.current - 179)
-          expect(matcher[Date.current-180]).to eq(900)
-          expect(matcher[Date.current-181]).to be(nil)
-        end
-      end
-    end
   end
 
   describe Investment::Stock do
@@ -160,13 +133,6 @@ RSpec.describe Investment, type: :model do
       expect(subject.current_price).to eql(1)
       expect(subject.year_high).to eql(1)
       expect(subject.year_low).to eql(1)
-    end
-
-    it 'has super awesome price_matcher' do
-      matcher = subject.price_matcher(Date.current)
-      expect(matcher[Date.current         ]).to eql(1)
-      expect(matcher[Date.current-1000    ]).to eql(1)
-      expect(matcher[Date.current-10000000]).to eql(1)
     end
   end
 

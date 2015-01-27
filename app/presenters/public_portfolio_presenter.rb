@@ -41,7 +41,7 @@ class PublicPortfolioPresenter
   end
 
   def benchmark_price_matcher
-    @benchmark_price_matcher ||= Investment.benchmark.price_matcher(@portfolio.start_date)
+    @benchmark_price_matcher ||= Investment.benchmark.historical_prices.start_from(@portfolio.start_date).matcher
   end
 
   def adjusted_principal_at(date)

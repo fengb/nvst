@@ -25,23 +25,6 @@ class Investment < ActiveRecord::Base
     lookup
   end
 
-  def price_matcher(start_date=nil, &block)
-    block ||= ->(val){ val.adjusted(:close) }
-
-    if start_date
-      # start_date may not have a price entry.  We need to backtrack to find the real start date.
-      start_date_sql = historical_prices.select('MAX(date)').where('date <= ?', start_date).to_sql
-      prices = historical_prices.where("date >= (#{start_date_sql})")
-    else
-      prices = historical_prices
-    end
-
-    array = prices.order('date').map do |historical_price|
-      [historical_price.date, block.call(historical_price)]
-    end
-    BestMatchHash.new(array)
-  end
-
   def current_price
     historical_prices.order('date DESC').first.close
   end
@@ -79,10 +62,6 @@ class Investment < ActiveRecord::Base
 
     def self.default
       @default ||= first
-    end
-
-    def price_matcher(start_date=nil)
-      Hash.new(1)
     end
 
     def current_price

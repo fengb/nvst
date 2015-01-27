@@ -62,7 +62,7 @@ class PortfolioPresenter
   end
 
   def price_matcher(investment)
-    @price_matchers[investment] ||= investment.price_matcher(start_date_for(investment))
+    @price_matchers[investment] ||= investment.historical_prices.start_from(start_date_for(investment)).matcher
   end
 
   def start_date_for(investment)
