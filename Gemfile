@@ -30,6 +30,7 @@ gem 'jquery-rails'
 # gem 'therubyrhino', platforms: :jruby
 
 group :development, :test do
+  gem 'did_you_mean', platforms: :mri
   gem 'dotenv-deployment'
   gem 'dotenv-rails'
   gem 'rspec-rails'
@@ -37,7 +38,6 @@ group :development, :test do
   gem 'ffaker'
   gem 'pry'
   gem 'big_decimal_helper'
-  gem 'did_you_mean', platforms: :mri
 end
 
 group :development do
