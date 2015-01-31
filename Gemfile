@@ -15,6 +15,7 @@ gem 'pg'
 gem 'devise'
 gem 'rails_admin'
 gem 'enumerize'
+gem 'arlj'
 
 # View
 gem 'haml-rails'

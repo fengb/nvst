@@ -1,5 +1,7 @@
 # Generated
 class Position < ActiveRecord::Base
+  extend Arlj
+
   belongs_to :investment
   has_many   :activities, ->{order('date')}
 
@@ -8,15 +10,9 @@ class Position < ActiveRecord::Base
   scope :long,  ->{joins(:activities).merge(Activity.opening.buy)}
   scope :short, ->{joins(:activities).merge(Activity.opening.sell)}
   scope :open, ->(during: Date.current) do
-    join_sql = SqlUtil.sanitize <<-SQL, during.to_date
-      LEFT JOIN(SELECT position_id
-                     , SUM(shares) AS outstanding_shares
-                  FROM activities
-                 WHERE date <= ?
-                 GROUP BY position_id) t
-             ON t.position_id=positions.id
-    SQL
-    joins(join_sql).where("t.outstanding_shares != 0")
+    left_joins_aggregate(:activities, 'SUM(shares)' => 'outstanding_shares',
+                         where: ['date <= ?', during]).
+      where('outstanding_shares != 0')
   end
 
   def opening_activity
