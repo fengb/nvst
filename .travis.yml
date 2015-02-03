@@ -2,13 +2,19 @@ language: ruby
 script: bundle exec rake
 bundler_args: --without=development --jobs=4
 cache: bundler
+
 before_script:
-  - createuser -U postgres -s nvst
   - bin/setup
+
 rvm:
-  - 2.0.0
-  - 2.1.0
-  - 2.1.2
-  - 2.1.4
-  - 2.2.0
-  #- rbx-2.3.0
+  - '2.0.0'
+  - '2.1.2'
+  - '2.1.5'
+  - '2.2.0'
+  - 'ruby-head'
+  #- 'rbx-2.3.0'
+
+matrix:
+  fast_finish: true
+  allow_failures:
+    - rvm: 'ruby-head'
