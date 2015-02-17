@@ -47,6 +47,5 @@ group :development do
 end
 
 group :test do
-  gem 'timecop'
   gem 'simplecov'
 end
