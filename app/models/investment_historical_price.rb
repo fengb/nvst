@@ -18,13 +18,15 @@ class InvestmentHistoricalPrice < ActiveRecord::Base
     where('date < ?', date).order('date DESC').first
   end
 
-  def self.matcher(&block)
-    block ||= ->(val){ val.adjusted(:close) }
-
-    array = self.order('date').map do |historical_price|
-      [historical_price.date, block.call(historical_price)]
+  def self.matcher(column = 'close')
+    if block_given?
+      array = self.order('date').map do |price|
+        [price.date, yield(price)]
+      end
+      BestMatchHash.new(array)
+    else
+      BestMatchHash.new(self.order('date').pluck('date', column))
     end
-    BestMatchHash.new(array)
   end
 
   after_initialize do |record|
