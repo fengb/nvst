@@ -41,9 +41,10 @@ group :development, :test do
 end
 
 group :development do
+  gem 'better_errors'
+  gem 'binding_of_caller'
   gem 'spring'
   gem 'spring-commands-rspec'
-  gem 'web-console'
 end
 
 group :test do
