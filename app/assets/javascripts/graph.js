@@ -13,7 +13,7 @@ Mutiny.widgets.graph = {
     }
 
     if(options.data){
-      initData(JSON.parse(options.data))
+      initData(options.data)
     } else {
       d3.json(options.url, function(error, data) {
         if(error){
