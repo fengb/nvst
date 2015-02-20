@@ -1,7 +1,4 @@
-- content_for :head do
-  %link{rel: 'prefetch', href: '/portfolio.json'}
-
-%div#growth-wrapper{'data-mutiny-graph' => {url: '/portfolio.json',
+%div#growth-wrapper{'data-mutiny-graph' => {data: render('show.json', portfolio: @portfolio),
                                             xAxis: 'date',
                                             yAxis: 'value',
                                             series: 'name'}.to_json}
