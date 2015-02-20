@@ -33,6 +33,7 @@ module Job
       latest_date = historical_prices.maximum(:date) || Date.new(1900)
       return if latest_date + 1 >= Date.current
 
+      $stderr.puts "#{@investment.symbol}: #{latest_date + 1}"
       YahooFinance.historical_quotes(@investment.symbol, start_date: latest_date + 1).each do |row|
         historical_prices.create!(date:  row.trade_date,
                                   high:  row.high,
