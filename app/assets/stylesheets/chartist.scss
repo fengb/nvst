@@ -1,0 +1,20 @@
+$ct-line-width: 2px !default;
+$ct-series-colors: (
+  #6188e2,
+  #f05b4f,
+  #f4c63d,
+  #d17905,
+  #0544d3,
+  #d70206,
+  #453d3f,
+  #59922b,
+  #6b0392,
+  #f05b4f,
+  #dda458,
+  #eacf7d,
+  #86797d,
+  #b2c326,
+  #a748ca
+) !default;
+
+@import 'chartist/dist/scss/chartist.scss'

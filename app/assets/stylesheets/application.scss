@@ -6,8 +6,8 @@ body {
 }
 
 main {
-  #growth-wrapper {
-    border: 1px solid black;
+  .ct-chart {
+    border: 1px solid #999;
     margin: 29px;
     width: 900px;
     height: 500px;
@@ -31,4 +31,4 @@ footer {
   }
 }
 
-@import 'chartist/dist/scss/chartist.scss'
+@import 'chartist'
