@@ -1,16 +1,17 @@
 body {
   font-family: Helvetica, Arial;
-  width: 960px;
+  min-width: 320px;
+  max-width: 960px;
   margin: 0 auto;
+  padding: 0 16px;
   text-align: center;
 }
 
 main {
   .ct-chart {
     border: 1px solid #999;
-    margin: 29px;
-    width: 900px;
     height: 500px;
+    margin: 16px 0;
 
     svg {
       width: 100%;
