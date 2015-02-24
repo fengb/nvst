@@ -1,4 +1,1 @@
-%div#growth-wrapper{'data-mutiny-graph' => j(xAxis: 'date',
-                                             yAxis: 'value',
-                                             series: 'name',
-                                             data: json_render('show.json', portfolio: @portfolio))}
+%div.ct-chart#growth-wrapper{'data-mutiny-graph' => render('show.json', portfolio: @portfolio)}

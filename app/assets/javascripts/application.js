@@ -11,8 +11,4 @@
 // about supported directives.
 //
 
-//= require lib/d3
-//= require lib/dimple
-//= require mutiny/src/core
-
 //= require_tree .
