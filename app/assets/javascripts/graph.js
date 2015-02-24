@@ -3,6 +3,7 @@
 
 Mutiny.widgets.graph = {
   defaults: {
+    fullWidth: true,
     low: 0,
     chartPadding: 0,
     showPoint: false,
