@@ -30,7 +30,6 @@ gem 'uglifier'
 
 group :development, :test do
   gem 'did_you_mean', platforms: :mri
-  gem 'dotenv-deployment'
   gem 'dotenv-rails'
   gem 'rspec-rails'
   gem 'factory_girl_rails'
