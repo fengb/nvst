@@ -1,6 +1,7 @@
+html { min-width: 320px; }
+
 body {
   font-family: Helvetica, Arial;
-  min-width: 320px;
   max-width: 960px;
   margin: 0 auto;
   padding: 0 16px;
@@ -8,6 +9,8 @@ body {
 }
 
 main {
+  h1 { margin: 16px; }
+
   .ct-chart {
     border: 1px solid #999;
     height: 80vmin;
@@ -22,13 +25,13 @@ main {
 }
 
 footer {
+  font-size: 14px;
   display: inline-block;
 
   > * {
     display: inline;
     &.tech:before {
       content: '• ';
-      padding: 0 4px;
     }
   }
 }
