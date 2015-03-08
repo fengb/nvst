@@ -10,8 +10,8 @@ class InvestmentHistoricalPrice < ActiveRecord::Base
   scope :year_range, ->(end_date=Date.current) { where(date: (end_date - 365)..end_date) }
 
   scope :start_from, ->(start_date) do
-    start_date_sql = self.select('MAX(date)').where('date <= ?', start_date).to_sql
-    where("date >= (#{start_date_sql})")
+    start_date_rel = self.select('MAX(date)').where('date <= ?', start_date)
+    where('date >= (?)', start_date_rel)
   end
 
   def self.previous_of(date)
