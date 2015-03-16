@@ -16,7 +16,7 @@ class InvestmentSplit < ActiveRecord::Base
   end
 
   def price_adjustment
-    before / after.to_r
+    Rational(before, after)
   end
 
   def price_adjust_up_to_date
@@ -42,7 +42,7 @@ class InvestmentSplit < ActiveRecord::Base
   end
 
   def generate_activity_for!(position)
-    if position.activities.opening.all?{|a| a.adjustments.include?(activity_adjustment)}
+    if position.opening_activity.adjustments.include?(activity_adjustment)
       return
     elsif position.activities.where('date >= ?', self.date).exists?
       raise 'Attempting to split but encountered future activities'
