@@ -8,19 +8,19 @@ module Job
     MESSAGE = ENV['NVST_DB_BACKUP_MSG']
 
     def self.perform
-      db_dump!(Nvst::Application.config.database_configuration['default'] , TMP)
+      db_dump!(Nvst::Application.config.database_configuration['default'], TMP)
 
-      if TARGET.present?
+      if target.present?
         FileUtils.mv TMP, TARGET
       end
 
-      if MESSAGE
+      if message.present?
         commit!(TARGET, MESSAGE)
       end
     end
 
     def self.db_dump!(config, filename)
-      system <<-CMD.gsub(/\s+/, ' ')
+      cmd = <<-END
         PGPASSWORD="#{config['password']}"
         pg_dump
           --data-only
@@ -36,7 +36,9 @@ module Job
           -e 's/^--.*//'
           -e '/^ *$/d'
         > "#{filename}"
-      CMD
+      END
+
+      system(cmd.gsub(/\s+/, ' '))
     end
 
     def self.commit!(filename, message)
