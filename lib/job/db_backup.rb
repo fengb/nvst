@@ -1,5 +1,5 @@
 require 'git'
-
+require 'open3'
 
 module Job
   class DbBackup
@@ -20,8 +20,9 @@ module Job
     end
 
     def self.db_dump!(config, filename)
-      cmd = <<-END
-        PGPASSWORD="#{config['password']}"
+      env = { 'PGPASSWORD' => config['password'] }
+      opts = {}
+      cmd = <<-CMD.squish
         pg_dump
           --data-only
           --no-owner
@@ -31,14 +32,11 @@ module Job
           --host='#{config['host']}'
           --port='#{config['port']}'
           '#{config['database']}'
-        |
-        sed
-          -e 's/^--.*//'
-          -e '/^ *$/d'
-        > "#{filename}"
-      END
+      CMD
 
-      system(cmd.gsub(/\s+/, ' '))
+      out, err, status = Open3.capture3(env, cmd)
+      raise err unless status.success?
+      IO.write(filename, out.gsub(/^--.*/, '').squeeze("\n"))
     end
 
     def self.commit!(filename, message)
