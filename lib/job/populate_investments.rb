@@ -30,11 +30,11 @@ module Job
     end
 
     def populate_historical_prices!
-      latest_date = historical_prices.maximum(:date) || Date.new(1900)
-      return if latest_date + 1 >= Date.current
+      target_date = date_after(historical_prices.maximum(:date))
+      return if target_date > Date.current
 
-      $stderr.puts "#{@investment.symbol}: #{latest_date + 1}"
-      YahooFinance.historical_quotes(@investment.symbol, start_date: latest_date + 1).each do |row|
+      $stderr.puts "#{@investment.symbol}: #{target_date}"
+      YahooFinance.historical_quotes(@investment.symbol, start_date: target_date).each do |row|
         historical_prices.create!(date:  row.trade_date,
                                   high:  row.high,
                                   low:   row.low,
@@ -43,10 +43,10 @@ module Job
     end
 
     def populate_splits!
-      latest_date = @investment.splits.maximum(:date) || Date.new(1900)
-      return if latest_date + 1 >= Date.current
+      target_date = date_after(splits.maximum(:date))
+      return if target_date > Date.current
 
-      YahooFinance.splits(@investment.symbol, start_date: latest_date + 1).each do |row|
+      YahooFinance.splits(@investment.symbol, start_date: target_date).each do |row|
         split = splits.create!(date:   row.date,
                                before: row.before,
                                after:  row.after)
@@ -56,10 +56,10 @@ module Job
 
     def populate_dividends!
       # FIXME: better source for dividend data
-      latest_date = @investment.dividends.maximum(:ex_date) || Date.new(1900)
-      return if latest_date + 1 >= Date.current
+      target_date = date_after(@investment.dividends.maximum(:ex_date))
+      return if target_date > Date.current
 
-      YahooFinance.historical_quotes(@investment.symbol, period: :dividends_only, start_date: latest_date + 1).each do |row|
+      YahooFinance.historical_quotes(@investment.symbol, period: :dividends_only, start_date: target_date).each do |row|
         # Yahoo dividends are adjusted so we need to unadjust them
         date = row.dividend_pay_date.to_date
         amount = row.dividend_yield.to_d * split_unadjustment(date)
@@ -67,6 +67,10 @@ module Job
                                      amount:  amount.round(2))
         adjust_prices_by(dividend)
       end
+    end
+
+    def date_after(date, default = Date.new(1900))
+      date ? date + 1 : default
     end
 
     def historical_prices
@@ -87,13 +91,8 @@ module Job
 
     private
     def adjust_prices_by(instance)
-      # instance needs to implement #investment_id, #adjust_through_date, and #adjustment
-      SqlUtil.execute <<-SQL, instance.price_adjustment, instance.investment_id, instance.price_adjust_up_to_date
-        UPDATE #{InvestmentHistoricalPrice.table_name}
-           SET adjustment = adjustment * ?
-         WHERE investment_id = ?
-           AND date <= ?
-      SQL
+      historical_prices.where('date <= ?', instance.price_adjust_up_to_date).
+                        update_all(['adjustment = adjustment * ?', instance.price_adjustment])
     end
   end
 end
