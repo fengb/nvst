@@ -11,7 +11,9 @@ gem 'yahoo-finance', require: false
 gem 'git', require: false
 
 # Model
-gem 'pg'
+gem 'pg', platforms: :ruby
+gem 'activerecord-jdbc-adapter', platform: :jruby
+gem 'jdbc-postgres', platform: :jruby
 gem 'devise'
 gem 'rails_admin'
 gem 'enumerize'
@@ -40,9 +42,9 @@ end
 
 group :development do
   gem 'better_errors'
-  gem 'binding_of_caller'
-  gem 'spring'
-  gem 'spring-commands-rspec'
+  gem 'binding_of_caller', platforms: :ruby
+  gem 'spring', platforms: :ruby
+  gem 'spring-commands-rspec', platforms: :ruby
 end
 
 group :test do
