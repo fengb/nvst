@@ -49,9 +49,7 @@ class InvestmentSplit < ActiveRecord::Base
     end
 
     ActiveRecord::Base.transaction do
-      position.activities.opening.each do |activity|
-        activity.adjustments << activity_adjustment!
-      end
+      position.opening_activity.adjustments << activity_adjustment!
 
       new_outstanding_shares = position.outstanding_shares * shares_adjustment
       Activity.create!(position:    position,
