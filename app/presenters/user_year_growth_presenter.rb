@@ -20,14 +20,12 @@ class UserYearGrowthPresenter
     @ownership = ownership
   end
 
-  def contributions(at: end_date)
-    @contributions ||= @user.contributions.year(@year).to_a
-    @contributions.select{|c| c.date <= at}
+  def contribution_value(at: end_date)
+    contributions(at: at).sum(&:amount)
   end
 
-  def reinvestments(at: end_date)
-    @reinvestments ||= Expense.where(reinvestment_for_user: @user).year(@year).to_a
-    @reinvestments.select{|c| c.date <= at}
+  def reinvestment_value(at: end_date)
+    reinvestments(at: at).sum(&:amount)
   end
 
   def benchmark_value(at: end_date)
@@ -56,8 +54,12 @@ class UserYearGrowthPresenter
     value(at: at) + booked_fee(at: at)
   end
 
+  def principal(at: end_date)
+    contribution_value(at: at) + reinvestment_value(at: at) + starting_value
+  end
+
   def gross_gains(at: end_date)
-    gross_value(at: at) - contributions(at: at).sum(&:amount) - reinvestments(at: at).sum(&:amount) - starting_value
+    gross_value(at: at) - principal(at: at)
   end
 
   def tentative_value(at: end_date)
@@ -79,6 +81,16 @@ class UserYearGrowthPresenter
 
   def end_date
     @end_date ||= Date.new(@year, 12, 31)
+  end
+
+  def contributions(at: end_date)
+    @contributions ||= @user.contributions.year(@year).to_a
+    @contributions.select{|c| c.date <= at}
+  end
+
+  def reinvestments(at: end_date)
+    @reinvestments ||= @user.reinvestments.year(@year).to_a
+    @reinvestments.select{|c| c.date <= at}
   end
 
   def benchmark_shares_matcher

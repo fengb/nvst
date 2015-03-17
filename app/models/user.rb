@@ -6,6 +6,7 @@ class User < ActiveRecord::Base
 
   has_many :contributions
   has_many :ownerships
+  has_many :reinvestments, class_name: 'Expense', foreign_key: :reinvestment_for_user_id
 
   scope :fee_collecting, ->{where(is_fee_collector: false)}
   def self.fee_collector
