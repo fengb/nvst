@@ -51,6 +51,9 @@ GEM
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
     builder (3.2.2)
+    bullet (4.14.4)
+      activesupport (>= 3.0.0)
+      uniform_notifier (>= 1.6.0)
     clockwork (1.1.0)
       activesupport
       tzinfo
@@ -257,6 +260,7 @@ GEM
     uglifier (2.7.1)
       execjs (>= 0.3.0)
       json (>= 1.8.0)
+    uniform_notifier (1.8.0)
     warden (1.2.3)
       rack (>= 1.0)
     yahoo-finance (0.2.0)
@@ -271,6 +275,7 @@ DEPENDENCIES
   better_errors
   big_decimal_helper
   binding_of_caller
+  bullet
   clockwork
   devise
   did_you_mean

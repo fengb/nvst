@@ -31,6 +31,7 @@ gem 'uglifier'
 # gem 'therubyrhino', platforms: :jruby
 
 group :development, :test do
+  gem 'bullet'
   gem 'did_you_mean', platforms: :mri
   gem 'dotenv-rails'
   gem 'rspec-rails'
