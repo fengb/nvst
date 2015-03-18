@@ -95,18 +95,25 @@ class UserYearGrowthPresenter
 
   def benchmark_shares_matcher
     @benchmark_shares_matcher ||= begin
-      shares_raw = Hash.new(0)
-      if starting_value != 0
-        shares_raw[start_date] += starting_value / benchmark_price_matcher[start_date]
-      end
-      contributions.each do |contribution|
-        shares_raw[contribution.date] += contribution.amount / benchmark_price_matcher[contribution.date]
-      end
-      reinvestments.each do |reinvestment|
-        shares_raw[reinvestment.date] += reinvestment.amount / benchmark_price_matcher[reinvestment.date]
+      benchmark_shares = benchmark_values.map do |date, value|
+        [date, value / benchmark_price_matcher[date]]
       end
 
-      BestMatchHash.sum(shares_raw)
+      BestMatchHash.sum(benchmark_shares)
+    end
+  end
+
+  def benchmark_values
+    Hash.new(0).tap do |values|
+      if starting_value != 0
+        values[start_date] += starting_value
+      end
+      contributions.each do |contribution|
+        values[contribution.date] += contribution.amount
+      end
+      reinvestments.each do |reinvestment|
+        values[reinvestment.date] += reinvestment.amount
+      end
     end
   end
 
