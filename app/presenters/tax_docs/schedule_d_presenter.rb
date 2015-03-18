@@ -5,7 +5,7 @@ module TaxDocs
     end
 
     def closing_activities
-      @closing_activities ||= Activity.year(@year).tracked.closing.order(:date).to_a
+      @closing_activities ||= Activity.closing.tracked.year(@year).includes(position: [:activities, :investment]).order(:date).to_a
     end
   end
 end
