@@ -1,7 +1,7 @@
 FactoryGirl.define do
   factory :investment do
     sequence(:symbol, 'A')
-    name    { Faker::Company.name }
+    name    { FFaker::Company.name }
 
     factory :cash
   end
