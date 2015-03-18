@@ -10,8 +10,8 @@
     %tr
       %th= growth.year
       %td= number_to_currency growth.starting_value
-      %td= number_to_currency growth.contributions.sum(&:amount)
-      %td= number_to_currency growth.reinvestments.sum(&:amount)
+      %td= number_to_currency growth.contribution_value
+      %td= number_to_currency growth.reinvestment_value
       %td= number_to_currency growth.gross_gains
       - if growth.tentative?
         %td.tentative= number_to_currency -growth.estimated_fee
