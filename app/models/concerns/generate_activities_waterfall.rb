@@ -16,14 +16,8 @@ module GenerateActivitiesWaterfall
     def execute!(data)
       data[:tax_date] ||= data[:date]
 
-      if data[:adjustment] && data[:adjustment] != 1
-        adjustment = ActivityAdjustment.new(date:   data[:date],
-                                            ratio:  data[:adjustment],
-                                            reason: 'fee')
-      end
-
       shared_data = data.slice(:date, :tax_date, :price)
-      shared_data[:adjustments] = [adjustment].compact
+      shared_data[:adjustments] = adjustments_for(data)
 
       investment = data[:investment]
       remaining_shares = data[:shares]
@@ -45,6 +39,16 @@ module GenerateActivitiesWaterfall
                                                        shares: remaining_shares,
                                                        is_opening: true)
       activities
+    end
+
+    def adjustments_for(data)
+      if data[:adjustment] && data[:adjustment] != 1
+        [ActivityAdjustment.new(date:   data[:date],
+                                ratio:  data[:adjustment],
+                                reason: 'fee')]
+      else
+        []
+      end
     end
 
     def open_positions(investment, new_shares, new_price)
