@@ -32,7 +32,7 @@ gem 'uglifier'
 
 group :development, :test do
   gem 'bullet'
-  gem 'did_you_mean', platforms: :mri
+  gem 'did_you_mean'
   gem 'dotenv-rails'
   gem 'rspec-rails'
   gem 'factory_girl_rails'
