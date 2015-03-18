@@ -21,3 +21,8 @@ matrix:
     - rvm: 'ruby-head'
     - rvm: 'jruby-head'
     - rvm: 'rbx-2'
+
+addons:
+  code_climate:
+    repo_token:
+      secure: "M73JwMGXAtqe2xB+DE/Db+ZHFLRYX3oLY4qq2ZOvm6+EwwrVwHqE93TXN1YMqABcvAVLXo4FsELo1P6L3i+GwFNmtbFzUVQ1MMiPZffGwU85aEg6leix6jnnZdubWLePos0ldTve03pmsCiJ27ijnFG9gY6WQ8cOQEL6c8wikIE="
