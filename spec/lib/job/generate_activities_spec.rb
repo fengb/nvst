@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 require 'job/generate_activities'
 
 describe Job::GenerateActivities do
