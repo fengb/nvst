@@ -9,6 +9,3 @@ mkdir -p log tmp/pids
 gem install bundler --conservative
 bundle check || bundle install
 bin/rake db:setup
-rm -f log/*
-rm -rf tmp/cache
-touch tmp/restart.txt
