@@ -7,4 +7,9 @@ class Admin < ActiveRecord::Base
   def title
     username
   end
+
+  # hack for RailsAdmin
+  def email
+    username
+  end
 end
