@@ -4,24 +4,21 @@ require 'open3'
 module Job
   class DbBackup
     TMP = 'tmp/db-backup.sql'
-    TARGET = ENV['NVST_DB_BACKUP']
-    MESSAGE = ENV['NVST_DB_BACKUP_MSG']
 
-    def self.perform
+    def self.perform(target = ENV['NVST_DB_BACKUP'], message = ENV['NVST_DB_BACKUP_MSG'])
       db_dump!(Nvst::Application.config.database_configuration['default'], TMP)
 
       if target.present?
-        FileUtils.mv TMP, TARGET
+        FileUtils.mv TMP, target
       end
 
       if message.present?
-        commit!(TARGET, MESSAGE)
+        commit!(target, message)
       end
     end
 
     def self.db_dump!(config, filename)
       env = { 'PGPASSWORD' => config['password'] }
-      opts = {}
       cmd = <<-CMD.squish
         pg_dump
           --data-only
