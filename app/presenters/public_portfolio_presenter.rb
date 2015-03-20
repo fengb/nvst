@@ -13,8 +13,7 @@ class PublicPortfolioPresenter
   end
 
   def dates
-    # FIXME: tap into portfolio instead
-    benchmark_price_matcher.keys
+    @portfolio.dates
   end
 
   def value_at(date)

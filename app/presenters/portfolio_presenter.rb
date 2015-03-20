@@ -24,7 +24,11 @@ class PortfolioPresenter
   end
 
   def dates
-    (@cashflow_amounts.keys | price_matcher(investments[1]).keys).sort
+    if start_date
+      start_date..Date.today
+    else
+      []
+    end
   end
 
   def value_at(date)
