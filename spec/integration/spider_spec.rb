@@ -6,6 +6,9 @@ RSpec.describe 'Spider', type: :request do
   Spidr.site(url) do |spider|
     spider.every_page do |page|
       specify page.url do
+        if page.response.code.to_i >= 500
+          raise page.body
+        end
       end
     end
 
