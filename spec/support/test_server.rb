@@ -12,9 +12,14 @@ module TestServer
         return
       end
 
+      mutex = Mutex.new
+      server_ready = ConditionVariable.new
       thread = Thread.new do
-        Rack::Handler::WEBrick.run(app, :Port => port)
+        Rack::Handler::WEBrick.run(app, :Port => port) do |s|
+          mutex.synchronize { server_ready.signal }
+        end
       end
+      mutex.synchronize { server_ready.wait(mutex) }
 
       servers[port] = thread
 

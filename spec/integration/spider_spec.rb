@@ -8,5 +8,11 @@ RSpec.describe 'Spider', type: :request do
       specify page.url do
       end
     end
+
+    spider.every_failed_url do |url|
+      specify url do
+        fail 'failed to connect'
+      end
+    end
   end
 end
