@@ -15,7 +15,7 @@ module TestServer
       mutex = Mutex.new
       server_ready = ConditionVariable.new
       thread = Thread.new do
-        Rack::Handler::WEBrick.run(app, :Port => port) do |s|
+        Rack::Handler::WEBrick.run(app, Port: port, Logger: logger, AccessLog: []) do |s|
           mutex.synchronize { server_ready.signal }
         end
       end
@@ -45,6 +45,10 @@ module TestServer
 
     def servers
       @servers ||= {}
+    end
+
+    def logger
+      @logger = WEBrick::Log.new(File::NULL)
     end
   end
 end
