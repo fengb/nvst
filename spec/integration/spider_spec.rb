@@ -8,6 +8,10 @@ RSpec.describe 'Spider', type: :request, order: :defined do
   end
 
   context '/admin' do
-    SpidrRSpec.test(context, url + '/admin')
+    admin = FactoryGirl.create(:admin, password: 'password')
+    SpidrRSpec.test(context, url + '/admin') do |spidr|
+      params = "admin[username]=#{admin.username}&admin[password]=#{admin.password}"
+      spidr.post_page(url + '/admin/sign_in', params)
+    end
   end
 end
