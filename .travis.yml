@@ -2,6 +2,7 @@ language: ruby
 script: bundle exec rake
 bundler_args: --without=development --jobs=4
 cache: bundler
+sudo: false
 
 before_script:
   - bin/setup
