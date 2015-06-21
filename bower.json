@@ -2,6 +2,6 @@
   "name": "nvst",
   "dependencies": {
     "mutiny": "~1.0.1",
-    "chartist": "~0.7.2"
+    "chartist": "~0.8.0"
   }
 }
