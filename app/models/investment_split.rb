@@ -1,5 +1,8 @@
 # Generated
 class InvestmentSplit < ActiveRecord::Base
+  class SplitError < RuntimeError
+  end
+
   belongs_to :investment
   belongs_to :activity_adjustment
 
@@ -45,7 +48,7 @@ class InvestmentSplit < ActiveRecord::Base
     if position.opening_activity.adjustments.include?(activity_adjustment)
       return
     elsif position.activities.where('date >= ?', self.date).exists?
-      raise 'Attempting to split but encountered future activities'
+      raise SplitError.new('Attempting to split but encountered future activities')
     end
 
     ActiveRecord::Base.transaction do

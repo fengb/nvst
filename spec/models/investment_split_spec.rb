@@ -88,7 +88,7 @@ describe InvestmentSplit do
         subject.date = close_activity.date
         expect {
           subject.generate_activity_for!(position)
-        }.to raise_error
+        }.to raise_error(InvestmentSplit::SplitError)
       end
     end
   end
