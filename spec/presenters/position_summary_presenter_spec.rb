@@ -43,14 +43,9 @@ describe PositionSummaryPresenter do
       end
     end
 
-    accessor_methods = PositionSummaryPresenter.public_instance_methods(false).select do |method_name|
-      method = PositionSummaryPresenter.instance_method(method_name)
-      method.arity == 0
-    end
-
-    accessor_methods.each do |method_name|
+    MetaSupport.public_getters(PositionSummaryPresenter).each do |method_name|
       specify "#{method_name} works" do
-        expect{subject.send(method_name)}.to_not raise_error
+        expect{subject.public_send(method_name)}.to_not raise_error
       end
     end
 
