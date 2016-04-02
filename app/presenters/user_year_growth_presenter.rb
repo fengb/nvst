@@ -35,7 +35,7 @@ class UserYearGrowthPresenter
   end
 
   def estimated_fee(at: end_date)
-    (gross_value(at: at) - benchmark_value(at: at)) / 2
+    [0, (gross_value(at: at) - benchmark_value(at: at)) / 2].max
   end
 
   def booked_fee(at: end_date)
