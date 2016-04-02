@@ -16,6 +16,10 @@ class Expiration < ActiveRecord::Base
       adjustment: 1}]
   end
 
+  def net_amount
+    0
+  end
+
   def description
     "#{shares} shares of #{investment}"
   end

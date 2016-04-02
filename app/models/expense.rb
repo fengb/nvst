@@ -45,12 +45,10 @@ class Expense < ActiveRecord::Base
   end
 
   def cashflow_amount
-    return 0 if reinvestment_for_user
-    -amount
+    reinvestment_for_user ? 0 : net_amount
   end
 
   def net_amount
-    return 0 if reinvestment_for_user
     -amount
   end
 
