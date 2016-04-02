@@ -2,7 +2,7 @@ class Admin::SummariesController < Admin::BaseController
   def show
     @users = User.all
     # FIXME
-    @years = [2013, 2014]
+    @years = [2013, 2014, 2015, 2016]
   end
 
   def user

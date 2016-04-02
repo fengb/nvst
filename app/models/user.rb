@@ -18,7 +18,7 @@ class User < ActiveRecord::Base
 
   def active_years
     # FIXME
-    [2013, 2014]
+    [2013, 2014, 2015, 2016]
   end
 
 
