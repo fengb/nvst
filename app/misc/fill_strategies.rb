@@ -23,7 +23,7 @@ class FillStrategies
   end
 
   def highest_cost_first
-    @positions.sort_by{|p| [-p.opening(:price), p.opening(:date)]}
+    @positions.sort_by{|p| [-p.opening(:adjusted_price), p.opening(:date)]}
   end
 
   def tax_efficient_harvester
@@ -34,7 +34,7 @@ class FillStrategies
                  else
                    0.15
                  end
-      (@new_price - p.opening(:price)) * tax_rate
+      (@new_price - p.opening(:adjusted_price)) * tax_rate
     end
   end
 end

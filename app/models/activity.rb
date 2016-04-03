@@ -25,7 +25,7 @@ class Activity < ActiveRecord::Base
   end
 
   def cost_basis
-    -shares * position.opening(:price)
+    -shares * position.opening(:adjusted_price)
   end
 
   def realized_gain
