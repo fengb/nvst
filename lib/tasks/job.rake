@@ -1,10 +1,9 @@
-desc 'Run nvst job'
-task :job, [:name?] do |t, args|
-  require 'job'
+desc 'Run ActiveJob'
+task :job, [:name?] => :environment do |t, args|
   if args[:name?]
-    Job.run(args[:name?])
+    args[:name?].camelize.constantize.perform_now
   else
-    Job.all.each do |name|
+    RailsUtil.all(:jobs).each do |name|
       puts "rake job[#{name}]"
     end
   end
