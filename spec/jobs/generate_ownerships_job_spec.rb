@@ -1,10 +1,9 @@
 require 'rails_helper'
-require 'job/generate_ownerships'
 
-describe Job::GenerateOwnerships do
+describe GenerateOwnershipsJob do
   describe '.classes_needing_processing' do
     it 'includes everything we need' do
-      expect(Job::GenerateOwnerships.classes_needing_processing).to include(
+      expect(GenerateOwnershipsJob.classes_needing_processing).to include(
         Contribution, Expense, Transfer
       )
     end
@@ -12,13 +11,13 @@ describe Job::GenerateOwnerships do
 
   describe '.perform' do
     it 'runs' do
-      Job::GenerateOwnerships.classes_needing_processing.each do |model|
+      GenerateOwnershipsJob.classes_needing_processing.each do |model|
         FactoryGirl.create model
       end
 
       allow(PortfolioPresenter).to receive(:all) { double(value_at: 1, cashflow_at: 0) }
 
-      Job::GenerateOwnerships.perform
+      GenerateOwnershipsJob.perform_now
     end
   end
 end

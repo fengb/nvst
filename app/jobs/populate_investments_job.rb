@@ -1,22 +1,21 @@
-require 'yahoo_finance'
+class PopulateInvestmentsJob < ActiveJob::Base
+  def perform
+    require 'yahoo_finance'
 
-
-module Job
-  class PopulateInvestments
-    def self.perform
-      Investment::Stock.find_each do |investment|
-        self.new(investment).populate!
-      end
+    Investment::Stock.find_each do |investment|
+      Processor.new(investment).populate!
     end
+  end
 
-    def self.reset!
-      SqlUtil.execute <<-END
-        TRUNCATE investment_historical_prices RESTART IDENTITY CASCADE;
-        TRUNCATE investment_splits RESTART IDENTITY CASCADE;
-        TRUNCATE investment_dividends RESTART IDENTITY CASCADE;
-      END
-    end
+  def reset!
+    SqlUtil.execute <<-END
+      TRUNCATE investment_historical_prices RESTART IDENTITY CASCADE;
+      TRUNCATE investment_splits RESTART IDENTITY CASCADE;
+      TRUNCATE investment_dividends RESTART IDENTITY CASCADE;
+    END
+  end
 
+  class Processor
     def initialize(investment)
       @investment = investment
     end
