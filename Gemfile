@@ -4,7 +4,7 @@ gem 'rails'
 
 # Server
 gem 'puma', require: false
-gem 'clockwork', require: false
+gem 'rufus-scheduler', require: false
 
 # Jobs
 gem 'yahoo-finance', require: false

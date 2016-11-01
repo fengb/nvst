@@ -54,9 +54,6 @@ GEM
     bullet (4.14.7)
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.9.0)
-    clockwork (1.2.0)
-      activesupport
-      tzinfo
     codeclimate-test-reporter (0.4.7)
       simplecov (>= 0.7.1, < 1.0.0)
     coderay (1.1.0)
@@ -226,6 +223,7 @@ GEM
     rspec-support (3.3.0)
     ruby_parser (3.7.0)
       sexp_processor (~> 4.1)
+    rufus-scheduler (3.2.2)
     safe_yaml (1.0.4)
     sass (3.4.14)
     sass-rails (5.0.3)
@@ -279,7 +277,6 @@ DEPENDENCIES
   big_decimal_helper
   binding_of_caller
   bullet
-  clockwork
   codeclimate-test-reporter
   devise
   did_you_mean
@@ -297,6 +294,7 @@ DEPENDENCIES
   rails
   rails_admin
   rspec-rails
+  rufus-scheduler
   sass-rails
   simplecov
   spidr
@@ -304,3 +302,6 @@ DEPENDENCIES
   spring-commands-rspec
   uglifier
   yahoo-finance
+
+BUNDLED WITH
+   1.13.5
