@@ -20,7 +20,6 @@ gem 'enumerize'
 gem 'arlj'
 
 # View
-gem 'haml-rails'
 gem 'jbuilder'
 
 # Assets
