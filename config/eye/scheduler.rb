@@ -1,6 +1,6 @@
 require_relative 'nvst'
 
-Eye::Nvst.process 'clockwork' do
+Eye::Nvst.process 'scheduler' do
   pid_file 'tmp/pids/scheduler.pid'
   stdall 'log/scheduler.log'
   start_command 'bin/nvst bundle exec ruby config/schedule.rb'
