@@ -1,4 +1,4 @@
-class GenerateOwnershipsJob < ActiveJob::Base
+class GenerateOwnershipsJob < ApplicationJob
   def perform
     self.class.objects_needing_processing.each do |o|
       o.generate_ownerships!

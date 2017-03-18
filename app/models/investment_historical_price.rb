@@ -1,4 +1,4 @@
-class InvestmentHistoricalPrice < ActiveRecord::Base
+class InvestmentHistoricalPrice < ApplicationRecord
   belongs_to :investment
 
   validates :date,       presence: true

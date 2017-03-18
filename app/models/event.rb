@@ -1,4 +1,4 @@
-class Event < ActiveRecord::Base
+class Event < ApplicationRecord
   extend Enumerize
   include GenerateActivitiesWaterfall
   include Scopes::Year

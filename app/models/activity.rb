@@ -1,5 +1,5 @@
 # Generated
-class Activity < ActiveRecord::Base
+class Activity < ApplicationRecord
   include Scopes::Year
 
   belongs_to :position

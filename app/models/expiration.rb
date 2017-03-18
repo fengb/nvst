@@ -1,4 +1,4 @@
-class Expiration < ActiveRecord::Base
+class Expiration < ApplicationRecord
   include GenerateActivitiesWaterfall
 
   belongs_to :investment, class_name: 'Investment'

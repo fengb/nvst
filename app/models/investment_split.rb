@@ -1,5 +1,5 @@
 # Generated
-class InvestmentSplit < ActiveRecord::Base
+class InvestmentSplit < ApplicationRecord
   class SplitError < RuntimeError
   end
 

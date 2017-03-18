@@ -1,4 +1,4 @@
-class Transfer < ActiveRecord::Base
+class Transfer < ApplicationRecord
   include GenerateOwnerships
   include Scopes::Year
 

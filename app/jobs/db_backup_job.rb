@@ -1,4 +1,4 @@
-class DbBackupJob < ActiveJob::Base
+class DbBackupJob < ApplicationJob
   queue_as :default
 
   TMP = 'tmp/db-backup.sql'

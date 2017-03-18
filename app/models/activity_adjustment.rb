@@ -1,5 +1,5 @@
 # Generated
-class ActivityAdjustment < ActiveRecord::Base
+class ActivityAdjustment < ApplicationRecord
   extend Enumerize
 
   has_and_belongs_to_many :activities

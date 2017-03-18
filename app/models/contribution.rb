@@ -1,4 +1,4 @@
-class Contribution < ActiveRecord::Base
+class Contribution < ApplicationRecord
   include GenerateActivitiesWaterfall
   include GenerateOwnerships
   include Scopes::Year

@@ -1,5 +1,5 @@
 # Generated
-class Position < ActiveRecord::Base
+class Position < ApplicationRecord
   extend Arlj
 
   belongs_to :investment

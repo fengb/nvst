@@ -1,5 +1,5 @@
 # Generated
-class InvestmentDividend < ActiveRecord::Base
+class InvestmentDividend < ApplicationRecord
   belongs_to :investment
 
   validates :ex_date, presence: true

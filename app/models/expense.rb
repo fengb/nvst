@@ -1,4 +1,4 @@
-class Expense < ActiveRecord::Base
+class Expense < ApplicationRecord
   extend Enumerize
   include GenerateActivitiesWaterfall
   include GenerateOwnerships
@@ -25,7 +25,7 @@ class Expense < ActiveRecord::Base
                             'employee benefit programs' => 'ben',
                             'other'                     => 'oth'}
 
-  scope :cashflow, -> { where('reinvestment_for_user_id IS NULL') }
+  scope :cashflow, -> { where(reinvestment_for_user_id: nil) }
 
   def raw_activities_data
     return [] if reinvestment_for_user
@@ -45,7 +45,7 @@ class Expense < ActiveRecord::Base
   end
 
   def cashflow_amount
-    reinvestment_for_user ? 0 : net_amount
+    reinvestment_for_user_id ? 0 : net_amount
   end
 
   def net_amount

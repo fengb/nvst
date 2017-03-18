@@ -1,4 +1,4 @@
-class GenerateActivitiesJob < ActiveJob::Base
+class GenerateActivitiesJob < ApplicationJob
   queue_as :default
 
   def perform

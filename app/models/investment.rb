@@ -1,4 +1,4 @@
-class Investment < ActiveRecord::Base
+class Investment < ApplicationRecord
   has_many :historical_prices, class_name: 'InvestmentHistoricalPrice'
   has_many :dividends,         class_name: 'InvestmentDividend'
   has_many :splits,            class_name: 'InvestmentSplit'

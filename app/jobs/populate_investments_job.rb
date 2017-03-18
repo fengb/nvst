@@ -1,4 +1,4 @@
-class PopulateInvestmentsJob < ActiveJob::Base
+class PopulateInvestmentsJob < ApplicationJob
   def perform
     require 'yahoo_finance'
 

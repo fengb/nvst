@@ -1,4 +1,4 @@
-class Trade < ActiveRecord::Base
+class Trade < ApplicationRecord
   include GenerateActivitiesWaterfall
 
   belongs_to :cash,       class_name: 'Investment'
