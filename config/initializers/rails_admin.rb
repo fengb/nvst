@@ -1,5 +1,6 @@
 RailsAdmin.config do |config|
   config.main_app_name = ['NVST', 'Admin']
+  config.parent_controller = '::RailsAdminController'
   # config.main_app_name = ->(controller) { [Rails.application.engine_name.titleize, controller.params['action'].titleize] }
 
   # RailsAdmin may need a way to know who the current user is]
