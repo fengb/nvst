@@ -3,7 +3,11 @@ class PopulateInvestmentsJob < ActiveJob::Base
     require 'yahoo_finance'
 
     Investment::Stock.find_each do |investment|
-      Processor.new(investment).populate!
+      begin
+        Processor.new(investment).populate!
+      rescue OpenURI::HTTPError => e
+        $stderr.puts e
+      end
     end
   end
 
