@@ -12,8 +12,8 @@ gem 'git', require: false
 
 # Model
 gem 'pg', platforms: :ruby
-gem 'activerecord-jdbc-adapter', platform: :jruby
-gem 'jdbc-postgres', platform: :jruby
+#gem 'activerecord-jdbc-adapter', platform: :jruby
+#gem 'jdbc-postgres', platform: :jruby
 gem 'devise'
 gem 'rails_admin'
 gem 'enumerize'
@@ -32,13 +32,11 @@ gem 'uglifier'
 
 group :development, :test do
   gem 'bullet'
-  gem 'did_you_mean'
   gem 'dotenv-rails'
   gem 'rspec-rails'
   gem 'factory_girl_rails'
   gem 'ffaker'
   gem 'pry'
-  gem 'big_decimal_helper'
 end
 
 group :development do
