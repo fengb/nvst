@@ -4,87 +4,91 @@ class Schwab
     'Cash Dividend'      => 'dividend - tax-exempt',
     'Bank Interest'      => 'interest',
     'Margin Interest'    => 'interest - margin',
+    'Special Qual Div'   => 'dividend - qualified',
   }
 
+  EXPIRE = ['Expired', 'Bankruptcy']
+  IGNORE = ['Spin-off', 'Name Change', 'Funds Paid']
+
   def self.process!(csv)
-    transactions = Transaction.parse(csv)
-    investments_lookup = Investment.lookup_by_symbol { |sym| Investment::Stock.create!(symbol: sym, name: sym) }
+    new(csv).process!
+  end
 
-    [].tap do |created|
-      ActiveRecord::Base.transaction do
-        created.concat process_trades!(transactions, investments_lookup)
-        created.concat process_events!(transactions, investments_lookup)
-        created.concat process_expirations!(transactions, investments_lookup)
+  def initialize(csv)
+    @csv = csv
+  end
+
+  def process!
+    transformed =
+      transactions.map do |t|
+        case t.action
+        when /^(Buy|Sell)/ then transform_trade(t)
+        when *EVENTS.keys  then transform_event(t)
+        when *EXPIRE       then transform_expiration(t)
+        when *IGNORE       then Rails.logger.warn("Schwab - ignoring #{t.action}") && nil
+        else raise TypeError.new("Unknown action #{t.action}")
+        end
+      end.compact
+
+    ActiveRecord::Base.transaction do
+      classes = transformed.map(&:class).uniq
+      classes.each do |klass|
+        existing = klass.where('date > ?', start_date)
+        records = transformed.select { |record| record.class == klass }
+        missing(existing, records).each(&:save!)
       end
     end
   end
 
-  def self.process_trades!(transactions, investments_lookup)
-    trade_transactions = transactions.select { |t| t.action =~ /^(Buy|Sell)/ }
-    return [] if trade_transactions.empty?
-
-    start_date = trade_transactions.last.date
-    trades = Trade.where('date >= ?', start_date).includes(:investment)
-
-    trade_data = trade_transactions.map do |transaction|
-      direction = transaction.action == 'Buy' ? 1 : -1
-      data = {
-        date:       transaction.date,
-        investment: investments_lookup[transaction.standard_symbol],
-        shares:     direction * transaction.quantity,
-        price:      transaction.price,
-        net_amount: transaction.amount,
-      }
-    end
-
-    Trade.create! missing(trades, trade_data)
+  def transform_trade(transaction)
+    Trade.new(
+      date:       transaction.date,
+      investment: investments_lookup[transaction.standard_symbol],
+      shares:     transaction.quantity,
+      price:      transaction.price,
+      net_amount: transaction.amount,
+    )
   end
 
-  def self.process_events!(transactions, investments_lookup)
-    event_transactions = transactions.select { |t| EVENTS.has_key?(t.action) }
-    return [] if event_transactions.empty?
-
-    start_date = event_transactions.last.date
-    events = Event.where('date >= ?', start_date).includes(:src_investment)
-
-    event_data = event_transactions.map do |transaction|
-      data = {
-        date:           transaction.date,
-        src_investment: transaction.standard_symbol ? investments_lookup[transaction.standard_symbol] : Investment::Cash.default,
-        amount:         transaction.amount,
-        category:       EVENTS[transaction.action],
-      }
-    end
-
-    Event.create! missing(events, event_data)
+  def transform_event(transaction)
+    Event.new(
+      date:           transaction.date,
+      src_investment: transaction.standard_symbol ? investments_lookup[transaction.standard_symbol] : Investment::Cash.default,
+      amount:         transaction.amount,
+      category:       EVENTS[transaction.action],
+    )
   end
 
-  def self.process_expirations!(transactions, investments_lookup)
-    expiration_transactions = transactions.select { |t| t.action == 'Expired' }
-    return [] if expiration_transactions.empty?
-
-    start_date = expiration_transactions.last.date
-    expirations = Expiration.where('date >= ?', start_date).includes(:investment)
-
-    expiration_data = expiration_transactions.map do |transaction|
-      data = {
-        investment: investments_lookup[transaction.standard_symbol],
-        date:       transaction.date,
-        shares:     transaction.quantity,
-      }
-    end
-
-    Expiration.create! missing(expirations, expiration_data)
+  def transform_expiration(transaction)
+    Expiration.new(
+      investment: investments_lookup[transaction.standard_symbol],
+      date:       transaction.date,
+      shares:     transaction.quantity,
+    )
   end
 
-  def self.missing(elements, searches)
-    searches.select do |search|
-      keys = search.keys
-      match = elements.find do |element|
-        search.values_at(*keys) == keys.map{|k| element.send(k)}
-      end
-      match.nil?
+  def missing(existing, additionals)
+    additionals.reject do |additional|
+      contains_similar?(existing, additional)
     end
+  end
+
+  def contains_similar?(haystack, needle)
+    attrs = needle.attributes.compact.to_set
+    haystack.any? { |item| item.attributes.compact.to_set.superset?(attrs) }
+  end
+
+  private
+  def transactions
+    @transactions ||= Transaction.parse(@csv).sort_by(&:date)
+  end
+
+  def investments_lookup
+    @investments_lookup ||= Investment.lookup_by_symbol { |sym| Investment::Stock.create!(symbol: sym, name: sym) }
+  end
+
+  def start_date
+    transactions.first&.date
   end
 
   class Transaction

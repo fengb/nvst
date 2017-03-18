@@ -1,4 +1,6 @@
 class Admin::PortfolioController < Admin::BaseController
+  around_action :skip_bullet, only: :update
+
   def show
     @position_summaries = PositionSummaryPresenter.all
   end

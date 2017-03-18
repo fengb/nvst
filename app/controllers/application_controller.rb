@@ -7,4 +7,17 @@ class ApplicationController < ActionController::Base
   def configure_permitted_parameters
     devise_parameter_sanitizer.for(:sign_in) << :username
   end
+
+  if defined?(Bullet)
+    def skip_bullet
+      Bullet.enable = false
+      yield
+    ensure
+      Bullet.enable = true
+    end
+  else
+    def skip_bullet
+      yield
+    end
+  end
 end
