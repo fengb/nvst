@@ -21,6 +21,7 @@ class Schwab
 
   def self.process_trades!(transactions, investments_lookup)
     trade_transactions = transactions.select { |t| t.action =~ /^(Buy|Sell)/ }
+    return [] if trade_transactions.empty?
 
     start_date = trade_transactions.last.date
     trades = Trade.where('date >= ?', start_date).includes(:investment)
@@ -41,6 +42,7 @@ class Schwab
 
   def self.process_events!(transactions, investments_lookup)
     event_transactions = transactions.select { |t| EVENTS.has_key?(t.action) }
+    return [] if event_transactions.empty?
 
     start_date = event_transactions.last.date
     events = Event.where('date >= ?', start_date).includes(:src_investment)
@@ -59,6 +61,7 @@ class Schwab
 
   def self.process_expirations!(transactions, investments_lookup)
     expiration_transactions = transactions.select { |t| t.action == 'Expired' }
+    return [] if expiration_transactions.empty?
 
     start_date = expiration_transactions.last.date
     expirations = Expiration.where('date >= ?', start_date).includes(:investment)
