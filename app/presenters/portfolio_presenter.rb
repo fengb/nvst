@@ -54,7 +54,7 @@ class PortfolioPresenter
   end
 
   def price_for(investment, date)
-    price_matcher(investment)[date]
+    price_matcher(investment)[date] || 0
   end
 
   def shares_for(investment, date)

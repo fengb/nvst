@@ -1,5 +1,5 @@
 json.data do
-  json.labels portfolio.dates
+  json.labels portfolio.dates.to_a
   json.series do
     json.array! ['portfolio'] do
       json.name 'Portfolio'
