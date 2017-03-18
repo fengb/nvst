@@ -11,15 +11,20 @@ class Admin::PortfolioController < Admin::BaseController
     csv_io = params[:csv]
     created = Schwab.process!(csv_io.read)
     if created.present?
-      require 'job/generate_activities'
-      Job::GenerateActivities.perform
+      GenerateActivitiesJob.perform_now
     end
 
     redirect_to action: 'show'
   end
 
   def transactions
-    @transactions = [Contribution.all, Event.all, Expense.all, Expiration.all, Trade.all].flatten
+    @transactions = [
+      *Contribution.all.includes(:user),
+      *Event.all.includes(:src_investment),
+      *Expense.all,
+      *Expiration.all.includes(:investment),
+      *Trade.all.includes(:investment),
+    ]
     @transactions.sort_by!(&:date).reverse!
   end
 
