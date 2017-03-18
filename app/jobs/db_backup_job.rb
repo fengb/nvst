@@ -24,7 +24,6 @@ class DbBackupJob < ActiveJob::Base
       pg_dump
         --data-only
         --no-owner
-        --exclude-table=investment_*
         --exclude-table=schema_migrations
         --username='#{config['username']}'
         --host='#{config['host']}'
