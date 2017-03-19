@@ -1,4 +1,3 @@
-# encoding: UTF-8
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -23,57 +22,50 @@ ActiveRecord::Schema.define(version: 20141228031403) do
     t.decimal "price",       precision: 12, scale: 4
     t.boolean "is_opening",                           default: false
     t.date    "tax_date"
+    t.index ["position_id"], name: "fk__activities_lot_id", using: :btree
   end
-
-  add_index "activities", ["position_id"], name: "fk__activities_lot_id", using: :btree
 
   create_table "activities_activity_adjustments", force: :cascade do |t|
     t.integer "activity_id"
     t.integer "activity_adjustment_id"
+    t.index ["activity_adjustment_id"], name: "fk__transaction_adjustments_transactions_adjustment_id", using: :btree
+    t.index ["activity_id"], name: "fk__activities_activity_adjustments_transaction_id", using: :btree
   end
-
-  add_index "activities_activity_adjustments", ["activity_adjustment_id"], name: "fk__transaction_adjustments_transactions_adjustment_id", using: :btree
-  add_index "activities_activity_adjustments", ["activity_id"], name: "fk__activities_activity_adjustments_transaction_id", using: :btree
 
   create_table "activities_contributions", force: :cascade do |t|
     t.integer "contribution_id"
     t.integer "activity_id"
+    t.index ["activity_id"], name: "index_activities_contributions_on_activity_id", unique: true, using: :btree
+    t.index ["contribution_id"], name: "index_activities_contributions_on_contribution_id", using: :btree
   end
-
-  add_index "activities_contributions", ["activity_id"], name: "index_activities_contributions_on_activity_id", unique: true, using: :btree
-  add_index "activities_contributions", ["contribution_id"], name: "index_activities_contributions_on_contribution_id", using: :btree
 
   create_table "activities_events", force: :cascade do |t|
     t.integer "event_id"
     t.integer "activity_id"
+    t.index ["activity_id"], name: "index_activities_events_on_activity_id", unique: true, using: :btree
+    t.index ["event_id"], name: "index_activities_events_on_event_id", using: :btree
   end
-
-  add_index "activities_events", ["activity_id"], name: "index_activities_events_on_activity_id", unique: true, using: :btree
-  add_index "activities_events", ["event_id"], name: "index_activities_events_on_event_id", using: :btree
 
   create_table "activities_expenses", force: :cascade do |t|
     t.integer "expense_id"
     t.integer "activity_id"
+    t.index ["activity_id"], name: "index_activities_expenses_on_activity_id", unique: true, using: :btree
+    t.index ["expense_id"], name: "index_activities_expenses_on_expense_id", using: :btree
   end
-
-  add_index "activities_expenses", ["activity_id"], name: "index_activities_expenses_on_activity_id", unique: true, using: :btree
-  add_index "activities_expenses", ["expense_id"], name: "index_activities_expenses_on_expense_id", using: :btree
 
   create_table "activities_expirations", force: :cascade do |t|
     t.integer "activity_id"
     t.integer "expiration_id"
+    t.index ["activity_id"], name: "fk__activities_expirations_activity_id", using: :btree
+    t.index ["expiration_id"], name: "fk__activities_expirations_expiration_id", using: :btree
   end
-
-  add_index "activities_expirations", ["activity_id"], name: "fk__activities_expirations_activity_id", using: :btree
-  add_index "activities_expirations", ["expiration_id"], name: "fk__activities_expirations_expiration_id", using: :btree
 
   create_table "activities_trades", force: :cascade do |t|
     t.integer "trade_id"
     t.integer "activity_id"
+    t.index ["activity_id"], name: "index_activities_trades_on_activity_id", unique: true, using: :btree
+    t.index ["trade_id"], name: "index_activities_trades_on_trade_id", using: :btree
   end
-
-  add_index "activities_trades", ["activity_id"], name: "index_activities_trades_on_activity_id", unique: true, using: :btree
-  add_index "activities_trades", ["trade_id"], name: "index_activities_trades_on_trade_id", using: :btree
 
   create_table "activity_adjustments", force: :cascade do |t|
     t.date    "date"
@@ -101,17 +93,15 @@ ActiveRecord::Schema.define(version: 20141228031403) do
     t.decimal  "amount",     precision: 18, scale: 4
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.index ["user_id"], name: "fk__contributions_user_id", using: :btree
   end
-
-  add_index "contributions", ["user_id"], name: "fk__contributions_user_id", using: :btree
 
   create_table "contributions_ownerships", force: :cascade do |t|
     t.integer "contribution_id"
     t.integer "ownership_id"
+    t.index ["contribution_id"], name: "fk__contributions_ownerships_contribution_id", using: :btree
+    t.index ["ownership_id"], name: "fk__contributions_ownerships_ownership_id", using: :btree
   end
-
-  add_index "contributions_ownerships", ["contribution_id"], name: "fk__contributions_ownerships_contribution_id", using: :btree
-  add_index "contributions_ownerships", ["ownership_id"], name: "fk__contributions_ownerships_ownership_id", using: :btree
 
   create_table "events", force: :cascade do |t|
     t.integer  "src_investment_id"
@@ -120,9 +110,8 @@ ActiveRecord::Schema.define(version: 20141228031403) do
     t.string   "category",          limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.index ["src_investment_id"], name: "fk__events_src_investment_id", using: :btree
   end
-
-  add_index "events", ["src_investment_id"], name: "fk__events_src_investment_id", using: :btree
 
   create_table "expenses", force: :cascade do |t|
     t.date     "date"
@@ -133,17 +122,15 @@ ActiveRecord::Schema.define(version: 20141228031403) do
     t.datetime "updated_at"
     t.string   "category",                 limit: 255
     t.integer  "reinvestment_for_user_id"
+    t.index ["reinvestment_for_user_id"], name: "fk__expenses_reinvestment_for_user_id", using: :btree
   end
-
-  add_index "expenses", ["reinvestment_for_user_id"], name: "fk__expenses_reinvestment_for_user_id", using: :btree
 
   create_table "expenses_ownerships", force: :cascade do |t|
     t.integer "expense_id"
     t.integer "ownership_id"
+    t.index ["expense_id"], name: "fk__expenses_ownerships_expense_id", using: :btree
+    t.index ["ownership_id"], name: "fk__expenses_ownerships_ownership_id", using: :btree
   end
-
-  add_index "expenses_ownerships", ["expense_id"], name: "fk__expenses_ownerships_expense_id", using: :btree
-  add_index "expenses_ownerships", ["ownership_id"], name: "fk__expenses_ownerships_ownership_id", using: :btree
 
   create_table "expirations", force: :cascade do |t|
     t.integer  "investment_id"
@@ -151,19 +138,17 @@ ActiveRecord::Schema.define(version: 20141228031403) do
     t.decimal  "shares",        precision: 15, scale: 4
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.index ["investment_id"], name: "fk__expirations_investment_id", using: :btree
   end
-
-  add_index "expirations", ["investment_id"], name: "fk__expirations_investment_id", using: :btree
 
   create_table "investment_dividends", force: :cascade do |t|
     t.integer "investment_id"
     t.date    "ex_date"
     t.decimal "amount",        precision: 12, scale: 4
+    t.index ["ex_date"], name: "index_investment_dividends_on_ex_date", using: :btree
+    t.index ["investment_id", "ex_date"], name: "index_investment_dividends_on_investment_id_and_ex_date", unique: true, using: :btree
+    t.index ["investment_id"], name: "fk__investment_dividends_investment_id", using: :btree
   end
-
-  add_index "investment_dividends", ["ex_date"], name: "index_investment_dividends_on_ex_date", using: :btree
-  add_index "investment_dividends", ["investment_id", "ex_date"], name: "index_investment_dividends_on_investment_id_and_ex_date", unique: true, using: :btree
-  add_index "investment_dividends", ["investment_id"], name: "fk__investment_dividends_investment_id", using: :btree
 
   create_table "investment_historical_prices", force: :cascade do |t|
     t.integer "investment_id"
@@ -172,11 +157,10 @@ ActiveRecord::Schema.define(version: 20141228031403) do
     t.decimal "low",           precision: 12, scale: 4
     t.decimal "close",         precision: 12, scale: 4
     t.float   "adjustment"
+    t.index ["date"], name: "index_investment_historical_prices_on_date", using: :btree
+    t.index ["investment_id", "date"], name: "index_investment_historical_prices_on_investment_id_and_date", unique: true, using: :btree
+    t.index ["investment_id"], name: "fk__investment_historical_prices_investment_id", using: :btree
   end
-
-  add_index "investment_historical_prices", ["date"], name: "index_investment_historical_prices_on_date", using: :btree
-  add_index "investment_historical_prices", ["investment_id", "date"], name: "index_investment_historical_prices_on_investment_id_and_date", unique: true, using: :btree
-  add_index "investment_historical_prices", ["investment_id"], name: "fk__investment_historical_prices_investment_id", using: :btree
 
   create_table "investment_splits", force: :cascade do |t|
     t.integer "investment_id"
@@ -184,12 +168,11 @@ ActiveRecord::Schema.define(version: 20141228031403) do
     t.integer "before"
     t.integer "after"
     t.integer "activity_adjustment_id"
+    t.index ["activity_adjustment_id"], name: "fk__investment_splits_transaction_adjustment_id", using: :btree
+    t.index ["date"], name: "index_investment_splits_on_date", using: :btree
+    t.index ["investment_id", "date"], name: "index_investment_splits_on_investment_id_and_date", unique: true, using: :btree
+    t.index ["investment_id"], name: "fk__investment_splits_investment_id", using: :btree
   end
-
-  add_index "investment_splits", ["activity_adjustment_id"], name: "fk__investment_splits_transaction_adjustment_id", using: :btree
-  add_index "investment_splits", ["date"], name: "index_investment_splits_on_date", using: :btree
-  add_index "investment_splits", ["investment_id", "date"], name: "index_investment_splits_on_investment_id_and_date", unique: true, using: :btree
-  add_index "investment_splits", ["investment_id"], name: "fk__investment_splits_investment_id", using: :btree
 
   create_table "investments", force: :cascade do |t|
     t.string   "symbol",       limit: 255
@@ -206,23 +189,20 @@ ActiveRecord::Schema.define(version: 20141228031403) do
     t.decimal  "units",      precision: 18, scale: 8
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.index ["user_id"], name: "fk__ownerships_user_id", using: :btree
   end
-
-  add_index "ownerships", ["user_id"], name: "fk__ownerships_user_id", using: :btree
 
   create_table "ownerships_transfers", force: :cascade do |t|
     t.integer "ownership_id"
     t.integer "transfer_id"
+    t.index ["ownership_id"], name: "fk__ownerships_transfers_ownership_id", using: :btree
+    t.index ["transfer_id"], name: "fk__fees_ownerships_transfer_id", using: :btree
   end
-
-  add_index "ownerships_transfers", ["ownership_id"], name: "fk__ownerships_transfers_ownership_id", using: :btree
-  add_index "ownerships_transfers", ["transfer_id"], name: "fk__fees_ownerships_transfer_id", using: :btree
 
   create_table "positions", force: :cascade do |t|
     t.integer "investment_id"
+    t.index ["investment_id"], name: "fk__positions_investment_id", using: :btree
   end
-
-  add_index "positions", ["investment_id"], name: "fk__positions_investment_id", using: :btree
 
   create_table "rails_admin_histories", force: :cascade do |t|
     t.text     "message"
@@ -230,12 +210,11 @@ ActiveRecord::Schema.define(version: 20141228031403) do
     t.integer  "item"
     t.string   "table",      limit: 255
     t.integer  "month",      limit: 2
-    t.integer  "year",       limit: 8
+    t.bigint   "year"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.index ["item", "table", "month", "year"], name: "index_rails_admin_histories", using: :btree
   end
-
-  add_index "rails_admin_histories", ["item", "table", "month", "year"], name: "index_rails_admin_histories", using: :btree
 
   create_table "trades", force: :cascade do |t|
     t.date     "date"
@@ -246,10 +225,9 @@ ActiveRecord::Schema.define(version: 20141228031403) do
     t.integer  "investment_id"
     t.decimal  "shares",        precision: 15, scale: 4
     t.decimal  "price",         precision: 15, scale: 4
+    t.index ["cash_id"], name: "fk__trades_cash_id", using: :btree
+    t.index ["investment_id"], name: "fk__trades_investment_id", using: :btree
   end
-
-  add_index "trades", ["cash_id"], name: "fk__trades_cash_id", using: :btree
-  add_index "trades", ["investment_id"], name: "fk__trades_investment_id", using: :btree
 
   create_table "transfers", force: :cascade do |t|
     t.date     "date"
@@ -258,10 +236,9 @@ ActiveRecord::Schema.define(version: 20141228031403) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "to_user_id"
+    t.index ["from_user_id"], name: "fk__transfers_from_user_id", using: :btree
+    t.index ["to_user_id"], name: "fk__transfers_to_user_id", using: :btree
   end
-
-  add_index "transfers", ["from_user_id"], name: "fk__transfers_from_user_id", using: :btree
-  add_index "transfers", ["to_user_id"], name: "fk__transfers_to_user_id", using: :btree
 
   create_table "users", force: :cascade do |t|
     t.string   "email",                  limit: 255,                 null: false
