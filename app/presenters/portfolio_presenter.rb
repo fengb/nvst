@@ -1,7 +1,7 @@
 class PortfolioPresenter
   def self.all
     self.new(activities: Activity.includes(position: :investment),
-             cashflows:  Contribution.all + Expense.cashflow.includes(:reinvestment_for_user))
+             cashflows:  Contribution.all + Expense.cashflow)
   end
 
   def initialize(activities: [],
