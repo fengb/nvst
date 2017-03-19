@@ -4,10 +4,15 @@ seedfile = if File.exists?(path + '/seeds_local.sql')
            else
              path + '/seeds.sql'
            end
-statements = IO.read(seedfile).split(';').map(&:strip).reject(&:empty?)
 
-ActiveRecord::Base.transaction do
-  statements.each do |statement|
-    SqlUtil.execute(statement)
-  end
-end
+config = ActiveRecord::Base.configurations[Rails.env]
+env = { 'PGPASSWORD' => config['password'] }
+cmd = <<-CMD.squish
+  psql
+    --file='#{seedfile}'
+    --username='#{config['username']}'
+    --host='#{config['host']}'
+    --port='#{config['port']}'
+    '#{config['database']}'
+CMD
+system(env, cmd)

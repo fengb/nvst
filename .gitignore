@@ -1,5 +1,6 @@
 .*
 
 /coverage
+/db/seeds_local.sql
 /log
 /tmp

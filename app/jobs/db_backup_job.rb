@@ -7,7 +7,7 @@ class DbBackupJob < ApplicationJob
     require 'git'
     require 'open3'
 
-    db_dump!(Nvst::Application.config.database_configuration['default'], TMP)
+    db_dump!(ActiveRecord::Base.configurations[Rails.env], TMP)
 
     if target.present?
       FileUtils.mv TMP, target
