@@ -1,5 +1,4 @@
 class Event < ApplicationRecord
-  extend Enumerize
   include GenerateActivitiesWaterfall
   include Scopes::Year
 
@@ -10,14 +9,16 @@ class Event < ApplicationRecord
   validates :src_investment, presence: true
   validates :amount,         presence: true
 
-  enumerize :category, in: {'interest'                   => 'int',
-                            'interest - margin'          => 'inm',
-                            'tax'                        => 'tax',
-                            'dividend - ordinary'        => 'dvo',
-                            'dividend - qualified'       => 'dvq',
-                            'dividend - tax-exempt'      => 'dve',
-                            'capital gains - short-term' => 'cgs',
-                            'capital gains - long-term'  => 'cgl'}
+  enum category: {
+    'interest'                   => 'int',
+    'interest - margin'          => 'inm',
+    'tax'                        => 'tax',
+    'dividend - ordinary'        => 'dvo',
+    'dividend - qualified'       => 'dvq',
+    'dividend - tax-exempt'      => 'dve',
+    'capital gains - short-term' => 'cgs',
+    'capital gains - long-term'  => 'cgl',
+  }
 
   def raw_activities_data
     [{investment: Investment::Cash.first,

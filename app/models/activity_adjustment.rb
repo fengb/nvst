@@ -1,14 +1,12 @@
 # Generated
 class ActivityAdjustment < ApplicationRecord
-  extend Enumerize
-
   has_and_belongs_to_many :activities
 
   validates :date,        presence: true
   validates :numerator,   presence: true
   validates :denominator, presence: true
 
-  enumerize :reason, in: %w[fee split]
+  enum reason: { fee: 'fee', split: 'split' }
 
   def self.ratio(on: Date.current)
     data = where('date <= ?', on).pluck(:numerator, :denominator)

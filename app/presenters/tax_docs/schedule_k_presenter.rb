@@ -9,7 +9,7 @@ module TaxDocs
     end
 
     def categories
-      ['ordinary_income', *Event.category.values, 'short_term_capital_gain']
+      ['ordinary_income', *Event.categories.values, 'short_term_capital_gain']
     end
 
     def value(category, user=nil)
@@ -37,7 +37,7 @@ module TaxDocs
     def events
       @events ||= begin
         events = Event.year(@year)
-        Hash[Event.category.values.map{|c| [c, events.select{|e| e.category == c}]}]
+        Hash[Event.categories.values.map{|c| [c, events.select{|e| e.category == c}]}]
       end
     end
 

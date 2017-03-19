@@ -5,7 +5,7 @@ module TaxDocs
     end
 
     def expense_categories
-      Expense.category.values
+      Expense.categories.values
     end
 
     def expenses(category=nil)

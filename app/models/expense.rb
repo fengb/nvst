@@ -1,5 +1,4 @@
 class Expense < ApplicationRecord
-  extend Enumerize
   include GenerateActivitiesWaterfall
   include GenerateOwnerships
   include Scopes::Year
@@ -12,18 +11,20 @@ class Expense < ApplicationRecord
   validates :amount, presence: true
   validates :vendor, presence: true
 
-  enumerize :category, in: {'salaries and wages'        => 'sal',
-                            'payments'                  => 'pay',
-                            'repairs and maintenance'   => 'rep',
-                            'bad debts'                 => 'deb',
-                            'rent'                      => 'ren',
-                            'taxes and licenses'        => 'tax',
-                            'interest'                  => 'int',
-                            'depreciation'              => 'dpr',
-                            'depletion'                 => 'dpl',
-                            'retirement plans'          => 'ret',
-                            'employee benefit programs' => 'ben',
-                            'other'                     => 'oth'}
+  enum category: {
+    'salaries and wages'        => 'sal',
+    'payments'                  => 'pay',
+    'repairs and maintenance'   => 'rep',
+    'bad debts'                 => 'deb',
+    'rent'                      => 'ren',
+    'taxes and licenses'        => 'tax',
+    'interest'                  => 'int',
+    'depreciation'              => 'dpr',
+    'depletion'                 => 'dpl',
+    'retirement plans'          => 'ret',
+    'employee benefit programs' => 'ben',
+    'other'                     => 'oth',
+  }
 
   scope :cashflow, -> { where(reinvestment_for_user_id: nil) }
 
