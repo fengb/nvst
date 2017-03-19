@@ -7,26 +7,33 @@ attributes.
 
 Usage
 -----
-1.  Add the HTML5 data attributes.
+1.  Install Mutiny. We use [bower](http://bower.io/):
+
+    ```console
+    $ bower install --save mutiny
+    ```
+
+2.  Load Mutiny into the page:
+
+    ```html
+    <script src='bower_components/mutiny/src/core.js'></script>
+    <script src='bower_components/mutiny/src/text-select.js'></script>
+    ```
+
+3.  Add the HTML5 data attributes:
 
     ```html
     <span data-mutiny-text-select=''>Click me to select all</span>
     ```
 
-2.  Load Mutiny
-
-    ```html
-    <script src='src/core.js'></script>
-    <script src='src/text-select.js'></script>
-    ```
-
-3. There is no step 3!
+4. Watch the magic!
 
 Extending
 -----
 Javascript:
+
 ```javascript
-Mutiny.widgets.textReplace = {
+Mutiny.widgets.optionsToText = {
   defaults: {'def': 'opt'},
   init: function(instigator, options) {
     var s = [];

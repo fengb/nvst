@@ -1,9 +1,8 @@
 {
   "name": "chartist",
-  "version": "0.8.3",
   "main": [
-    "./dist/chartist.min.js",
-    "./dist/chartist.min.css"
+    "./dist/chartist.js",
+    "./dist/chartist.css"
   ],
   "devDependencies": {
     "snap.svg": "~0.3.0",
@@ -12,11 +11,15 @@
     "compass-mixins": "~1.0.2",
     "codemirror": "~4.12.0",
     "base64": "~0.3.0",
-    "chartist-plugin-pointlabels": "~0.0.3",
-    "chartist-plugin-sketchy": "~0.0.2",
+    "chartist-plugin-pointlabels": "~0.0.4",
     "chartist-plugin-accessibility": "~0.0.2",
-    "chartist-plugin-tooltip": "~0.0.8",
-    "matchMedia": "~0.2.0"
+    "chartist-plugin-tooltip": "~0.0.12",
+    "chartist-plugin-axistitle": "~0.0.1",
+    "chartist-plugin-threshold": "~0.0.1",
+    "chartist-plugin-fill-donut": "~0.0.1",
+    "chartist-plugin-zoom": "~0.2.1",
+    "matchMedia": "~0.2.0",
+    "moment": "^2.14.1"
   },
   "ignore": [
     ".*",
@@ -30,16 +33,17 @@
     "test"
   ],
   "resolutions": {
-    "chartist": "~0.8.0"
+    "chartist": "~0.9.0"
   },
   "homepage": "https://github.com/gionkunz/chartist-js",
-  "_release": "0.8.3",
+  "version": "0.10.1",
+  "_release": "0.10.1",
   "_resolution": {
     "type": "version",
-    "tag": "v0.8.3",
-    "commit": "e27d6f4556f35d09cad5207b7cadf3888a8ec618"
+    "tag": "v0.10.1",
+    "commit": "1c2b5dc55b33d92ed17a96d0bbe8f172f2221187"
   },
-  "_source": "git://github.com/gionkunz/chartist-js.git",
-  "_target": "~0.8.0",
+  "_source": "https://github.com/gionkunz/chartist-js.git",
+  "_target": "~0.10.0",
   "_originalSource": "chartist"
 }
