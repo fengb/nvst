@@ -33,7 +33,7 @@ class Schwab
     ActiveRecord::Base.transaction do
       classes = transformed.map(&:class).uniq
       classes.each do |klass|
-        existing = klass.where('date > ?', start_date)
+        existing = klass.where('date >= ?', start_date)
         records = transformed.select { |record| record.class == klass }
         missing(existing, records).each(&:save!)
       end
@@ -41,10 +41,11 @@ class Schwab
   end
 
   def transform_trade(transaction)
+    direction = transaction.action.start_with?('Buy') ? 1 : -1
     Trade.new(
       date:       transaction.date,
       investment: investments_lookup[transaction.standard_symbol],
-      shares:     transaction.quantity,
+      shares:     direction * transaction.quantity,
       price:      transaction.price,
       net_amount: transaction.amount,
     )
