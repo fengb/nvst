@@ -12,7 +12,7 @@ describe GenerateActivitiesJob do
   describe '.perform' do
     it 'runs' do
       GenerateActivitiesJob.classes_needing_processing.each do |model|
-        FactoryGirl.create model
+        FactoryGirl.create model.name.underscore.to_sym
       end
 
       GenerateActivitiesJob.perform_now
