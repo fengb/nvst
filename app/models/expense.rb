@@ -42,7 +42,7 @@ class Expense < ApplicationRecord
 
     [{user: reinvestment_for_user,
       date: date,
-      units: ownership_units(at: date, amount: amount, cashflow: false)}]
+      units: ownership_units(on: date, amount: amount, cashflow: false)}]
   end
 
   def cashflow_amount

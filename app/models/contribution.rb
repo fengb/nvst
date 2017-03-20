@@ -21,7 +21,7 @@ class Contribution < ApplicationRecord
   def raw_ownerships_data
     [{user: user,
       date: date,
-      units: ownership_units(at: date, amount: amount)}]
+      units: ownership_units(on: date, amount: amount)}]
   end
 
   def cashflow_amount

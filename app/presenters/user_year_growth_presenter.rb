@@ -20,58 +20,58 @@ class UserYearGrowthPresenter
     @ownership = ownership
   end
 
-  def contribution_value(at: end_date)
-    contributions(at: at).sum(&:amount)
+  def contribution_value(on: end_date)
+    contributions(on: on).sum(&:amount)
   end
 
-  def reinvestment_value(at: end_date)
-    reinvestments(at: at).sum(&:amount)
+  def reinvestment_value(on: end_date)
+    reinvestments(on: on).sum(&:amount)
   end
 
-  def benchmark_value(at: end_date)
-    shares = benchmark_shares_matcher[at]
+  def benchmark_value(on: end_date)
+    shares = benchmark_shares_matcher[on]
     return 0 if shares == 0
-    shares * benchmark_price_matcher[at]
+    shares * benchmark_price_matcher[on]
   end
 
-  def estimated_fee(at: end_date)
-    [0, (gross_value(at: at) - benchmark_value(at: at)) / 2].max
+  def estimated_fee(on: end_date)
+    [0, (gross_value(on: on) - benchmark_value(on: on)) / 2].max
   end
 
-  def booked_fee(at: end_date)
-    Transfer.fees.where(date: at, from_user: @user).sum(:amount)
+  def booked_fee(on: end_date)
+    Transfer.fees.where(date: on, from_user: @user).sum(:amount)
   end
 
-  def unbooked_fee(at: end_date)
-    estimated_fee(at: end_date) - booked_fee(at: end_date)
+  def unbooked_fee(on: end_date)
+    estimated_fee(on: end_date) - booked_fee(on: end_date)
   end
 
-  def value(at: end_date)
-    @ownership.user_percent(@user, at) * @portfolio.value_at(at)
+  def value(on: end_date)
+    @ownership.user_percent(@user, on) * @portfolio.value_on(on)
   end
 
-  def gross_value(at: end_date)
-    value(at: at) + booked_fee(at: at)
+  def gross_value(on: end_date)
+    value(on: on) + booked_fee(on: on)
   end
 
-  def principal(at: end_date)
-    contribution_value(at: at) + reinvestment_value(at: at) + starting_value
+  def principal(on: end_date)
+    contribution_value(on: on) + reinvestment_value(on: on) + starting_value
   end
 
-  def gross_gains(at: end_date)
-    gross_value(at: at) - principal(at: at)
+  def gross_gains(on: end_date)
+    gross_value(on: on) - principal(on: on)
   end
 
-  def tentative_value(at: end_date)
-    gross_value(at: at) - estimated_fee(at: at)
+  def tentative_value(on: end_date)
+    gross_value(on: on) - estimated_fee(on: on)
   end
 
   def starting_value
-    value(at: start_date)
+    value(on: start_date)
   end
 
-  def tentative?(at: end_date)
-    unbooked_fee(at: at).abs > 0.01
+  def tentative?(on: end_date)
+    unbooked_fee(on: on).abs > 0.01
   end
 
   private
@@ -83,14 +83,14 @@ class UserYearGrowthPresenter
     @end_date ||= Date.new(@year, 12, 31)
   end
 
-  def contributions(at: end_date)
+  def contributions(on: end_date)
     @contributions ||= @user.contributions.year(@year).to_a
-    @contributions.select{|c| c.date <= at}
+    @contributions.select{|c| c.date <= on}
   end
 
-  def reinvestments(at: end_date)
+  def reinvestments(on: end_date)
     @reinvestments ||= @user.reinvestments.year(@year).to_a
-    @reinvestments.select{|c| c.date <= at}
+    @reinvestments.select{|c| c.date <= on}
   end
 
   def benchmark_shares_matcher

@@ -26,25 +26,25 @@ describe GenerateOwnerships do
   describe '#ownership_units' do
     context 'no existing ownerships' do
       it 'is full value' do
-        expect(subject.ownership_units(at: Date.current)).to eq(1)
+        expect(subject.ownership_units(on: Date.current)).to eq(1)
       end
     end
 
     context 'existing ownership which doubled in value' do
       let!(:existing) { FactoryGirl.create(:ownership, units: 50) }
       before do
-        allow(subject).to receive(:ownership_portfolio) { double(value_at: 100, cashflow_at: 0) }
+        allow(subject).to receive(:ownership_portfolio) { double(value_on: 100, cashflow_on: 0) }
       end
 
       it 'is full value on the same day as existing' do
-        expect(subject.ownership_units(at: existing.date, amount: 50)).to eq(50)
+        expect(subject.ownership_units(on: existing.date, amount: 50)).to eq(50)
       end
 
       it 'is half value afterwards' do
         # Adding $50 worth of units should bring total ownership to $50
         # new value == 150
         # therefore, new units should = 1/3 ownership
-        expect(subject.ownership_units(at: existing.date + 1, amount: 50)).to eq(25)
+        expect(subject.ownership_units(on: existing.date + 1, amount: 50)).to eq(25)
       end
 
       it 'is adjusted when no cashflows' do
@@ -52,7 +52,7 @@ describe GenerateOwnerships do
         # Adding $50 worth of units should bring total ownership to $50
         # new value still == 100
         # therefore, new units should = 1/2 ownership
-        expect(subject.ownership_units(at: existing.date + 1, amount: 50, cashflow: false)).to eq(50)
+        expect(subject.ownership_units(on: existing.date + 1, amount: 50, cashflow: false)).to eq(50)
       end
     end
   end

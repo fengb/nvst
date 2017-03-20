@@ -15,33 +15,33 @@ describe PublicPortfolioPresenter do
     ])
   end
 
-  describe '#gross_value_at' do
+  describe '#gross_value_on' do
     it '== 0 with no portfolio values' do
-      expect(subject.gross_value_at('2013-01-31'.to_date)).to eq(0)
+      expect(subject.gross_value_on('2013-01-31'.to_date)).to eq(0)
     end
 
     it '== 1000 principal amount' do
-      expect(subject.gross_value_at('2013-02-01'.to_date)).to eq(normalize_to)
+      expect(subject.gross_value_on('2013-02-01'.to_date)).to eq(normalize_to)
     end
 
     it 'accounts for value growth' do
-      expect(subject.gross_value_at('2013-02-02'.to_date)).to eq(normalize_to*2)
+      expect(subject.gross_value_on('2013-02-02'.to_date)).to eq(normalize_to*2)
     end
 
     it 'ignores further principal growth' do
-      expect(subject.gross_value_at('2013-02-03'.to_date)).to eq(normalize_to*2)
+      expect(subject.gross_value_on('2013-02-03'.to_date)).to eq(normalize_to*2)
     end
 
     it 'accounts for value growth after further principal growth' do
-      expect(subject.gross_value_at('2013-02-04'.to_date)).to eq(normalize_to*3)
+      expect(subject.gross_value_on('2013-02-04'.to_date)).to eq(normalize_to*3)
     end
 
     it 'accounts for two cashflows' do
-      expect(subject.gross_value_at('2013-02-05'.to_date)).to eq(normalize_to*3)
+      expect(subject.gross_value_on('2013-02-05'.to_date)).to eq(normalize_to*3)
     end
 
     it 'accounts for concurrent growth and cashflow' do
-      expect(subject.gross_value_at('2013-02-06'.to_date)).to eq(normalize_to*6)
+      expect(subject.gross_value_on('2013-02-06'.to_date)).to eq(normalize_to*6)
     end
   end
 end

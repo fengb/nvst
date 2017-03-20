@@ -8,5 +8,5 @@
     - @portfolio.dates.each do |date|
       %tr
         %th= date
-        %td= number_to_currency @portfolio.value_at(date)
-        %td= number_to_currency @portfolio.benchmark_value_at(date)
+        %td= number_to_currency @portfolio.value_on(date)
+        %td= number_to_currency @portfolio.benchmark_value_on(date)

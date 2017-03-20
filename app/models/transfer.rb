@@ -24,10 +24,10 @@ class Transfer < ApplicationRecord
   def raw_ownerships_data
     [{user: from_user,
       date: date,
-      units: -ownership_units(at: date, amount: amount)},
+      units: -ownership_units(on: date, amount: amount)},
      {user: to_user,
       date: date,
-      units: ownership_units(at: date, amount: amount)}
+      units: ownership_units(on: date, amount: amount)}
     ]
   end
 end

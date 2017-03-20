@@ -16,21 +16,21 @@ class PublicPortfolioPresenter
     @portfolio.dates
   end
 
-  def value_at(date)
-    gross_value_at(date) - fee_at(date)
+  def value_on(date)
+    gross_value_on(date) - fee_at(date)
   end
 
-  def gross_value_at(date)
-    pv = @portfolio.value_at(date)
+  def gross_value_on(date)
+    pv = @portfolio.value_on(date)
     return 0 if pv.zero?
-    @normalize_to * pv / adjusted_principal_at(date)
+    @normalize_to * pv / adjusted_principal_on(date)
   end
 
   def fee_at(date)
-    [(gross_value_at(date) - benchmark_value_at(date)) / 2, 0].max
+    [(gross_value_on(date) - benchmark_value_on(date)) / 2, 0].max
   end
 
-  def benchmark_value_at(date)
+  def benchmark_value_on(date)
     benchmark_shares * benchmark_price_matcher[date]
   end
 
@@ -46,16 +46,16 @@ class PublicPortfolioPresenter
     end
   end
 
-  def adjusted_principal_at(date)
+  def adjusted_principal_on(date)
     @adjustment_matcher ||= begin
       previous_adjusted = 1
       adjustments = @portfolio.cashflows.sort.map do |date, amount|
-        current_principal = @portfolio.principal_at(date)
+        current_principal = @portfolio.principal_on(date)
         previous_principal = current_principal - amount
         if previous_principal.zero?
           new_adjusted = amount
         else
-          current_value = @portfolio.value_at(date)
+          current_value = @portfolio.value_on(date)
           previous_value = current_value - amount
           #new_adjusted = previous_adjusted + (current_value - previous_value) / (previous_value / previous_adjusted)
           new_adjusted = previous_adjusted + (current_value - previous_value) * previous_adjusted / previous_value

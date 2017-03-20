@@ -13,15 +13,15 @@ module Stubs
       @start_date = data.map{|e| e[:date]}.min
     end
 
-    def value_at(date)
+    def value_on(date)
       @values[date] || 0
     end
 
-    def principal_at(date)
+    def principal_on(date)
       @principals[date] || 0
     end
 
-    def cashflow_at(date)
+    def cashflow_on(date)
       @cashflows[date] || 0
     end
 

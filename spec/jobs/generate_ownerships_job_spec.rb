@@ -15,7 +15,7 @@ describe GenerateOwnershipsJob do
         FactoryGirl.create model.name.underscore.to_sym
       end
 
-      allow(PortfolioPresenter).to receive(:all) { double(value_at: 1, cashflow_at: 0) }
+      allow(PortfolioPresenter).to receive(:all) { double(value_on: 1, cashflow_on: 0) }
 
       GenerateOwnershipsJob.perform_now
     end

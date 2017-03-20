@@ -2,7 +2,7 @@ require 'rails_helper'
 
 
 describe PortfolioPresenter do
-  describe '#value_at' do
+  describe '#value_on' do
     subject do
       PortfolioPresenter.new(activities: [
         double(investment: 'FOO', date: '2013-01-02', shares: 100),
@@ -12,23 +12,23 @@ describe PortfolioPresenter do
     end
 
     it 'is 0 at 2013-01-01' do
-      expect(subject.value_at('2013-01-01')).to eq(0)
+      expect(subject.value_on('2013-01-01')).to eq(0)
     end
 
     it 'is 100 at 2013-01-02' do
       expect(subject).to receive(:price_for).with('FOO', '2013-01-02').and_return(1)
-      expect(subject.value_at('2013-01-02')).to eq(100)
+      expect(subject.value_on('2013-01-02')).to eq(100)
     end
 
     it 'is 200 at 2013-01-03' do
       expect(subject).to receive(:price_for).with('FOO', '2013-01-03').and_return(2)
-      expect(subject.value_at('2013-01-03')).to eq(400)
+      expect(subject.value_on('2013-01-03')).to eq(400)
     end
 
     it 'is 200 at 2013-01-04' do
       expect(subject).to receive(:price_for).with('FOO', '2013-01-04').and_return(2)
       expect(subject).to receive(:price_for).with('BAR', '2013-01-04').and_return(1)
-      expect(subject.value_at('2013-01-04')).to eq(500)
+      expect(subject.value_on('2013-01-04')).to eq(500)
     end
   end
 
@@ -48,39 +48,39 @@ describe PortfolioPresenter do
       end
     end
 
-    describe '#cashflow_at' do
+    describe '#cashflow_on' do
       it 'is 0 on 2013-01-03' do
-        expect(subject.cashflow_at('2013-01-03')).to eq(0)
+        expect(subject.cashflow_on('2013-01-03')).to eq(0)
       end
 
       it 'is 10 on 2013-01-04' do
-        expect(subject.cashflow_at('2013-01-04')).to eq(10)
+        expect(subject.cashflow_on('2013-01-04')).to eq(10)
       end
 
       it 'is 300 on 2013-01-05' do
-        expect(subject.cashflow_at('2013-01-05')).to eq(300)
+        expect(subject.cashflow_on('2013-01-05')).to eq(300)
       end
 
       it 'is 0 on 2013-01-06' do
-        expect(subject.cashflow_at('2013-01-06')).to eq(0)
+        expect(subject.cashflow_on('2013-01-06')).to eq(0)
       end
     end
 
-    describe '#principal_at' do
+    describe '#principal_on' do
       it 'is 0 on 2013-01-03' do
-        expect(subject.principal_at('2013-01-03')).to eq(0)
+        expect(subject.principal_on('2013-01-03')).to eq(0)
       end
 
       it 'is 10 on 2013-01-04' do
-        expect(subject.principal_at('2013-01-04')).to eq(10)
+        expect(subject.principal_on('2013-01-04')).to eq(10)
       end
 
       it 'is 110 on 2013-01-05' do
-        expect(subject.principal_at('2013-01-05')).to eq(310)
+        expect(subject.principal_on('2013-01-05')).to eq(310)
       end
 
       it 'is 110 on 2013-01-06' do
-        expect(subject.principal_at('2013-01-06')).to eq(310)
+        expect(subject.principal_on('2013-01-06')).to eq(310)
       end
     end
   end

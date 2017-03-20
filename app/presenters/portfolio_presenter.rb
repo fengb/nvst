@@ -31,15 +31,15 @@ class PortfolioPresenter
     end
   end
 
-  def value_at(date)
+  def value_on(date)
     investments.sum{|i| value_for(i, date)}
   end
 
-  def principal_at(date)
+  def principal_on(date)
     @principal_matcher[date]
   end
 
-  def cashflow_at(date)
+  def cashflow_on(date)
     @cashflow_amounts[date] || 0
   end
 

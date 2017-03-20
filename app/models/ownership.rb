@@ -6,7 +6,7 @@ class Ownership < ApplicationRecord
   validates :date,  presence: true
   validates :units, presence: true
 
-  def self.total_at(date)
+  def self.total_on(date)
     where('date <= ?', date).sum(:units)
   end
 end

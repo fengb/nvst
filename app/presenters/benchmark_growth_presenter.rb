@@ -15,7 +15,7 @@ class BenchmarkGrowthPresenter
     @contributions.first.date
   end
 
-  def value_at(date)
+  def value_on(date)
     normalized_weight * @price_matcher[date] * @share_matcher[date]
   end
 
