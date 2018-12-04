@@ -7,7 +7,7 @@ gem 'puma', require: false
 gem 'rufus-scheduler', require: false
 
 # Jobs
-gem 'yahoo-finance', '0.2.0', require: false
+gem 'stock_quote', require: false
 gem 'git', require: false
 
 # Model
