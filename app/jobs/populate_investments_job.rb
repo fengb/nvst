@@ -1,13 +1,9 @@
 class PopulateInvestmentsJob < ApplicationJob
   def perform
-    require 'yahoo_finance'
+    require 'stock_quote'
 
     Investment::Stock.find_each do |investment|
-      begin
-        Processor.new(investment).populate!
-      rescue OpenURI::HTTPError => e
-        $stderr.puts e
-      end
+      Processor.new(investment).populate!
     end
   end
 
@@ -37,11 +33,14 @@ class PopulateInvestmentsJob < ApplicationJob
       return if target_date > Date.current
 
       $stderr.puts "#{@investment.symbol}: #{target_date}"
-      YahooFinance.historical_quotes(@investment.symbol, start_date: target_date).each do |row|
-        historical_prices.create!(date:  row.trade_date,
-                                  high:  row.high,
-                                  low:   row.low,
-                                  close: row.close)
+      StockQuote::Stock.chart(@investment.symbol, '5y').chart do |row|
+        next if row['date'] < target_date.to_s
+
+        unadjustment = Rational(row["volume"], row["unadjustedVolume"])
+        historical_prices.create!(date:  row['date'],
+                                  high:  (unadjustment * row['high']).round(2),
+                                  low:   (unadjustment * row['low']).round(2),
+                                  close: (unadjustment * row['close']).round(2))
       end
     end
 
@@ -49,25 +48,21 @@ class PopulateInvestmentsJob < ApplicationJob
       target_date = date_after(splits.maximum(:date))
       return if target_date > Date.current
 
-      YahooFinance.splits(@investment.symbol, start_date: target_date).each do |row|
-        split = splits.create!(date:   row.date,
-                               before: row.before,
-                               after:  row.after)
+      StockQuote::Stock.splits(@investment.symbol, '5y').splits do |row|
+        split = splits.create!(date:   row['exDate'],
+                               before: row['fromFactor'],
+                               after:  row['toFactor'])
         adjust_prices_by(split)
       end
     end
 
     def populate_dividends!
-      # FIXME: better source for dividend data
       target_date = date_after(@investment.dividends.maximum(:ex_date))
       return if target_date > Date.current
 
-      YahooFinance.historical_quotes(@investment.symbol, period: :dividends_only, start_date: target_date).each do |row|
-        # Yahoo dividends are adjusted so we need to unadjust them
-        date = row.dividend_pay_date.to_date
-        amount = row.dividend_yield.to_d * split_unadjustment(date)
-        dividend = dividends.create!(ex_date: date,
-                                     amount:  amount.round(2))
+      StockQuote::Stock.dividends(@investment.symbol, '5y').dividends do |row|
+        dividend = dividends.create!(ex_date: row['exDate'],
+                                     amount:  row['amount'].round(2))
         adjust_prices_by(dividend)
       end
     end
