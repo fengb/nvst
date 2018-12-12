@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 describe Expense do
   describe '.year' do
     let!(:expenses) do
