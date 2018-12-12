@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :event do
     association :src_investment, factory: :investment
     date        { Date.current - rand(100) }

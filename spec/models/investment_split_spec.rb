@@ -6,7 +6,7 @@ describe InvestmentSplit do
     # Date       Price   Shares
     # Yesterday   2.00       50
     # Today       1.00      100
-    subject { FactoryGirl.build(:investment_split, after: 2, before: 1) }
+    subject { FactoryBot.build(:investment_split, after: 2, before: 1) }
 
     specify '#price_adjustment compensates for drop in price' do
       expect(subject.price_adjustment * 2).to eq(1)
@@ -18,7 +18,7 @@ describe InvestmentSplit do
   end
 
   describe '#generate_activity_for!' do
-    let!(:activity) { FactoryGirl.create(:activity, shares: 6) }
+    let!(:activity) { FactoryBot.create(:activity, shares: 6) }
     let(:position)  { activity.position }
 
     subject do
@@ -72,7 +72,7 @@ describe InvestmentSplit do
 
     context 'with closing activities' do
       let!(:close_activity) do
-        FactoryGirl.create(:activity, position: position,
+        FactoryBot.create(:activity, position: position,
                                       shares: -2,
                                       date: activity.date + 2)
       end

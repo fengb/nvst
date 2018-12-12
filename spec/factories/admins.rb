@@ -1,6 +1,6 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :admin do
     username { FFaker::Internet.user_name }
-    password 'password'
+    password { 'password' }
   end
 end

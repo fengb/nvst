@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :contribution do
     user
     date   { Date.current - rand(100) }

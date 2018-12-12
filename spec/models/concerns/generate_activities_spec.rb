@@ -41,7 +41,7 @@ describe GenerateActivitiesWaterfall do
   end
 
   describe '.execute!' do
-    let(:investment) { FactoryGirl.create(:investment) }
+    let(:investment) { FactoryBot.create(:investment) }
     let(:data)       { {investment: investment,
                         date:       Date.current - rand(1000),
                         shares:     BigDecimal(rand(100..200)),
@@ -49,10 +49,10 @@ describe GenerateActivitiesWaterfall do
 
     def create_activity!(options)
       if options[:position]
-        FactoryGirl.create(:activity, options.merge(position: options[:position]))
+        FactoryBot.create(:activity, options.merge(position: options[:position]))
       else
         position = Position.new(investment: options.delete(:investment))
-        FactoryGirl.create(:activity, options.merge(position: position,
+        FactoryBot.create(:activity, options.merge(position: position,
                                                     is_opening: true))
       end
     end

@@ -1,3 +1,3 @@
 Spring.after_fork do
-  FactoryGirl.reload
+  FactoryBot.reload
 end

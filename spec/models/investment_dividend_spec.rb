@@ -16,14 +16,14 @@ describe InvestmentDividend do
 
   describe '#percent' do
     it 'is amount / ex_previous_price' do
-      dividend = FactoryGirl.create(:investment_dividend, amount: 10.0)
-      allow(dividend).to receive_messages(ex_previous_price: FactoryGirl.create(:investment_historical_price, close: 20.0))
+      dividend = FactoryBot.create(:investment_dividend, amount: 10.0)
+      allow(dividend).to receive_messages(ex_previous_price: FactoryBot.create(:investment_historical_price, close: 20.0))
       expect(dividend.percent).to eq(0.5)
     end
   end
 
   describe '#ex_previous_price' do
-    let(:match) { FactoryGirl.create(:investment_historical_price) }
+    let(:match) { FactoryBot.create(:investment_historical_price) }
     subject { InvestmentDividend.create(investment: match.investment) }
 
     it 'is price on previous day' do
@@ -43,7 +43,7 @@ describe InvestmentDividend do
 
     it 'does not match alternate investments' do
       subject.ex_date = match.date + 1
-      subject.investment = FactoryGirl.create(:investment)
+      subject.investment = FactoryBot.create(:investment)
       expect(subject.ex_previous_price).to be(nil)
     end
   end

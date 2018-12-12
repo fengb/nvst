@@ -31,7 +31,7 @@ describe GenerateOwnerships do
     end
 
     context 'existing ownership which doubled in value' do
-      let!(:existing) { FactoryGirl.create(:ownership, units: 50) }
+      let!(:existing) { FactoryBot.create(:ownership, units: 50) }
       before do
         allow(subject).to receive(:ownership_portfolio) { double(value_on: 100, cashflow_on: 0) }
       end

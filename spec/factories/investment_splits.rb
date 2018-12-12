@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :investment_split do
     investment
     date                   { Date.current - rand(300) }

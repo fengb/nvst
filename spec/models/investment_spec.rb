@@ -4,8 +4,8 @@ require 'rails_helper'
 RSpec.describe Investment, type: :model do
   describe '.lookup_by_symbol' do
     let!(:investments) do
-      [ FactoryGirl.create(:cash, symbol: 'BTC'),
-        FactoryGirl.create(:cash, symbol: 'CAD'),
+      [ FactoryBot.create(:cash, symbol: 'BTC'),
+        FactoryBot.create(:cash, symbol: 'CAD'),
       ]
     end
 
@@ -30,12 +30,12 @@ RSpec.describe Investment, type: :model do
   end
 
   describe 'many prices' do
-    subject { FactoryGirl.create :cash }
+    subject { FactoryBot.create :cash }
 
     before do
-      FactoryGirl.create(:investment_historical_price, date: Date.current-0,   investment: subject, high:  500, low: 400, close: 400, adjustment: 1)
-      FactoryGirl.create(:investment_historical_price, date: Date.current-180, investment: subject, high: 1000, low: 800, close: 900, adjustment: 1)
-      FactoryGirl.create(:investment_historical_price, date: Date.current-360, investment: subject, high:  400, low: 100, close: 200, adjustment: 1)
+      FactoryBot.create(:investment_historical_price, date: Date.current-0,   investment: subject, high:  500, low: 400, close: 400, adjustment: 1)
+      FactoryBot.create(:investment_historical_price, date: Date.current-180, investment: subject, high: 1000, low: 800, close: 900, adjustment: 1)
+      FactoryBot.create(:investment_historical_price, date: Date.current-360, investment: subject, high:  400, low: 100, close: 200, adjustment: 1)
     end
 
     describe '#year_high' do

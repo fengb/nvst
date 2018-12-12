@@ -3,7 +3,7 @@ require 'rails_helper'
 
 describe FillStrategies do
   def position_for(data)
-    FactoryGirl.create(:position, opening_activity: data)
+    FactoryBot.create(:position, opening_activity: data)
   end
 
   let(:positions) do

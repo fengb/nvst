@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :activity do
     date       { Date.current - rand(100..300) }
     tax_date   { date }
@@ -7,7 +7,7 @@ FactoryGirl.define do
 
     after(:build) do |activity, evaluator|
       if activity.position.nil?
-        activity.position = FactoryGirl.build(:position) do |position|
+        activity.position = FactoryBot.build(:position) do |position|
           position.activities << activity
         end
 
