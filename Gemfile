@@ -29,6 +29,7 @@ gem 'uglifier'
 # gem 'therubyrhino', platforms: :jruby
 
 group :development, :test do
+  gem 'listen'
   gem 'bullet'
   gem 'dotenv-rails'
   gem 'rspec-rails'
