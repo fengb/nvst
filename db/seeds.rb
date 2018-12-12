@@ -1,9 +1,4 @@
-path = File.dirname(__FILE__)
-seedfile = if File.exists?(path + '/seeds_local.sql')
-             path + '/seeds_local.sql'
-           else
-             path + '/seeds.sql'
-           end
+seedfile = ENV['SEEDFILE'] || "#{__dir__}/seeds.sql"
 
 config = ActiveRecord::Base.configurations[Rails.env]
 env = { 'PGPASSWORD' => config['password'] }
