@@ -6,7 +6,10 @@ module YahooFinance
   def self.history(symbol, **opts)
     open("#{BASE_URL}/#{symbol}/history?#{converted_params opts}") do |f|
       json = json_from_html(f.read)
-      json['context']['dispatcher']['stores']['HistoricalPriceStore']
+
+      json&.dig('context', 'dispatcher', 'stores', 'HistoricalPriceStore').tap do |result|
+        raise OpenURI::HTTPError.new("Cannot process #{symbol}", f) if result.nil?
+      end
     end
   end
 
