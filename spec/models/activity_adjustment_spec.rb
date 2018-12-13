@@ -4,9 +4,9 @@ describe ActivityAdjustment do
   describe '.ratio' do
     let!(:activity) do
       FactoryGirl.create(:activity).tap do |activity|
-        activity.adjustments.create(date: '2013-01-01', ratio: 2, reason: 'split')
-        activity.adjustments.create(date: '2013-02-01', ratio: 3, reason: 'split')
-        activity.adjustments.create(date: '2013-03-01', ratio: 5, reason: 'split')
+        activity.adjustments.create(source: activity, date: '2013-01-01', ratio: 2, reason: 'split')
+        activity.adjustments.create(source: activity, date: '2013-02-01', ratio: 3, reason: 'split')
+        activity.adjustments.create(source: activity, date: '2013-03-01', ratio: 5, reason: 'split')
       end
     end
 

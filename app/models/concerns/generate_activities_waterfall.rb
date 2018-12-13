@@ -17,7 +17,7 @@ module GenerateActivitiesWaterfall
       data[:tax_date] ||= data[:date]
 
       shared_data = data.slice(:date, :tax_date, :price, :source)
-      shared_data[:adjustments] = adjustments_for(data)
+      shared_data[:adjustments] = Array(adjustment_for(data))
 
       investment = data[:investment]
       remaining_shares = data[:shares]
@@ -43,13 +43,12 @@ module GenerateActivitiesWaterfall
       activities
     end
 
-    def adjustments_for(data)
+    def adjustment_for(data)
       if data[:adjustment] && data[:adjustment] != 1
-        [ActivityAdjustment.new(date:   data[:date],
-                                ratio:  data[:adjustment],
-                                reason: 'fee')]
-      else
-        []
+        ActivityAdjustment.new(source: data[:source],
+                               date:   data[:date],
+                               ratio:  data[:adjustment],
+                               reason: 'fee')
       end
     end
 

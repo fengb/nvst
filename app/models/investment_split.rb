@@ -4,7 +4,8 @@ class InvestmentSplit < ApplicationRecord
   end
 
   belongs_to :investment
-  belongs_to :activity_adjustment
+  has_one :activity_adjustment, as: :source
+  #belongs_to :activity_adjustment
 
   validates :date,   presence: true
   validates :before, presence: true
