@@ -4,7 +4,7 @@ class Expense < ApplicationRecord
   include Scopes::Year
 
   belongs_to :reinvestment_for_user, class_name: 'User'
-  has_and_belongs_to_many :activities
+  has_many :activities, as: :source
   has_and_belongs_to_many :ownerships
 
   validates :date,   presence: true

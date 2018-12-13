@@ -2,7 +2,7 @@ class Expiration < ApplicationRecord
   include GenerateActivitiesWaterfall
 
   belongs_to :investment, class_name: 'Investment'
-  has_and_belongs_to_many :activities
+  has_many :activities, as: :source
 
   validates :investment, presence: true
   validates :date,       presence: true
