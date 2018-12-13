@@ -3,6 +3,7 @@ class Activity < ApplicationRecord
   include Scopes::Year
 
   belongs_to :position
+  belongs_to :source, polymorphic: true
 
   validates :position, presence: true
   validates :date,     presence: true
@@ -25,9 +26,10 @@ class Activity < ApplicationRecord
   scope :buy,  ->{where('shares > 0')}
   scope :sell, ->{where('shares < 0')}
 
-  def source
-    [contributions + expenses + expiration + events + trades].first
+  def synthetic_source
+    (contributions + expenses + expirations + events + trades).first
   end
+
 
   def value
     -shares * adjusted_price

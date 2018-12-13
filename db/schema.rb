@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141228031403) do
+ActiveRecord::Schema.define(version: 20181213021308) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -22,7 +22,10 @@ ActiveRecord::Schema.define(version: 20141228031403) do
     t.decimal "price",       precision: 12, scale: 4
     t.boolean "is_opening",                           default: false
     t.date    "tax_date"
+    t.string  "source_type",                                          null: false
+    t.integer "source_id",                                            null: false
     t.index ["position_id"], name: "fk__activities_lot_id", using: :btree
+    t.index ["source_type", "source_id"], name: "index_activities_on_source_type_and_source_id", using: :btree
   end
 
   create_table "activities_activity_adjustments", force: :cascade do |t|
