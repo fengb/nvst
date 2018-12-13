@@ -2,6 +2,8 @@ source 'https://rubygems.org'
 
 gem 'rails'
 
+gem 'bootsnap', require: false
+
 # Server
 gem 'puma', require: false
 gem 'rufus-scheduler', require: false
