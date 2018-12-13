@@ -3,7 +3,7 @@ class Position < ApplicationRecord
   extend Arlj
 
   belongs_to :investment
-  has_many   :activities, ->{order('date')}
+  has_many   :activities
 
   validates :investment, presence: true
 
@@ -15,8 +15,10 @@ class Position < ApplicationRecord
       where('outstanding_shares != 0')
   end
 
+  # TODO: due to splits, we can have multiple opening activities
+  #       maybe add a third type? [open, close, adjust]
   def opening_activity
-    activities.find(&:opening?)
+    @opening_activity ||= activities.select(&:opening?).min_by(&:date)
   end
 
   def opening(attr, *args)
@@ -32,7 +34,7 @@ class Position < ApplicationRecord
   end
 
   def outstanding_shares
-    activities.sum('shares')
+    activities.sum(&:shares)
   end
 
   def current_price
