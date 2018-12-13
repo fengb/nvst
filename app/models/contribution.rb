@@ -4,8 +4,8 @@ class Contribution < ApplicationRecord
   include Scopes::Year
 
   belongs_to :user
+  has_many :activities, as: :source
   has_and_belongs_to_many :ownerships
-  has_and_belongs_to_many :activities
 
   validates :user,   presence: true
   validates :date,   presence: true

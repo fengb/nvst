@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141228031403) do
+ActiveRecord::Schema.define(version: 20181213042711) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -22,7 +22,10 @@ ActiveRecord::Schema.define(version: 20141228031403) do
     t.decimal "price",       precision: 12, scale: 4
     t.boolean "is_opening",                           default: false
     t.date    "tax_date"
+    t.string  "source_type",                                          null: false
+    t.integer "source_id",                                            null: false
     t.index ["position_id"], name: "fk__activities_lot_id", using: :btree
+    t.index ["source_type", "source_id"], name: "index_activities_on_source_type_and_source_id", using: :btree
   end
 
   create_table "activities_activity_adjustments", force: :cascade do |t|
@@ -32,46 +35,14 @@ ActiveRecord::Schema.define(version: 20141228031403) do
     t.index ["activity_id"], name: "fk__activities_activity_adjustments_transaction_id", using: :btree
   end
 
-  create_table "activities_contributions", force: :cascade do |t|
-    t.integer "contribution_id"
-    t.integer "activity_id"
-    t.index ["activity_id"], name: "index_activities_contributions_on_activity_id", unique: true, using: :btree
-    t.index ["contribution_id"], name: "index_activities_contributions_on_contribution_id", using: :btree
-  end
-
-  create_table "activities_events", force: :cascade do |t|
-    t.integer "event_id"
-    t.integer "activity_id"
-    t.index ["activity_id"], name: "index_activities_events_on_activity_id", unique: true, using: :btree
-    t.index ["event_id"], name: "index_activities_events_on_event_id", using: :btree
-  end
-
-  create_table "activities_expenses", force: :cascade do |t|
-    t.integer "expense_id"
-    t.integer "activity_id"
-    t.index ["activity_id"], name: "index_activities_expenses_on_activity_id", unique: true, using: :btree
-    t.index ["expense_id"], name: "index_activities_expenses_on_expense_id", using: :btree
-  end
-
-  create_table "activities_expirations", force: :cascade do |t|
-    t.integer "activity_id"
-    t.integer "expiration_id"
-    t.index ["activity_id"], name: "fk__activities_expirations_activity_id", using: :btree
-    t.index ["expiration_id"], name: "fk__activities_expirations_expiration_id", using: :btree
-  end
-
-  create_table "activities_trades", force: :cascade do |t|
-    t.integer "trade_id"
-    t.integer "activity_id"
-    t.index ["activity_id"], name: "index_activities_trades_on_activity_id", unique: true, using: :btree
-    t.index ["trade_id"], name: "index_activities_trades_on_trade_id", using: :btree
-  end
-
   create_table "activity_adjustments", force: :cascade do |t|
     t.date    "date"
     t.integer "numerator"
     t.integer "denominator"
     t.string  "reason",      limit: 255
+    t.string  "source_type",             null: false
+    t.integer "source_id",               null: false
+    t.index ["source_type", "source_id"], name: "index_activity_adjustments_on_source_type_and_source_id", using: :btree
   end
 
   create_table "admins", force: :cascade do |t|
@@ -167,8 +138,6 @@ ActiveRecord::Schema.define(version: 20141228031403) do
     t.date    "date"
     t.integer "before"
     t.integer "after"
-    t.integer "activity_adjustment_id"
-    t.index ["activity_adjustment_id"], name: "fk__investment_splits_transaction_adjustment_id", using: :btree
     t.index ["date"], name: "index_investment_splits_on_date", using: :btree
     t.index ["investment_id", "date"], name: "index_investment_splits_on_investment_id_and_date", unique: true, using: :btree
     t.index ["investment_id"], name: "fk__investment_splits_investment_id", using: :btree
@@ -259,16 +228,6 @@ ActiveRecord::Schema.define(version: 20141228031403) do
   add_foreign_key "activities", "positions", name: "fk_activities_lot_id"
   add_foreign_key "activities_activity_adjustments", "activities", name: "fk_activities_activity_adjustments_transaction_id"
   add_foreign_key "activities_activity_adjustments", "activity_adjustments", name: "fk_activities_activity_adjustments_adjustment_id"
-  add_foreign_key "activities_contributions", "activities", name: "fk_activities_contributions_transaction_id"
-  add_foreign_key "activities_contributions", "contributions", name: "fk_activities_contributions_contribution_id"
-  add_foreign_key "activities_events", "activities", name: "fk_activities_events_transaction_id"
-  add_foreign_key "activities_events", "events", name: "fk_activities_events_event_id"
-  add_foreign_key "activities_expenses", "activities", name: "fk_activities_expenses_transaction_id"
-  add_foreign_key "activities_expenses", "expenses", name: "fk_activities_expenses_expense_id"
-  add_foreign_key "activities_expirations", "activities", name: "fk_activities_expirations_activity_id"
-  add_foreign_key "activities_expirations", "expirations", name: "fk_activities_expirations_expiration_id"
-  add_foreign_key "activities_trades", "activities", name: "fk_activities_trades_transaction_id"
-  add_foreign_key "activities_trades", "trades", name: "fk_activities_trades_trade_id"
   add_foreign_key "contributions", "users", name: "fk_contributions_user_id"
   add_foreign_key "contributions_ownerships", "contributions", name: "fk_contributions_ownerships_contribution_id"
   add_foreign_key "contributions_ownerships", "ownerships", name: "fk_contributions_ownerships_ownership_id"
@@ -279,7 +238,6 @@ ActiveRecord::Schema.define(version: 20141228031403) do
   add_foreign_key "expirations", "investments", name: "fk_expirations_investment_id"
   add_foreign_key "investment_dividends", "investments", name: "fk_investment_dividends_investment_id"
   add_foreign_key "investment_historical_prices", "investments", name: "fk_investment_historical_prices_investment_id"
-  add_foreign_key "investment_splits", "activity_adjustments", name: "fk_investment_splits_transaction_adjustment_id"
   add_foreign_key "investment_splits", "investments", name: "fk_investment_splits_investment_id"
   add_foreign_key "ownerships", "users", name: "fk_ownerships_user_id"
   add_foreign_key "ownerships_transfers", "ownerships", name: "fk_ownerships_transfers_ownership_id"

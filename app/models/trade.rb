@@ -3,7 +3,7 @@ class Trade < ApplicationRecord
 
   belongs_to :cash,       class_name: 'Investment'
   belongs_to :investment, class_name: 'Investment'
-  has_and_belongs_to_many :activities
+  has_many :activities, as: :source
 
   validates :date,       presence: true
   validates :cash,       presence: true

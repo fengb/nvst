@@ -1,5 +1,6 @@
 # Generated
 class ActivityAdjustment < ApplicationRecord
+  belongs_to :source, polymorphic: true
   has_and_belongs_to_many :activities
 
   validates :date,        presence: true

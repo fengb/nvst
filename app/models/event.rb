@@ -3,7 +3,7 @@ class Event < ApplicationRecord
   include Scopes::Year
 
   belongs_to :src_investment, class_name: 'Investment'
-  has_and_belongs_to_many :activities
+  has_many :activities, as: :source
 
   validates :date,           presence: true
   validates :src_investment, presence: true

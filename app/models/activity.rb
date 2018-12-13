@@ -3,6 +3,8 @@ class Activity < ApplicationRecord
   include Scopes::Year
 
   belongs_to :position
+  belongs_to :source, polymorphic: true
+  has_and_belongs_to_many :adjustments, class_name: 'ActivityAdjustment'
 
   validates :position, presence: true
   validates :date,     presence: true
@@ -12,22 +14,11 @@ class Activity < ApplicationRecord
 
   delegate :investment, to: :position
 
-  has_and_belongs_to_many :adjustments, class_name: 'ActivityAdjustment'
-  has_and_belongs_to_many :contributions
-  has_and_belongs_to_many :expenses
-  has_and_belongs_to_many :expirations
-  has_and_belongs_to_many :events
-  has_and_belongs_to_many :trades
-
   scope :tracked, ->{joins(position: :investment).where("investments.type != 'Investment::Cash'")}
   scope :opening, ->{where(is_opening: true)}
   scope :closing, ->{where(is_opening: false)}
   scope :buy,  ->{where('shares > 0')}
   scope :sell, ->{where('shares < 0')}
-
-  def source
-    [contributions + expenses + expiration + events + trades].first
-  end
 
   def value
     -shares * adjusted_price

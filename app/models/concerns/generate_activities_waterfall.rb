@@ -4,7 +4,7 @@ module GenerateActivitiesWaterfall
 
     ActiveRecord::Base.transaction do
       raw_activities_data.each do |data|
-        activities = GenerateActivitiesWaterfall.execute!(data)
+        activities = GenerateActivitiesWaterfall.execute!(source: self, **data)
         self.activities.concat(activities)
       end
     end
@@ -13,11 +13,11 @@ module GenerateActivitiesWaterfall
   end
 
   class << self
-    def execute!(data)
+    def execute!(**data)
       data[:tax_date] ||= data[:date]
 
-      shared_data = data.slice(:date, :tax_date, :price)
-      shared_data[:adjustments] = adjustments_for(data)
+      shared_data = data.slice(:date, :tax_date, :price, :source)
+      shared_data[:adjustments] = Array(adjustment_for(data))
 
       investment = data[:investment]
       remaining_shares = data[:shares]
@@ -25,29 +25,30 @@ module GenerateActivitiesWaterfall
       activities = []
       open_positions(investment, remaining_shares, data[:price]).each do |position|
         if position.outstanding_shares.abs >= remaining_shares.abs
-          activities << position.activities.create!(shared_data.merge shares: remaining_shares)
+          activities << position.activities.create!(**shared_data, shares: remaining_shares)
           return activities
         else
           remaining_shares += position.outstanding_shares
-          activities << position.activities.create!(shared_data.merge shares: -position.outstanding_shares)
+          activities << position.activities.create!(**shared_data, shares: -position.outstanding_shares)
         end
       end
 
       # Shares remaining with no position
-      position = Position.new(investment:  investment)
-      activities << Activity.create!(shared_data.merge position: position,
-                                                       shares: remaining_shares,
-                                                       is_opening: true)
+      activities << Activity.create!(
+                      **shared_data,
+                      position: Position.new(investment: investment),
+                      shares: remaining_shares,
+                      is_opening: true,
+                    )
       activities
     end
 
-    def adjustments_for(data)
+    def adjustment_for(data)
       if data[:adjustment] && data[:adjustment] != 1
-        [ActivityAdjustment.new(date:   data[:date],
-                                ratio:  data[:adjustment],
-                                reason: 'fee')]
-      else
-        []
+        ActivityAdjustment.new(source: data[:source],
+                               date:   data[:date],
+                               ratio:  data[:adjustment],
+                               reason: 'fee')
       end
     end
 

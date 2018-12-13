@@ -9,12 +9,12 @@ describe Activity do
     end
 
     it '== #price when adjustment in the future' do
-      adjustment = subject.adjustments.create!(date: Date.current + 1, ratio: 0.5)
+      adjustment = subject.adjustments.create!(source: subject, date: Date.current + 1, ratio: 0.5)
       expect(subject.adjusted_price).to eq(subject.price)
     end
 
     it '== #price * adjustment#ratio on adjustment#date' do
-      adjustment = subject.adjustments.create!(date: '2014-01-01', ratio: 0.5)
+      adjustment = subject.adjustments.create!(source: subject, date: '2014-01-01', ratio: 0.5)
       expected = subject.price * adjustment.ratio
       expect(subject.adjusted_price(on: adjustment.date)).to eq(expected)
     end

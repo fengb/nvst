@@ -11,9 +11,7 @@ class GenerateActivitiesJob < ApplicationJob
     # This really doesn't belong here...
     SqlUtil.execute <<-END
       TRUNCATE positions RESTART IDENTITY CASCADE;
-      UPDATE investment_splits SET activity_adjustment_id=NULL;
-      DELETE FROM activity_adjustments;
-      ALTER SEQUENCE activity_adjustments_id_seq RESTART;
+      TRUNCATE activity_adjustments RESTART IDENTITY CASCADE;
     END
   end
 

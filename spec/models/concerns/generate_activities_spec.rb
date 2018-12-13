@@ -9,6 +9,8 @@ describe GenerateActivitiesWaterfall do
 
     subject { TestClass.new(activities: [], raw_activities_data: []) }
 
+    before { allow(GenerateActivitiesWaterfall).to receive(:execute!).and_return([1, 2]) }
+
     context 'already has activities' do
       before { subject.activities = [1] }
 
@@ -17,24 +19,26 @@ describe GenerateActivitiesWaterfall do
       end
 
       it 'does absolutely nothing' do
-        expect(GenerateActivitiesWaterfall).to_not receive(:execute!)
         subject.generate_activities!
+        expect(GenerateActivitiesWaterfall).not_to have_received(:execute!)
       end
     end
 
-    it 'passes raw activity data to GenerateActivitiesWaterfall.execute!' do
-      subject.raw_activities_data = [4, 2, 5]
-      expect(GenerateActivitiesWaterfall).to receive(:execute!).with(4).and_return([4])
-      expect(GenerateActivitiesWaterfall).to receive(:execute!).with(2).and_return([2])
-      expect(GenerateActivitiesWaterfall).to receive(:execute!).with(5).and_return([5])
-
+    it 'passes source object to GenerateActivitiesWaterfall.execute!' do
+      subject.raw_activities_data = [{}]
       subject.generate_activities!
+      expect(GenerateActivitiesWaterfall).to have_received(:execute!).with(hash_including(source: subject))
+    end
+
+    it 'passes raw activity data to GenerateActivitiesWaterfall.execute!' do
+      subject.raw_activities_data = [{a: 1}, {b: 2}]
+      subject.generate_activities!
+      expect(GenerateActivitiesWaterfall).to have_received(:execute!).with(hash_including(a: 1))
+      expect(GenerateActivitiesWaterfall).to have_received(:execute!).with(hash_including(b: 2))
     end
 
     it 'adds GenerateActivitiesWaterfall.execute! returned values to activities' do
-      subject.raw_activities_data = [:a, :z]
-      allow(GenerateActivitiesWaterfall).to receive_messages(execute!: [1, 2])
-
+      subject.raw_activities_data = [{a: 1}, {b: 2}]
       subject.generate_activities!
       expect(subject.activities).to eq([1, 2, 1, 2])
     end
@@ -42,20 +46,12 @@ describe GenerateActivitiesWaterfall do
 
   describe '.execute!' do
     let(:investment) { FactoryGirl.create(:investment) }
-    let(:data)       { {investment: investment,
+    let(:source)     { FactoryGirl.create(:contribution) }
+    let(:data)       { {source:     source,
+                        investment: investment,
                         date:       Date.current - rand(1000),
                         shares:     BigDecimal(rand(100..200)),
                         price:      BigDecimal(1)} }
-
-    def create_activity!(options)
-      if options[:position]
-        FactoryGirl.create(:activity, options.merge(position: options[:position]))
-      else
-        position = Position.new(investment: options.delete(:investment))
-        FactoryGirl.create(:activity, options.merge(position: position,
-                                                    is_opening: true))
-      end
-    end
 
     it 'creates new position with single activity when none exists' do
       activities = GenerateActivitiesWaterfall.execute!(data)
@@ -65,10 +61,10 @@ describe GenerateActivitiesWaterfall do
 
     context 'existing position with different open data' do
       let!(:existing) do
-        create_activity!(investment: investment,
-                         date: Date.current - 2000,
-                         shares: -10,
-                         price: 5)
+        FactoryGirl.create(:activity, investment: investment,
+                                      date: Date.current - 2000,
+                                      shares: -10,
+                                      price: 5)
       end
 
       it 'ignores positions it cannot fill' do
@@ -80,10 +76,10 @@ describe GenerateActivitiesWaterfall do
       end
 
       it 'ignores filled positions' do
-        create_activity!(position: existing.position,
-                         date: Date.current - 1999,
-                         shares: 10,
-                         price: 4)
+        FactoryGirl.create(:activity, position: existing.position,
+                                      date: Date.current - 1999,
+                                      shares: 10,
+                                      price: 4)
 
         activities = GenerateActivitiesWaterfall.execute!(data)
         expect(activities.size).to eq(1)
@@ -123,14 +119,14 @@ describe GenerateActivitiesWaterfall do
 
     context 'existing positions' do
       let!(:existing) {[
-        create_activity!(investment: investment,
-                         date: Date.current - 2000,
-                         shares: -10,
-                         price: 4),
-        create_activity!(investment: investment,
-                         date: Date.current - 2000,
-                         shares: -300,
-                         price: 3),
+        FactoryGirl.create(:activity, investment: investment,
+                                      date: Date.current - 2000,
+                                      shares: -10,
+                                      price: 4),
+        FactoryGirl.create(:activity, investment: investment,
+                                      date: Date.current - 2000,
+                                      shares: -300,
+                                      price: 3),
       ]}
 
       it 'fills up first based on highest price' do
@@ -191,10 +187,10 @@ describe GenerateActivitiesWaterfall do
       context 'multiple activities' do
         before do
           data[:adjustment] = 2
-          create_activity!(investment: investment,
-                           date: data[:date] - 1,
-                           shares: -10,
-                           price: data[:price])
+          FactoryGirl.create(:activity, investment: investment,
+                                        date: data[:date] - 1,
+                                        shares: -10,
+                                        price: data[:price])
         end
 
         it 'uses the same adjustment' do
