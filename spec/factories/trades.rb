@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :trade do
     date       { Date.current - rand(0..300) }
     cash

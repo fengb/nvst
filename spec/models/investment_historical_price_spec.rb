@@ -3,9 +3,9 @@ require 'rails_helper'
 describe InvestmentHistoricalPrice do
   describe 'many prices' do
     let!(:db_prices) do
-      {   0 => FactoryGirl.create(:investment_historical_price, date: Date.current,       close: 400, adjustment: 0.5),
-        365 => FactoryGirl.create(:investment_historical_price, date: Date.current - 365, close: 900, adjustment: 0.5),
-        366 => FactoryGirl.create(:investment_historical_price, date: Date.current - 366, close: 200, adjustment: 0.5)
+      {   0 => FactoryBot.create(:investment_historical_price, date: Date.current,       close: 400, adjustment: 0.5),
+        365 => FactoryBot.create(:investment_historical_price, date: Date.current - 365, close: 900, adjustment: 0.5),
+        366 => FactoryBot.create(:investment_historical_price, date: Date.current - 366, close: 200, adjustment: 0.5)
       }
     end
 
@@ -66,7 +66,7 @@ describe InvestmentHistoricalPrice do
 
   describe '#adjusted' do
     let(:adjustment) { 250 }
-    subject { FactoryGirl.create(:investment_historical_price, adjustment: adjustment) }
+    subject { FactoryBot.create(:investment_historical_price, adjustment: adjustment) }
 
     it 'adjusts number fields based on adjustment value' do
       expect(subject.adjusted(:close)).to eq(subject.close * adjustment)

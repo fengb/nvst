@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :activity do
     association :source, factory: :contribution
 
@@ -8,12 +8,12 @@ FactoryGirl.define do
     price      { rand(10.0..100.0).to_d.round(2) }
 
     transient do
-      investment { FactoryGirl.build :investment }
+      investment { FactoryBot.build :investment }
     end
 
     after(:build) do |activity, evaluator|
       if activity.position.nil?
-        activity.position = FactoryGirl.build(:position, investment: evaluator.investment)
+        activity.position = FactoryBot.build(:position, investment: evaluator.investment)
         activity.is_opening = true
       end
     end

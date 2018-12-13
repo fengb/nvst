@@ -12,7 +12,7 @@ describe GenerateOwnershipsJob do
   describe '.perform' do
     it 'runs' do
       GenerateOwnershipsJob.classes_needing_processing.each do |model|
-        FactoryGirl.create model.name.underscore.to_sym
+        FactoryBot.create model.name.underscore.to_sym
       end
 
       allow(PortfolioPresenter).to receive(:all) { double(value_on: 1, cashflow_on: 0) }
