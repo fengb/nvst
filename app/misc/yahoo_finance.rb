@@ -1,5 +1,6 @@
 require 'open-uri'
 
+# TODO: use the API instead of scraping the web
 module YahooFinance
   BASE_URL = "https://finance.yahoo.com/quote"
 
