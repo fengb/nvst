@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181213021308) do
+ActiveRecord::Schema.define(version: 20181213035001) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -75,6 +75,9 @@ ActiveRecord::Schema.define(version: 20181213021308) do
     t.integer "numerator"
     t.integer "denominator"
     t.string  "reason",      limit: 255
+    t.string  "source_type",             null: false
+    t.integer "source_id",               null: false
+    t.index ["source_type", "source_id"], name: "index_activity_adjustments_on_source_type_and_source_id", using: :btree
   end
 
   create_table "admins", force: :cascade do |t|
