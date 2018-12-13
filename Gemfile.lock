@@ -230,7 +230,6 @@ GEM
     websocket-driver (0.6.5)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.2)
-    yahoo-finance (0.2.0)
 
 PLATFORMS
   ruby
@@ -260,7 +259,6 @@ DEPENDENCIES
   spring
   spring-commands-rspec
   uglifier
-  yahoo-finance (= 0.2.0)
 
 BUNDLED WITH
    1.14.6

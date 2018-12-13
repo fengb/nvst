@@ -26,6 +26,7 @@ class PopulateInvestmentsJob < ApplicationJob
 
     def populate!
       ActiveRecord::Base.transaction do
+        $stderr.puts "#{@investment.symbol}: #{target_date}"
         populate_historical_prices!
         populate_splits!
         populate_dividends!
@@ -33,41 +34,40 @@ class PopulateInvestmentsJob < ApplicationJob
     end
 
     def populate_historical_prices!
-      target_date = date_after(historical_prices.maximum(:date))
-      return if target_date > Date.current
+      request['prices'].each do |row|
+        date = Time.at(row['date']).to_date
+        return if date < target_date[:prices]
+        # splits / dividends are in 'prices' for some reason
+        next unless row['type'].nil?
 
-      $stderr.puts "#{@investment.symbol}: #{target_date}"
-      YahooFinance.historical_quotes(@investment.symbol, start_date: target_date).each do |row|
-        historical_prices.create!(date:  row.trade_date,
-                                  high:  row.high,
-                                  low:   row.low,
-                                  close: row.close)
+        historical_prices.create!(date:  date,
+                                  high:  row['high'].to_d.round(4),
+                                  low:   row['low'].to_d.round(4),
+                                  close: row['close'].to_d.round(4))
       end
     end
 
     def populate_splits!
-      target_date = date_after(splits.maximum(:date))
-      return if target_date > Date.current
+      request['eventsData'].each do |row|
+        date = Time.at(row['date']).to_date
+        return if date < target_date[:splits]
+        next unless row['type'] == 'SPLIT'
 
-      YahooFinance.splits(@investment.symbol, start_date: target_date).each do |row|
-        split = splits.create!(date:   row.date,
-                               before: row.before,
-                               after:  row.after)
+        split = splits.create!(date:   date,
+                               before: row['denominator'].to_i,
+                               after:  row['numerator'].to_i)
         adjust_prices_by(split)
       end
     end
 
     def populate_dividends!
-      # FIXME: better source for dividend data
-      target_date = date_after(@investment.dividends.maximum(:ex_date))
-      return if target_date > Date.current
+      request['eventsData'].each do |row|
+        date = Time.at(row['date']).to_date
+        return if date < target_date[:dividends]
+        next unless row['type'] == 'DIVIDEND'
 
-      YahooFinance.historical_quotes(@investment.symbol, period: :dividends_only, start_date: target_date).each do |row|
-        # Yahoo dividends are adjusted so we need to unadjust them
-        date = row.dividend_pay_date.to_date
-        amount = row.dividend_yield.to_d * split_unadjustment(date)
         dividend = dividends.create!(ex_date: date,
-                                     amount:  amount.round(2))
+                                     amount:  row['amount'].to_d.round(4))
         adjust_prices_by(dividend)
       end
     end
@@ -96,6 +96,18 @@ class PopulateInvestmentsJob < ApplicationJob
     def adjust_prices_by(instance)
       historical_prices.where('date <= ?', instance.price_adjust_up_to_date).
                         update_all(['adjustment = adjustment * ?', instance.price_adjustment])
+    end
+
+    def target_date
+      @target_date ||= {
+        prices: date_after(historical_prices.maximum(:date)),
+        dividends: date_after(dividends.maximum(:ex_date)),
+        splits: date_after(splits.maximum(:date)),
+      }
+    end
+
+    def request
+      @request ||= YahooFinance.history(@investment.symbol, start_date: target_date.values.min)
     end
   end
 end
