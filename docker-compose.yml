@@ -20,7 +20,8 @@ services:
         rails server -b 0.0.0.0 -P /tmp/server.pid
       '
     environment:
-      - 'DATABASE_URL=postgres://nvst:password/nvst_development'
+      - 'DATABASE_URL=postgres://nvst:password@db/nvst_development'
+      - 'DATABASE_TEST_URL=postgres://nvst:password@db/nvst_test'
     tty: true
     stdin_open: true
 

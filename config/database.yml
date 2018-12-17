@@ -1,13 +1,12 @@
 default: &default
   adapter:  postgresql
   encoding: unicode
-  pool:     <%= ENV['NVST_DB_POOL'] %>
-  host:     <%= ENV['NVST_DB_HOST'] %>
-  port:     <%= ENV['NVST_DB_PORT'] %>
-  database: <%= ENV['NVST_DB_NAME'] %>
-  username: <%= ENV['NVST_DB_USER'] %>
-  password: <%= ENV['NVST_DB_PASS'] %>
+  url:      <%= ENV.fetch('DATABASE_URL') %>
 
 development: *default
-test:        *default
+
+test:
+  <<: *default
+  url: <%= ENV.fetch('DATABASE_TEST_URL') %>
+
 production:  *default
