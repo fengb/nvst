@@ -1,10 +1,11 @@
-FROM ruby:2.5.3
+FROM ruby:2.5.3-alpine
 
-RUN apt-get update \
-  && apt-get install --no-install-recommends -y \
-          postgresql-client \
+RUN apk add --no-cache --update \
+          build-base \
+          linux-headers \
+          postgresql-dev \
           nodejs \
-  && rm -rf /var/lib/apt/lists/*
+          tzdata
 
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
