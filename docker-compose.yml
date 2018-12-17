@@ -1,0 +1,38 @@
+version: '3.0'
+
+services:
+  server:
+    build:
+      context: .
+    ports:
+      - 3000
+    external_links:
+      - db
+    depends_on:
+      - db
+    volumes:
+      - '.:/usr/src/app'
+      - 'bundle:/usr/local/bundle'
+    command: >
+      bash -c '
+        bundle install --no-deployment --with development test
+        rails server -b 0.0.0.0 -P /tmp/server.pid
+      '
+    environment:
+      - 'DATABASE_URL=postgres://nvst:password/nvst_development'
+    tty: true
+    stdin_open: true
+
+  db:
+    image: postgres:10.6-alpine
+    ports:
+      - 5432
+    volumes:
+      - 'db:/var/lib/postgresql/data'
+    environment:
+      - 'POSTGRES_USER=nvst'
+      - 'POSTGRES_PASSWORD=password'
+
+volumes:
+  db:
+  bundle:
