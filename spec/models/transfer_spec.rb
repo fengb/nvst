@@ -3,8 +3,8 @@ describe Transfer do
     subject do
       Transfer.create(date:      Date.current - 5,
                       amount:    1942.12,
-                      from_user: FactoryGirl.create(:user),
-                      to_user:   FactoryGirl.create(:user))
+                      from_user: FactoryBot.create(:user),
+                      to_user:   FactoryBot.create(:user))
     end
 
     it 'creates both from and to ownerships' do

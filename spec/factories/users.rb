@@ -1,6 +1,6 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :user do
     email    { FFaker::Internet.email }
-    password 'password'
+    password { 'password' }
   end
 end

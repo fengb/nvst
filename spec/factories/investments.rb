@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :investment do
     sequence(:symbol, 'A')
     name    { FFaker::Company.name }

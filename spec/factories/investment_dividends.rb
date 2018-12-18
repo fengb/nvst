@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :investment_dividend do
     investment
     ex_date    { Date.current - rand(300) }

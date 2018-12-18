@@ -2,8 +2,8 @@ require 'rails_helper'
 
 describe PopulateInvestmentsJob do
   describe '#split_unadjustment' do
-    let(:investment) { FactoryGirl.build(:investment) }
-    let(:split) { FactoryGirl.build :investment_split, after: 2, before: 1 }
+    let(:investment) { FactoryBot.build(:investment) }
+    let(:split) { FactoryBot.build :investment_split, after: 2, before: 1 }
     subject { PopulateInvestmentsJob::Processor.new(investment) }
 
     before do

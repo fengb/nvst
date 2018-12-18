@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :expiration do
     investment
     date   { Date.current - rand(100) }
