@@ -1,6 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'rails'
+gem 'bootsnap'
 
 # Server
 gem 'puma', require: false
