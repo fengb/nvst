@@ -3,7 +3,7 @@ require 'rails_helper'
 describe Position do
   context 'with opening buy activity' do
     subject do
-      FactoryGirl.create(:position, opening_activity: {shares: 100})
+      FactoryBot.create(:position, opening_activity: {shares: 100})
     end
 
     it { is_expected.to be_long }
@@ -16,7 +16,7 @@ describe Position do
 
   context 'with opening sell activity' do
     subject do
-      FactoryGirl.create(:position, opening_activity: {shares: -100})
+      FactoryBot.create(:position, opening_activity: {shares: -100})
     end
 
     it { is_expected.to be_short }
@@ -29,7 +29,7 @@ describe Position do
 
   describe '.open' do
     let!(:position) do
-      FactoryGirl.create(:position, opening_activity: {shares: 1})
+      FactoryBot.create(:position, opening_activity: {shares: 1})
     end
 
     context 'open position' do
@@ -50,7 +50,7 @@ describe Position do
       end
 
       it 'includes not-fully-closed positions' do
-        FactoryGirl.create(:activity, position: position,
+        FactoryBot.create(:activity, position: position,
                                       date: position.opening(:date) + 1,
                                       shares: -0.5)
         expect(Position.open(during: position.opening(:date) + 10)).to eq([position])
@@ -59,7 +59,7 @@ describe Position do
 
     context 'closed positions' do
       let(:close_date) { Date.current - 10 }
-      let!(:activity2) { FactoryGirl.create(:activity, position: position,
+      let!(:activity2) { FactoryBot.create(:activity, position: position,
                                                        shares: -1,
                                                        date: close_date) }
 
@@ -76,11 +76,11 @@ describe Position do
   context 'gains' do
     context 'long position' do
       subject do
-        FactoryGirl.create(:position, opening_activity: {price:  100,
+        FactoryBot.create(:position, opening_activity: {price:  100,
                                                          shares: 100})
       end
       let!(:closing_activity) do
-        FactoryGirl.create(:activity, position: subject,
+        FactoryBot.create(:activity, position: subject,
                                       date:     Date.current,
                                       price:    110,
                                       shares:   -90)
@@ -103,11 +103,11 @@ describe Position do
 
     context 'short position' do
       subject do
-        FactoryGirl.create(:position, opening_activity: {price:  100,
+        FactoryBot.create(:position, opening_activity: {price:  100,
                                                          shares: -100})
       end
       let!(:closing_activity) do
-        FactoryGirl.create(:activity, position: subject,
+        FactoryBot.create(:activity, position: subject,
                                       date:     Date.current,
                                       price:    90,
                                       shares:   90)

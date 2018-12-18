@@ -7,8 +7,6 @@ class ActivityAdjustment < ApplicationRecord
   validates :numerator,   presence: true
   validates :denominator, presence: true
 
-  enum reason: { fee: 'fee', split: 'split' }
-
   def self.ratio(on: Date.current)
     data = where('date <= ?', on).pluck(:numerator, :denominator)
     data.inject(1) do |acc, args|

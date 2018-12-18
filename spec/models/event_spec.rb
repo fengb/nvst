@@ -1,8 +1,8 @@
 describe Event do
   describe '.year' do
     let!(:events) do
-      [FactoryGirl.create(:event, date: '2013-01-01'),
-       FactoryGirl.create(:event, date: '2014-01-01')]
+      [FactoryBot.create(:event, date: '2013-01-01'),
+       FactoryBot.create(:event, date: '2014-01-01')]
     end
 
     it 'pulls events for a specific year' do

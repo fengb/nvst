@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :investment_historical_price do
     investment
     date       { Date.current - rand(300) }

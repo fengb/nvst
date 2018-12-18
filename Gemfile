@@ -1,6 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'rails'
+gem 'bootsnap'
 
 # Server
 gem 'puma', require: false
@@ -31,9 +32,10 @@ group :development, :test do
   gem 'bullet'
   gem 'dotenv-rails'
   gem 'rspec-rails'
-  gem 'factory_girl_rails'
+  gem 'factory_bot_rails'
   gem 'ffaker'
   gem 'pry'
+  gem 'listen'
 end
 
 group :development do

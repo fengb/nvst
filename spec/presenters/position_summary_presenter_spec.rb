@@ -32,8 +32,8 @@ describe PositionSummaryPresenter do
 
   describe 'public instance methods' do
     let(:positions) do
-      [ FactoryGirl.create(:position),
-        FactoryGirl.create(:position) ]
+      [ FactoryBot.create(:position),
+        FactoryBot.create(:position) ]
     end
     subject { PositionSummaryPresenter.new(positions) }
 

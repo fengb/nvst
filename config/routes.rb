@@ -1,4 +1,4 @@
-Nvst::Application.routes.draw do
+Rails.application.routes.draw do
   root 'portfolio#index'
 
   resource :portfolio, controller: :portfolio, only: [:show]

@@ -45,8 +45,8 @@ describe GenerateActivitiesWaterfall do
   end
 
   describe '.execute!' do
-    let(:investment) { FactoryGirl.create(:investment) }
-    let(:source)     { FactoryGirl.create(:contribution) }
+    let(:investment) { FactoryBot.create(:investment) }
+    let(:source)     { FactoryBot.create(:contribution) }
     let(:data)       { {source:     source,
                         investment: investment,
                         date:       Date.current - rand(1000),
@@ -61,7 +61,7 @@ describe GenerateActivitiesWaterfall do
 
     context 'existing position with different open data' do
       let!(:existing) do
-        FactoryGirl.create(:activity, investment: investment,
+        FactoryBot.create(:activity, investment: investment,
                                       date: Date.current - 2000,
                                       shares: -10,
                                       price: 5)
@@ -76,7 +76,7 @@ describe GenerateActivitiesWaterfall do
       end
 
       it 'ignores filled positions' do
-        FactoryGirl.create(:activity, position: existing.position,
+        FactoryBot.create(:activity, position: existing.position,
                                       date: Date.current - 1999,
                                       shares: 10,
                                       price: 4)
@@ -119,11 +119,11 @@ describe GenerateActivitiesWaterfall do
 
     context 'existing positions' do
       let!(:existing) {[
-        FactoryGirl.create(:activity, investment: investment,
+        FactoryBot.create(:activity, investment: investment,
                                       date: Date.current - 2000,
                                       shares: -10,
                                       price: 4),
-        FactoryGirl.create(:activity, investment: investment,
+        FactoryBot.create(:activity, investment: investment,
                                       date: Date.current - 2000,
                                       shares: -300,
                                       price: 3),
@@ -187,7 +187,7 @@ describe GenerateActivitiesWaterfall do
       context 'multiple activities' do
         before do
           data[:adjustment] = 2
-          FactoryGirl.create(:activity, investment: investment,
+          FactoryBot.create(:activity, investment: investment,
                                         date: data[:date] - 1,
                                         shares: -10,
                                         price: data[:price])

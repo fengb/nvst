@@ -1,8 +1,8 @@
 describe Expense do
   describe '.year' do
     let!(:expenses) do
-      [FactoryGirl.create(:expense, date: '2013-01-01'),
-       FactoryGirl.create(:expense, date: '2014-01-01')]
+      [FactoryBot.create(:expense, date: '2013-01-01'),
+       FactoryBot.create(:expense, date: '2014-01-01')]
     end
 
     it 'pulls expenses for a specific year' do

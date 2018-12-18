@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :ownership do
     user
     date  { Date.current - rand(10..300) }

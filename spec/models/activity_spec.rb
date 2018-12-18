@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe Activity do
   describe '#adjusted_price' do
-    subject { FactoryGirl.create(:activity) }
+    subject { FactoryBot.create(:activity) }
 
     it '== #price when no adjustments' do
       expect(subject.adjusted_price).to eq(subject.price)
