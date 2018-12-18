@@ -7,6 +7,6 @@ development: *default
 
 test:
   <<: *default
-  url: <%= ENV.fetch('DATABASE_TEST_URL') %>
+  url: <%= ENV['DATABASE_TEST_URL'] %>
 
 production:  *default

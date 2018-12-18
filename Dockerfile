@@ -3,9 +3,9 @@ FROM ruby:2.5.3-alpine as builder
 RUN apk add --no-cache --update \
           bash \
           build-base \
-          linux-headers \
           postgresql-dev \
           nodejs \
+          yarn \
           tzdata
 
 RUN mkdir -p /usr/src/app
@@ -16,6 +16,8 @@ RUN bundle install --without development test
 
 COPY . /usr/src/app
 
+RUN rails assets:precompile RAILS_ENV=production SECRET_KEY_BASE=fake DATABASE_URL=fake
+
 EXPOSE 3000
 CMD ["rails", "server", "-b", "0.0.0.0"]
 
@@ -25,7 +27,6 @@ FROM ruby:2.5.3-alpine
 
 RUN apk add --no-cache --update \
           postgresql-client \
-          nodejs \
           tzdata
 
 RUN mkdir -p /usr/src/app
