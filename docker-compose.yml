@@ -6,9 +6,7 @@ services:
       context: .
       target: builder
     ports:
-      - 3000
-    external_links:
-      - db
+      - "${PORT:-3000}:3000"
     depends_on:
       - db
     volumes:
