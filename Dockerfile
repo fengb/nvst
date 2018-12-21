@@ -3,6 +3,7 @@ FROM ruby:2.5.3-alpine as builder
 RUN apk add --no-cache --update \
           bash \
           build-base \
+          postgresql-client \
           postgresql-dev \
           nodejs \
           yarn \
