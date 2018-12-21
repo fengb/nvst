@@ -5,7 +5,7 @@ class Expense < ApplicationRecord
 
   belongs_to :reinvestment_for_user, class_name: 'User', optional: true
   has_many :activities, as: :source
-  has_and_belongs_to_many :ownerships
+  has_many :ownerships, as: :source
 
   validates :date,   presence: true
   validates :amount, presence: true

@@ -4,7 +4,7 @@ class Transfer < ApplicationRecord
 
   belongs_to :from_user, class_name: 'User'
   belongs_to :to_user,   class_name: 'User'
-  has_and_belongs_to_many :ownerships
+  has_many :ownerships, as: :source
 
   validates :date,      presence: true
   validates :amount,    presence: true
