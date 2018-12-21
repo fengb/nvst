@@ -16,6 +16,10 @@ class PolymorphicOwnership < ActiveRecord::Migration[5.2]
         t.change :source_id, :integer, null: false
       end
     end
+
+    drop_table :contributions_ownerships
+    drop_table :expenses_ownerships
+    drop_table :ownerships_transfers
   end
 
   def update_via_join_table(join_table)

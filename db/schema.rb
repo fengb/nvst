@@ -67,13 +67,6 @@ ActiveRecord::Schema.define(version: 2018_12_20_234548) do
     t.index ["user_id"], name: "fk__contributions_user_id"
   end
 
-  create_table "contributions_ownerships", force: :cascade do |t|
-    t.integer "contribution_id"
-    t.integer "ownership_id"
-    t.index ["contribution_id"], name: "fk__contributions_ownerships_contribution_id"
-    t.index ["ownership_id"], name: "fk__contributions_ownerships_ownership_id"
-  end
-
   create_table "events", force: :cascade do |t|
     t.integer "src_investment_id"
     t.date "date"
@@ -94,13 +87,6 @@ ActiveRecord::Schema.define(version: 2018_12_20_234548) do
     t.string "category", limit: 255
     t.integer "reinvestment_for_user_id"
     t.index ["reinvestment_for_user_id"], name: "fk__expenses_reinvestment_for_user_id"
-  end
-
-  create_table "expenses_ownerships", force: :cascade do |t|
-    t.integer "expense_id"
-    t.integer "ownership_id"
-    t.index ["expense_id"], name: "fk__expenses_ownerships_expense_id"
-    t.index ["ownership_id"], name: "fk__expenses_ownerships_ownership_id"
   end
 
   create_table "expirations", force: :cascade do |t|
@@ -164,13 +150,6 @@ ActiveRecord::Schema.define(version: 2018_12_20_234548) do
     t.index ["user_id"], name: "fk__ownerships_user_id"
   end
 
-  create_table "ownerships_transfers", force: :cascade do |t|
-    t.integer "ownership_id"
-    t.integer "transfer_id"
-    t.index ["ownership_id"], name: "fk__ownerships_transfers_ownership_id"
-    t.index ["transfer_id"], name: "fk__fees_ownerships_transfer_id"
-  end
-
   create_table "positions", force: :cascade do |t|
     t.integer "investment_id"
     t.index ["investment_id"], name: "fk__positions_investment_id"
@@ -232,19 +211,13 @@ ActiveRecord::Schema.define(version: 2018_12_20_234548) do
   add_foreign_key "activities_activity_adjustments", "activities", name: "fk_activities_activity_adjustments_transaction_id"
   add_foreign_key "activities_activity_adjustments", "activity_adjustments", name: "fk_activities_activity_adjustments_adjustment_id"
   add_foreign_key "contributions", "users", name: "fk_contributions_user_id"
-  add_foreign_key "contributions_ownerships", "contributions", name: "fk_contributions_ownerships_contribution_id"
-  add_foreign_key "contributions_ownerships", "ownerships", name: "fk_contributions_ownerships_ownership_id"
   add_foreign_key "events", "investments", column: "src_investment_id", name: "fk_events_src_investment_id"
   add_foreign_key "expenses", "users", column: "reinvestment_for_user_id", name: "fk_expenses_reinvestment_for_user_id"
-  add_foreign_key "expenses_ownerships", "expenses", name: "fk_expenses_ownerships_expense_id"
-  add_foreign_key "expenses_ownerships", "ownerships", name: "fk_expenses_ownerships_ownership_id"
   add_foreign_key "expirations", "investments", name: "fk_expirations_investment_id"
   add_foreign_key "investment_dividends", "investments", name: "fk_investment_dividends_investment_id"
   add_foreign_key "investment_historical_prices", "investments", name: "fk_investment_historical_prices_investment_id"
   add_foreign_key "investment_splits", "investments", name: "fk_investment_splits_investment_id"
   add_foreign_key "ownerships", "users", name: "fk_ownerships_user_id"
-  add_foreign_key "ownerships_transfers", "ownerships", name: "fk_ownerships_transfers_ownership_id"
-  add_foreign_key "ownerships_transfers", "transfers", name: "fk_ownerships_transfers_transfer_id"
   add_foreign_key "positions", "investments", name: "fk_positions_investment_id"
   add_foreign_key "trades", "investments", column: "cash_id", name: "fk_trades_cash_id"
   add_foreign_key "trades", "investments", name: "fk_trades_investment_id"
