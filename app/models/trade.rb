@@ -18,6 +18,17 @@ class Trade < ApplicationRecord
     end
   end
 
+  def self.as_transactions
+    includes(:investment).map do |trade|
+      Transaction.new(
+        date: trade.date,
+        net_amount: trade.net_amount,
+        class_name: trade.class.to_s,
+        description: "#{trade.shares} shares of #{trade.investment} @ #{trade.price}",
+      )
+    end
+  end
+
   def raw_activities_data
     [{investment: cash,
       date:       date,
@@ -41,9 +52,5 @@ class Trade < ApplicationRecord
 
   def fee
     investment_value + net_amount
-  end
-
-  def description
-    "#{shares} shares of #{investment} @ #{price}"
   end
 end

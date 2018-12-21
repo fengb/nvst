@@ -28,6 +28,17 @@ class Expense < ApplicationRecord
 
   scope :cashflow, -> { where(reinvestment_for_user_id: nil) }
 
+  def self.as_transactions
+    all.map do |expense|
+      Transaction.new(
+        date: expense.date,
+        net_amount: -expense.amount,
+        class_name: expense.class.to_s,
+        description: "#{expense.category} - #{expense.vendor} - #{expense.memo}",
+      )
+    end
+  end
+
   def raw_activities_data
     return [] if reinvestment_for_user
 
@@ -46,14 +57,6 @@ class Expense < ApplicationRecord
   end
 
   def cashflow_amount
-    reinvestment_for_user_id ? 0 : net_amount
-  end
-
-  def net_amount
-    -amount
-  end
-
-  def description
-    "#{category} - #{vendor} - #{memo}"
+    reinvestment_for_user_id ? 0 : -amount
   end
 end

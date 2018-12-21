@@ -20,18 +20,21 @@ class Event < ApplicationRecord
     'capital gains - long-term'  => 'cgl',
   }
 
+  def self.as_transactions
+    includes(:src_investment).map do |event|
+      Transaction.new(
+        date: event.date,
+        net_amount: event.amount,
+        class_name: event.class.to_s,
+        description: "#{event.category} for #{event.src_investment}",
+      )
+    end
+  end
+
   def raw_activities_data
     [{investment: Investment::Cash.first,
       date:       date,
       shares:     amount,
       price:      1}]
-  end
-
-  def net_amount
-    amount
-  end
-
-  def description
-    "#{category} for #{src_investment}"
   end
 end

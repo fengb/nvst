@@ -20,14 +20,11 @@ class Admin::PortfolioController < Admin::BaseController
   end
 
   def transactions
-    @transactions = [
-      *Contribution.all.includes(:user),
-      *Event.all.includes(:src_investment),
-      *Expense.all,
-      *Expiration.all.includes(:investment),
-      *Trade.all.includes(:investment),
-    ]
-    @transactions.sort_by!(&:date).reverse!
+    transactionable = RailsUtil.all(:models).select { |m| m.respond_to?(:as_transactions) }
+    @transactions = transactionable
+                      .flat_map(&:as_transactions)
+                      .sort_by!(&:date)
+                      .reverse!
   end
 
   private

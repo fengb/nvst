@@ -11,6 +11,17 @@ class Contribution < ApplicationRecord
   validates :date,   presence: true
   validates :amount, presence: true
 
+  def self.as_transactions
+    includes(:user).map do |contribution|
+      Transaction.new(
+        date: contribution.date,
+        net_amount: contribution.amount,
+        class_name: contribution.class.to_s,
+        description: contribution.user.to_s,
+      )
+    end
+  end
+
   def raw_activities_data
     [{investment: Investment::Cash.first,
       date:       date,
@@ -26,13 +37,5 @@ class Contribution < ApplicationRecord
 
   def cashflow_amount
     amount
-  end
-
-  def net_amount
-    amount
-  end
-
-  def description
-    "#{user}"
   end
 end

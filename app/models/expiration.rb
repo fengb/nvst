@@ -8,19 +8,21 @@ class Expiration < ApplicationRecord
   validates :date,       presence: true
   validates :shares,     presence: true
 
+  def self.as_transactions
+    includes(:investment).map do |expiration|
+      Transaction.new(
+        date: expiration.date,
+        net_amount: 0,
+        class_name: expiration.class.to_s,
+        description: "#{expiration.shares} shares of #{expiration.investment}",
+      )
+    end
+  end
+
   def raw_activities_data
     [{investment: investment,
       date:       date,
       shares:     shares,
-      price:      0.0,
-      adjustment: 1}]
-  end
-
-  def net_amount
-    0
-  end
-
-  def description
-    "#{shares} shares of #{investment}"
+      price:      0.0}]
   end
 end
