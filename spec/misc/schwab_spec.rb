@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 RSpec.describe Schwab do
   describe Schwab::Transaction do
     describe '.to_occ_symbol' do

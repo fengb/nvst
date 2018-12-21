@@ -78,27 +78,27 @@ class Investment < ApplicationRecord
   end
 
   class Option < Investment
-    SYMBOL_FORMAT = /\A([A-Z]{1,4})([0-9]{6})([CP])([0-9]{8})\z/
+    SYMBOL_FORMAT = /\A(?<root>[A-Z]{1,4})(?<date>[0-9]{6})(?<type>[CP])(?<strike>[0-9]{8})\z/
     validates :symbol, format: SYMBOL_FORMAT
 
     def underlying_symbol
-      symbol_match[1]
+      symbol_match[:root]
     end
 
     def expiration_date
-      Date.strptime(symbol_match[2], '%y%m%d')
+      Date.strptime(symbol_match[:date], '%y%m%d')
     end
 
     def put?
-      symbol_match[3] == 'P'
+      symbol_match[:type] == 'P'
     end
 
     def call?
-      symbol_match[3] == 'C'
+      symbol_match[:type] == 'C'
     end
 
     def strike_price
-      Rational(symbol_match[4], 1000)
+      Rational(symbol_match[:strike], 1000)
     end
 
     def symbol_match

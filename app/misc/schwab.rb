@@ -95,22 +95,16 @@ class Schwab
   class Transaction
     attr_reader :raw
 
-    OPTIONS_SYMBOL = /([A-Z]{1,5}) ([0-9]{2})\/([0-9]{2})\/([0-9]{4}) ([.0-9]*) ([CP])/
+    OPTIONS_SYMBOL = /(?<root>[A-Z]{1,5}) (?<month>[0-9]{2})\/(?<day>[0-9]{2})\/(?<year>[0-9]{4}) (?<strike>[.0-9]+) (?<type>[CP])/
     def self.to_occ_symbol(schwab_symbol)
       match = OPTIONS_SYMBOL.match(schwab_symbol)
-      underlying_symbol = match[1]
-      month = match[2]
-      day = match[3]
-      year = match[4]
-      price = match[5]
-      type = match[6]
 
-      [ underlying_symbol,
-        year[-2..-1],
-        month,
-        day,
-        type,
-        '%08d' % (price.to_f * 1000).round
+      [ match[:root],
+        match[:year][-2..-1],
+        match[:month],
+        match[:day],
+        match[:type],
+        '%08d' % (match[:strike].to_f * 1000).round
       ].join
     end
 
