@@ -1,5 +1,6 @@
 class Investment < ApplicationRecord
   has_many :historical_prices, class_name: 'InvestmentHistoricalPrice'
+  has_many :year_prices, ->{ year_range }, class_name: 'InvestmentHistoricalPrice'
   has_many :dividends,         class_name: 'InvestmentDividend'
   has_many :splits,            class_name: 'InvestmentSplit'
 
@@ -26,15 +27,15 @@ class Investment < ApplicationRecord
   end
 
   def current_price
-    historical_prices.order('date DESC').first.close
+    year_prices.max_by(&:date).close
   end
 
   def year_high
-    historical_prices.year_range.maximum(:high)
+    year_prices.map(&:high).max
   end
 
   def year_low
-    historical_prices.year_range.minimum(:low)
+    year_prices.map(&:low).min
   end
 
   def self.find_by_param(param)
