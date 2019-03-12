@@ -1,5 +1,5 @@
-bind "tcp://127.0.0.1:#{ENV['NVST_PORT'] || 8080}"
-workers Integer(ENV['NVST_WORKERS'] || 2)
+bind "tcp://127.0.0.1:#{ENV.fetch('PORT', 8080)}"
+workers Integer(ENV.fetch('WORKERS', 2))
 
 if @options[:daemon]
   pidfile 'tmp/pids/puma.pid'

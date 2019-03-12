@@ -9,4 +9,4 @@
 
 # Make sure your secret_key_base is kept private
 # if you're sharing your code publicly.
-Nvst::Application.config.secret_key_base = ENV['NVST_SECRET_KEY']
+Nvst::Application.config.secret_key_base = ENV.fetch('SECRET_KEY_BASE')
