@@ -55,14 +55,10 @@ class InvestmentSplit < ApplicationRecord
       position.opening_activity.adjustments << activity_adjustment!
 
       new_outstanding_shares = position.outstanding_shares * shares_adjustment
-      position.activities.create!(
-        source:      self,
-        is_opening:  true,
-        date:        self.date,
-        tax_date:    position.opening(:tax_date),
-        price:       position.opening(:price),
-        shares:      new_outstanding_shares - position.outstanding_shares,
-        adjustments: position.opening(:adjustments)
+      position.opening_activity.dup.update!(
+        source: self,
+        date:   self.date,
+        shares: new_outstanding_shares - position.outstanding_shares,
       )
     end
   end
