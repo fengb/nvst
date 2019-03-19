@@ -15,7 +15,7 @@ ActiveRecord::Schema.define(version: 2018_12_20_234548) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "activities", force: :cascade do |t|
+  create_table "activities", id: :serial, force: :cascade do |t|
     t.integer "position_id"
     t.date "date"
     t.decimal "shares", precision: 15, scale: 4
@@ -28,14 +28,14 @@ ActiveRecord::Schema.define(version: 2018_12_20_234548) do
     t.index ["source_type", "source_id"], name: "index_activities_on_source_type_and_source_id"
   end
 
-  create_table "activities_activity_adjustments", force: :cascade do |t|
+  create_table "activities_activity_adjustments", id: :serial, force: :cascade do |t|
     t.integer "activity_id"
     t.integer "activity_adjustment_id"
     t.index ["activity_adjustment_id"], name: "fk__transaction_adjustments_transactions_adjustment_id"
     t.index ["activity_id"], name: "fk__activities_activity_adjustments_transaction_id"
   end
 
-  create_table "activity_adjustments", force: :cascade do |t|
+  create_table "activity_adjustments", id: :serial, force: :cascade do |t|
     t.date "date"
     t.integer "numerator"
     t.integer "denominator"
@@ -45,7 +45,7 @@ ActiveRecord::Schema.define(version: 2018_12_20_234548) do
     t.index ["source_type", "source_id"], name: "index_activity_adjustments_on_source_type_and_source_id"
   end
 
-  create_table "admins", force: :cascade do |t|
+  create_table "admins", id: :serial, force: :cascade do |t|
     t.string "username", limit: 255, null: false
     t.string "encrypted_password", limit: 255, null: false
     t.datetime "remember_created_at"
@@ -58,7 +58,7 @@ ActiveRecord::Schema.define(version: 2018_12_20_234548) do
     t.datetime "updated_at"
   end
 
-  create_table "contributions", force: :cascade do |t|
+  create_table "contributions", id: :serial, force: :cascade do |t|
     t.integer "user_id"
     t.date "date"
     t.decimal "amount", precision: 18, scale: 4
@@ -67,7 +67,7 @@ ActiveRecord::Schema.define(version: 2018_12_20_234548) do
     t.index ["user_id"], name: "fk__contributions_user_id"
   end
 
-  create_table "events", force: :cascade do |t|
+  create_table "events", id: :serial, force: :cascade do |t|
     t.integer "src_investment_id"
     t.date "date"
     t.decimal "amount", precision: 12, scale: 4
@@ -77,7 +77,7 @@ ActiveRecord::Schema.define(version: 2018_12_20_234548) do
     t.index ["src_investment_id"], name: "fk__events_src_investment_id"
   end
 
-  create_table "expenses", force: :cascade do |t|
+  create_table "expenses", id: :serial, force: :cascade do |t|
     t.date "date"
     t.decimal "amount", precision: 12, scale: 4
     t.string "vendor", limit: 255
@@ -89,7 +89,7 @@ ActiveRecord::Schema.define(version: 2018_12_20_234548) do
     t.index ["reinvestment_for_user_id"], name: "fk__expenses_reinvestment_for_user_id"
   end
 
-  create_table "expirations", force: :cascade do |t|
+  create_table "expirations", id: :serial, force: :cascade do |t|
     t.integer "investment_id"
     t.date "date"
     t.decimal "shares", precision: 15, scale: 4
@@ -98,7 +98,7 @@ ActiveRecord::Schema.define(version: 2018_12_20_234548) do
     t.index ["investment_id"], name: "fk__expirations_investment_id"
   end
 
-  create_table "investment_dividends", force: :cascade do |t|
+  create_table "investment_dividends", id: :serial, force: :cascade do |t|
     t.integer "investment_id"
     t.date "ex_date"
     t.decimal "amount", precision: 12, scale: 4
@@ -107,7 +107,7 @@ ActiveRecord::Schema.define(version: 2018_12_20_234548) do
     t.index ["investment_id"], name: "fk__investment_dividends_investment_id"
   end
 
-  create_table "investment_historical_prices", force: :cascade do |t|
+  create_table "investment_historical_prices", id: :serial, force: :cascade do |t|
     t.integer "investment_id"
     t.date "date"
     t.decimal "high", precision: 12, scale: 4
@@ -119,7 +119,7 @@ ActiveRecord::Schema.define(version: 2018_12_20_234548) do
     t.index ["investment_id"], name: "fk__investment_historical_prices_investment_id"
   end
 
-  create_table "investment_splits", force: :cascade do |t|
+  create_table "investment_splits", id: :serial, force: :cascade do |t|
     t.integer "investment_id"
     t.date "date"
     t.integer "before"
@@ -129,7 +129,7 @@ ActiveRecord::Schema.define(version: 2018_12_20_234548) do
     t.index ["investment_id"], name: "fk__investment_splits_investment_id"
   end
 
-  create_table "investments", force: :cascade do |t|
+  create_table "investments", id: :serial, force: :cascade do |t|
     t.string "symbol", limit: 255
     t.string "name", limit: 255
     t.datetime "created_at"
@@ -138,7 +138,7 @@ ActiveRecord::Schema.define(version: 2018_12_20_234548) do
     t.string "past_symbols", default: [], array: true
   end
 
-  create_table "ownerships", force: :cascade do |t|
+  create_table "ownerships", id: :serial, force: :cascade do |t|
     t.integer "user_id"
     t.date "date"
     t.decimal "units", precision: 18, scale: 8
@@ -150,12 +150,12 @@ ActiveRecord::Schema.define(version: 2018_12_20_234548) do
     t.index ["user_id"], name: "fk__ownerships_user_id"
   end
 
-  create_table "positions", force: :cascade do |t|
+  create_table "positions", id: :serial, force: :cascade do |t|
     t.integer "investment_id"
     t.index ["investment_id"], name: "fk__positions_investment_id"
   end
 
-  create_table "rails_admin_histories", force: :cascade do |t|
+  create_table "rails_admin_histories", id: :serial, force: :cascade do |t|
     t.text "message"
     t.string "username", limit: 255
     t.integer "item"
@@ -167,7 +167,7 @@ ActiveRecord::Schema.define(version: 2018_12_20_234548) do
     t.index ["item", "table", "month", "year"], name: "index_rails_admin_histories"
   end
 
-  create_table "trades", force: :cascade do |t|
+  create_table "trades", id: :serial, force: :cascade do |t|
     t.date "date"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -180,7 +180,7 @@ ActiveRecord::Schema.define(version: 2018_12_20_234548) do
     t.index ["investment_id"], name: "fk__trades_investment_id"
   end
 
-  create_table "transfers", force: :cascade do |t|
+  create_table "transfers", id: :serial, force: :cascade do |t|
     t.date "date"
     t.decimal "amount", precision: 21, scale: 8
     t.integer "from_user_id"
@@ -191,7 +191,7 @@ ActiveRecord::Schema.define(version: 2018_12_20_234548) do
     t.index ["to_user_id"], name: "fk__transfers_to_user_id"
   end
 
-  create_table "users", force: :cascade do |t|
+  create_table "users", id: :serial, force: :cascade do |t|
     t.string "email", limit: 255, null: false
     t.string "encrypted_password", limit: 255, null: false
     t.string "reset_password_token", limit: 255
