@@ -52,6 +52,10 @@ class PopulateInvestmentsJob < ApplicationJob
         date = Time.at(row['date']).to_date
         return if date < target_date[:splits]
         next unless row['type'] == 'SPLIT'
+        # Yahoo shows 1:1 splits... wtf
+        next if row['numerator'] == row['denominator']
+        # TODO: find a better source -- this is a spinoff
+        next if row['denominator'].to_i > 100
 
         split = splits.create!(date:   date,
                                before: row['denominator'].to_i,
