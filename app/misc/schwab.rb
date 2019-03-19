@@ -8,7 +8,7 @@ class Schwab
   }
 
   EXPIRE = ['Expired', 'Bankruptcy']
-  IGNORE = ['Spin-off', 'Name Change', 'Funds Paid']
+  IGNORE = ['Spin-off', 'Name Change', 'Funds Paid', 'Funds Received']
 
   def self.process!(csv)
     new(csv).process!
