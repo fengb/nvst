@@ -5,7 +5,6 @@ gem 'bootsnap'
 
 # Server
 gem 'puma', require: false
-gem 'rufus-scheduler', require: false
 
 # Jobs
 gem 'git', require: false
