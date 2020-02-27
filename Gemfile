@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 
 gem 'rails'
 gem 'bootsnap'
+gem 'sprockets', '~>3.7.2' # https://github.com/rails/sprockets/issues/633
 
 # Server
 gem 'puma', require: false
