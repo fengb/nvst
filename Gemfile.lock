@@ -143,7 +143,7 @@ GEM
     pry (0.12.2)
       coderay (~> 1.1.0)
       method_source (~> 0.9.0)
-    puma (4.3.1)
+    puma (4.3.3)
       nio4r (~> 2.0)
     rack (2.2.2)
     rack-pjax (1.1.0)
@@ -282,6 +282,7 @@ DEPENDENCIES
   spidr
   spring
   spring-commands-rspec
+  sprockets (~> 3.7.2)
   uglifier
 
 BUNDLED WITH
